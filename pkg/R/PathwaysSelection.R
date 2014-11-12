@@ -1,5 +1,4 @@
-PathwaysSelection <-
-function(List,Selection,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,GENESET=GS,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+PathwaysSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,GENESET=ListGO,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	
 	ListNew=list()
 	element=0
@@ -65,10 +64,7 @@ function(List,Selection,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),E
 			geneSet <- GENESET
 		}
 		else{
-			geneSet <- getGeneSets(species = "Human",
-					geneSetSource = geneSetSource,
-					entrezIdentifiers = ENTREZID
-			)
+			geneSet <- AnnotateEntrezIDtoGO(GeneInfo[,1],database=c("ensembl","hsapiens_gene_ensembl"),attributes=c("entrezgene","go_id","description"),filters="entrezgene",species="Human")
 		}
 		
 		if(is.null(top)){
@@ -87,7 +83,7 @@ function(List,Selection,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),E
 		
 		Matrix=MatrixFunction(List,nrclusters,fusionsLog,WeightClust,names)
 		
-			
+		
 		ResultMLP=list()
 		for (k in 1:dim(Matrix)[1]){
 			print(k)
@@ -101,11 +97,11 @@ function(List,Selection,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),E
 				Compounds$OrderedCpds=as.hclust(Temp$Clust)$labels[as.hclust(Temp$Clust)$order]
 				Temp[[length(Temp)+1]]=list(Compounds=Compounds)
 				names(Temp)[length(Temp)]=paste("Cluster")
-			
+				
 				DataPrepared<-PreparePathway(Temp,GeneExpr,topG,sign)
 			}
-						
-
+			
+			
 			temp=list()
 			temp[[1]]=DataPrepared$Compounds[[1]] #names of the compounds
 			temp[[2]]=DataPrepared$Genes[[1]]

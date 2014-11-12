@@ -1,5 +1,4 @@
-Pathways <-
-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,GENESET=GS,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+Pathways<-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,GENESET=ListGO,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	
 	ListNew=list()
 	element=0
@@ -65,10 +64,7 @@ function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=Ge
 			geneSet <- GENESET
 		}
 		else{
-			geneSet <- getGeneSets(species = "Human",
-					geneSetSource = geneSetSource,
-					entrezIdentifiers = ENTREZID
-			)
+			geneSet <- AnnotateEntrezIDtoGO(GeneInfo[,1],database=c("ensembl","hsapiens_gene_ensembl"),attributes=c("entrezgene","go_id","description"),filters="entrezgene",species="Human")
 		}
 		
 		if(is.null(top)){

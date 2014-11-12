@@ -1,7 +1,6 @@
-PathwaysCluster <-
-function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP"),ENTREZIDs=NULL,geneSetSource = "GOBP",GENESET=GS,sign=0.05,niter=10){
+PathwaysCluster=function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP"),ENTREZIDs=NULL,geneSetSource = "GOBP",GENESET=ListGO,sign=0.05,niter=10){
 	#Given the object: look for Genes, p-values and/or names of compounds if p-values and/or genes are not available
-		
+	
 	method.test = function(sign.method,path.method){
 		method.choice = FALSE
 		
@@ -31,10 +30,8 @@ function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP"),ENTREZIDs=NULL,g
 		geneSet <- GENESET
 	}
 	else{
-		geneSet <- getGeneSets(species = "Human",
-				geneSetSource = geneSetSource,
-				entrezIdentifiers = ENTREZIDs
-		)
+		geneSet <- AnnotateEntrezIDtoGO(GeneInfo[,1],database=c("ensembl","hsapiens_gene_ensembl"),attributes=c("entrezgene","go_id","description"),filters="entrezgene",species="Human")
+		
 	}
 	
 	

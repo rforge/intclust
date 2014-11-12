@@ -1,6 +1,5 @@
-Pathways.2 <-
-function(Data,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,GENESET=GS,topGsign=0.05){
-		
+Pathways.2<-function(Data,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,GENESET=ListGO,topGsign=0.05){
+	
 	DataPrepared<-try_default(PreparePathway(Data,GeneExpr,topG,sign),NULL,quiet=TRUE)
 	
 	if(is.null(DataPrepared)){
@@ -18,7 +17,7 @@ function(Data,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=Ge
 		DataPrepared<-PreparePathway(Temp,GeneExpr,topG,sign)
 	}
 	
-		
+	
 	method.test = function(sign.method,path.method){
 		method.choice = FALSE
 		
@@ -48,10 +47,7 @@ function(Data,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=Ge
 		geneSet <- GENESET
 	}
 	else{
-		geneSet <- getGeneSets(species = "Human",
-				geneSetSource = geneSetSource,
-				entrezIdentifiers = ENTREZID
-		)
+		geneSet <- AnnotateEntrezIDtoGO(GeneInfo[,1],database=c("ensembl","hsapiens_gene_ensembl"),attributes=c("entrezgene","go_id","description"),filters="entrezgene",species="Human")
 	}
 	
 	if(is.null(top)){
