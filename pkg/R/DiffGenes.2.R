@@ -1,4 +1,4 @@
-DiffGenes.2 <-
+DiffGenes.2<-
 function(Data,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL){
 	if(method != "limma"){
 		stop("Only the limma method is implemented to find differentially expressed genes")
@@ -24,7 +24,7 @@ function(Data,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL){
 		
 		temp=list()
 		LeadCpds=colnames(GeneExpr)[which(clusters==i)] 
-
+		
 		temp[[1]]=list(LeadCpds,OrderedCpds)
 		names(temp[[1]])=c("LeadCpds","OrderedCpds")
 		
@@ -54,12 +54,12 @@ function(Data,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL){
 			
 		}
 		else{
-
+			
 			design = model.matrix(~label.factor)
 			fit = lmFit(GeneExpr,design=design)
 			fit = eBayes(fit)
 			
-			allDE=topTable(fit,coef=2,adjust="fdr",resort.by = "logFC",sort.by="p")
+			allDE=topTable(fit,n=dim(GeneExpr)[1],coef=2,adjust="fdr",resort.by = "logFC",sort.by="p")
 			
 			if(top1==TRUE){
 				result = list(allDE[1:top,],allDE)

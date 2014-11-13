@@ -1,9 +1,9 @@
-DiffGenes <-
+DiffGenes<-
 function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	if(method != "limma"){
 		stop("Only the limma method is implemented to find differentially expressed genes")
 	} 
-		
+	
 	ListNew=list()
 	element=0
 	for(i in 1:length(List)){
@@ -95,15 +95,15 @@ function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL,fu
 						names(result)=c("TopDE","AllDE")
 						
 					}
-				
+					
 				}
 				else{
-				
+					
 					design = model.matrix(~label.factor)
 					fit = lmFit(GeneExpr.2,design=design)
 					fit = eBayes(fit)
-					allDE=topTable(fit,coef=2,adjust="fdr",resort.by = "logFC",sort.by="p")
-				
+					allDE=topTable(fit,n=dim(GeneExpr)[1],coef=2,adjust="fdr",resort.by = "logFC",sort.by="p")
+					
 					if(top1==TRUE){
 						result = list(allDE[1:top,],allDE)
 						names(result)=c("TopDE","AllDE")
