@@ -1,4 +1,4 @@
-Clusterplot <-
+ClusterPlot <-
 function(Data1,Data2,nrclusters=7,cols=my_palette2,...){
 	x=Data1$Clust
 	Data=Data2$Clust
