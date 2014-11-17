@@ -1,5 +1,4 @@
-ProfilePlotAll <-
-function(Genes=Genes,Comps=Comps,GeneExpr=geneMat,Raw=FALSE,Order=NULL,Color=NULL,nrclusters=7,Clusters=NULL,cols=NULL,AddLegend=TRUE,margins=c(8.1,4.1,1.1,6.5),extra=5,...){
+ProfilePlotAll<-function(Genes=Genes,Comps=Comps,GeneExpr=geneMat,Raw=FALSE,Order=NULL,Color=NULL,nrclusters=7,Clusters=NULL,cols=NULL,AddLegend=TRUE,margins=c(8.1,4.1,1.1,6.5),extra=5,...){
 	par(mar=margins,xpd=TRUE)
 	
 	if(class(GeneExpr)[1]=="ExpressionSet"){
@@ -25,7 +24,7 @@ function(Genes=Genes,Comps=Comps,GeneExpr=geneMat,Raw=FALSE,Order=NULL,Color=NUL
 		names(ordercolors)=Data1$order.lab
 		
 		ClustData1=ClustData1[Data1$order]	
-			
+		
 		order=seq(1,nrclusters)
 		
 		for (k in 1:length(unique(ClustData1))){
@@ -42,7 +41,7 @@ function(Genes=Genes,Comps=Comps,GeneExpr=geneMat,Raw=FALSE,Order=NULL,Color=NUL
 			}	
 			ordercolors=ordercolors[ordernames]
 		}
-
+		
 		colors<- cols[ordercolors]
 		names(colors) <-names(ordercolors)	
 		
@@ -66,7 +65,7 @@ function(Genes=Genes,Comps=Comps,GeneExpr=geneMat,Raw=FALSE,Order=NULL,Color=NUL
 	}	
 	ylims=c(min(allvalues)-0.1,max(allvalues)+0.1)
 	
-	plot(type="n",x=0,y=0,xlim=c(0,ncol(GeneExpr)),ylim=ylims,ylab=expression(log[2] ~ paste("fold ", "change")),xlab=" ",xaxt="n",...)
+	plot(type="n",x=0,y=0,xlim=c(0,ncol(GeneExpr)),ylim=ylims,ylab=expression(log[2] ~ paste("fold ", "change")),xlab=" ",xaxt="n")
 	#ylims=c()
 	Indices=c(colnames(GeneExpr)[which(colnames(GeneExpr)%in%Comps)],colnames(GeneExpr)[which(!colnames(GeneExpr)%in%Comps)])
 	
@@ -137,7 +136,7 @@ function(Genes=Genes,Comps=Comps,GeneExpr=geneMat,Raw=FALSE,Order=NULL,Color=NUL
 		colslegend=seq(1,length(Genes))
 		
 		par(xpd=T,mar=margins)
-		legend(ncol(GeneExpr)+extra,mean(c(min(ylims),max(ylims))),legend=c(labels),col=c(colslegend),,lty=1,lwd=3,cex=0.8,...)
+		legend(ncol(GeneExpr)+extra,mean(c(min(ylims),max(ylims))),legend=c(labels),col=c(colslegend),lty=1,lwd=3,cex=0.8)
 		
 	}
 }

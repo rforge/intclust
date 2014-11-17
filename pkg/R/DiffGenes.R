@@ -1,5 +1,4 @@
-DiffGenes<-
-function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+DiffGenes<-function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	if(method != "limma"){
 		stop("Only the limma method is implemented to find differentially expressed genes")
 	} 
@@ -70,7 +69,7 @@ function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL,fu
 				temp=list()
 				LeadCpds=names(clusters)[which(clusters==i)] 
 				temp[[1]]=list(LeadCpds,OrderedCpds)
-				names(temp[[1]])=c("LeadCods","OrderedCpds") #names of the compounds
+				names(temp[[1]])=c("LeadCpds","OrderedCpds") #names of the compounds
 				
 				label = rep(0,length(names(clusters)))
 				label[which(clusters==i)] = 1
@@ -83,6 +82,14 @@ function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL,fu
 					DElead <- limmaTwoLevels(GeneExpr.2,"LeadCpds")
 					
 					allDE <- topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
+					
+					if(is.null(allDE$ID)){
+						allDE$Genes <- rownames(allDE)
+					}
+					else
+					{
+						allDE$Genes=allDE$ID
+					}
 					
 					if(top1==TRUE){
 						result = list(allDE[1:top,],allDE)
@@ -103,6 +110,14 @@ function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL,fu
 					fit = lmFit(GeneExpr.2,design=design)
 					fit = eBayes(fit)
 					allDE=topTable(fit,n=dim(GeneExpr)[1],coef=2,adjust="fdr",resort.by = "logFC",sort.by="p")
+					
+					if(is.null(allDE$ID)){
+						allDE$Genes <- rownames(allDE)
+					}
+					else
+					{
+						allDE$Genes=allDE$ID
+					}
 					
 					if(top1==TRUE){
 						result = list(allDE[1:top,],allDE)

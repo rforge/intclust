@@ -1,6 +1,5 @@
-ChooseFeatures <-
-function(Interactive=TRUE,LeadCpds,ClusterResult,ClusterColors=NULL,BinData,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=7,cols=my_palette2,N=1){
-
+ChooseFeatures<-function(Interactive=TRUE,LeadCpds,ClusterResult,ClusterColors=NULL,BinData,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=7,cols=my_palette2,N=1){
+	
 	OrInteractive=Interactive
 	for(a in 1:length(BinData)){
 		if((all(rownames(BinData[[a]])%in%ClusterResult$Clust$order.lab))){
@@ -19,7 +18,7 @@ function(Interactive=TRUE,LeadCpds,ClusterResult,ClusterColors=NULL,BinData,Data
 		
 	}
 	else{
-
+		
 		#BinData can be a list of different binary matrices :: different sources of information
 		if(class(BinData)!="list"){
 			stop("The binary data matrices must be put into a list")
@@ -44,7 +43,7 @@ function(Interactive=TRUE,LeadCpds,ClusterResult,ClusterColors=NULL,BinData,Data
 		for(i in 1:length(LeadCpds)){
 			Compounds=list(LeadCpds[[i]],OrderedCpds)
 			names(Compounds)=c("LeadCpds","OrderedCpds")
-
+			
 			group <- factor(ifelse(cpdSet %in% LeadCpds[[i]], 1, 0)) #identify the group of interest
 			
 			#Determine characteristic features for the compounds: fishers exact test

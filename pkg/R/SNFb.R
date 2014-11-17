@@ -1,11 +1,10 @@
-SNFb <-
-function(List,distmeasure=c("tanimoto","tanimoto"),NN=20,alpha=0.5,T=20,clust="agnes",linkage="ward"){
+SNFb<-function(List,distmeasure=c("tanimoto","tanimoto"),NN=20,alpha=0.5,T=20,clust="agnes",linkage="ward"){
 	
 	#Checking required data types and methods:
 	if(class(List) != "list"){
 		stop("Data must be of type list")
 	}
-		
+	
 	if(alpha<0.3 | alpha >1){
 		print("Warning: alpha is recommended to be between 0.3 and 1 for the SNF method. Default is 0.5.")
 	}

@@ -1,5 +1,4 @@
-ClusterDistributionSep <-
-function(ClusterData,Selection,K,Height=NULL,extraObjects=FALSE,OriginalExtra=FALSE,MaxExtra=FALSE,ref=FALSE){
+ClusterDistributionSep<- function(ClusterData,Selection,K,Height=NULL,extraObjects=FALSE,OriginalExtra=FALSE,MaxExtra=FALSE,ref=FALSE){
 	if(!is.null(Height)){
 		K=NULL
 	}

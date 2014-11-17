@@ -1,5 +1,4 @@
-Geneset.intersectSelection <-
-function(list.output,sign,names=NULL,seperatetables=FALSE,separatepvals=FALSE){
+Geneset.intersectSelection<-function(list.output,sign,names=NULL,seperatetables=FALSE,separatepvals=FALSE){
 	if(is.null(names)){
 		for(j in 1:length(list.output$"Iteration 1")){
 			names[j]=paste("Method",j,sep=" ")	

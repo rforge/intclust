@@ -1,5 +1,4 @@
-Ultimate <-
-function(List,distmeasure,NN=20,alpha=0.5,T=20,t=10,r=NULL,nrclusters=7,nrclusterssep=c(7,7),nrclustersseq=NULL,weight=NULL,Clustweight=0.5,clust="agnes",linkage="ward",gap=FALSE,maxK=50,IntClust=c("ADC","ADECa","ADECb","ADECc","WonM","CECa","CECb","CECc","WeightedClust","WeightedSim","SNFa","SNFb","SNFc"),fusionsLog=TRUE,WeightClust=TRUE,PlotCompare=FALSE,cols=my_palette2,...){
+Ultimate<-function(List,distmeasure,NN=20,alpha=0.5,T=20,t=10,r=NULL,nrclusters=7,nrclusterssep=c(7,7),nrclustersseq=NULL,weight=NULL,Clustweight=0.5,clust="agnes",linkage="ward",gap=FALSE,maxK=50,IntClust=c("ADC","ADECa","ADECb","ADECc","WonM","CECa","CECb","CECc","WeightedClust","WeightedSim","SNFa","SNFb","SNFc"),fusionsLog=TRUE,WeightClust=TRUE,PlotCompare=FALSE,cols=my_palette2,...){
 	#Checking of conditions:
 	if(class(List) != "list"){
 		stop("Data must be of type list")
@@ -142,12 +141,12 @@ function(List,distmeasure,NN=20,alpha=0.5,T=20,t=10,r=NULL,nrclusters=7,nrcluste
 		
 		if(IntClust[i]=="WeightedSim"){
 			IntClustering[[i]]=WeightedSimClust(List,type="data",w=weight,clust=clust,linkage=linkage,distmeasure=distmeasure,gap=FALSE,maxK=50,nrclusters=nrclusters,names=c("Data1","Data2"),AllClusters=TRUE)
-				
+			
 			names(IntClustering)[i]="WeightedSim"
 			print("WeightedSim")
 		}
 	}
-
+	
 	if(PlotCompare==TRUE){
 		
 		#Weights for CECa

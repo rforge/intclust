@@ -1,4 +1,4 @@
-PathwaysSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,GENESET=ListGO,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+PathwaysSelection<-function(List,Selection,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,topG=NULL,GENESET=ListGO,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	
 	ListNew=list()
 	element=0
@@ -32,7 +32,7 @@ PathwaysSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=7,method=c
 	List=ListNew
 	
 	if(length(List)==1){
-		ResultMLP=Pathways.2(List[[1]],GeneExpr,nrclusters,method,ENTREZID,geneSetSource,top,GENESET,sign)
+		ResultMLP=Pathways.2(List[[1]],GeneExpr,nrclusters,method,ENTREZID,geneSetSource,top,topG,GENESET,sign)
 	}
 	else{
 		method.test = function(sign.method,path.method){
@@ -94,7 +94,7 @@ PathwaysSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=7,method=c
 				Temp=List[[k]]
 				Compounds=list()
 				Compounds$LeadCpds=colnames(Matrix)[which(Matrix[k,]==maxcluster)]
-				Compounds$OrderedCpds=as.hclust(Temp$Clust)$labels[as.hclust(Temp$Clust)$order]
+				Compounds$OrderedCpds=as.hclust(List[[k]]$Clust)$labels[as.hclust(List[[k]]$Clust)$order]
 				Temp[[length(Temp)+1]]=list(Compounds=Compounds)
 				names(Temp)[length(Temp)]=paste("Cluster")
 				

@@ -1,5 +1,4 @@
-.distanceheatmaps <-
-function(Data1,Data2,names,nrclusters=7){
+.distanceheatmaps<-function(Data1,Data2,names,nrclusters=7){
 	ClustData1=cutree(Data1,nrclusters) #original clusters (aggregated data clustering)
 	ClustData2=cutree(Data2,nrclusters) #clusters of changed method
 	

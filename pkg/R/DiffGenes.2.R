@@ -1,5 +1,4 @@
-DiffGenes.2<-
-function(Data,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL){
+DiffGenes.2<-function(Data,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL){
 	if(method != "limma"){
 		stop("Only the limma method is implemented to find differentially expressed genes")
 	} 
@@ -38,7 +37,13 @@ function(Data,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL){
 			DElead <- limmaTwoLevels(GeneExpr,"LeadCpds")
 			
 			allDE <- topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
-			
+			if(is.null(allDE$ID)){
+				allDE$Genes <- rownames(allDE)
+			}
+			else
+			{
+				allDE$Genes=allDE$ID
+			}
 			if(top1==TRUE){
 				result = list(allDE[1:top,],allDE)
 				names(result)=c("TopDE","AllDE")
@@ -60,7 +65,13 @@ function(Data,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL){
 			fit = eBayes(fit)
 			
 			allDE=topTable(fit,n=dim(GeneExpr)[1],coef=2,adjust="fdr",resort.by = "logFC",sort.by="p")
-			
+			if(is.null(allDE$ID)){
+				allDE$Genes <- rownames(allDE)
+			}
+			else
+			{
+				allDE$Genes=allDE$ID
+			}
 			if(top1==TRUE){
 				result = list(allDE[1:top,],allDE)
 				names(result)=c("TopDE","AllDE")

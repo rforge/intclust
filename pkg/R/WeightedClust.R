@@ -1,5 +1,4 @@
-WeightedClust <-
-function(List,distmeasure=c("tanimoto","tanimoto"),weight=seq(1,0,-0.1),Clustweight=0.5,clust="agnes",linkage="ward"){ # weight = weight to data1
+WeightedClust <- function(List,distmeasure=c("tanimoto","tanimoto"),weight=seq(1,0,-0.1),Clustweight=0.5,clust="agnes",linkage="ward"){ # weight = weight to data1
 	
 	#Step 1: compute distance matrices:
 	Distance=function(data,distmeasure){

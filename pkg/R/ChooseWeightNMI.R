@@ -1,5 +1,4 @@
-ChooseWeightNMI <-
-function(List,type=c("data","clusters"),w=seq(0,1,by=0.01),nrclusters=NULL,distmeasure=c("euclidean","tanimoto"),clust="agnes",linkage="ward",gap=FALSE,maxK=50,names=c("B","FP")){
+ChooseWeightNMI<-function(List,type=c("data","clusters"),w=seq(0,1,by=0.01),nrclusters=NULL,distmeasure=c("euclidean","tanimoto"),clust="agnes",linkage="ward",gap=FALSE,maxK=50,names=c("B","FP")){
 	if(type=="data"){
 		for(a in 1:length(distmeasure)){
 			if(distmeasure[[a]]=='euclidean'){

@@ -1,5 +1,4 @@
-ADECb <-
-function(List,distmeasure="tanimoto",nrclusters=seq(5,25,1),clust="agnes",linkage="ward"){
+ADECb<-function(List,distmeasure="tanimoto",nrclusters=seq(5,25,1),clust="agnes",linkage="ward"){
 	
 	if(class(List) != "list"){
 		stop("Data must be of type lists")
@@ -44,7 +43,7 @@ function(List,distmeasure="tanimoto",nrclusters=seq(5,25,1),clust="agnes",linkag
 	
 	#Step 2: apply hierarchical clustering on A1_prime and A2_prime + cut tree into nrclusters
 	
-		Distance=function(data,distmeasure){
+	Distance=function(data,distmeasure){
 		data <- data+0
 		
 		tanimoto = function(m){

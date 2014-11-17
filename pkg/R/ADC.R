@@ -1,5 +1,4 @@
-ADC <-
-function(List,distmeasure="tanimoto",clust="agnes",linkage="ward"){
+ADC<-function(List,distmeasure="tanimoto",clust="agnes",linkage="ward"){
 	
 	#Checking required data types and methods:
 	if(class(List) != "list"){
@@ -27,7 +26,7 @@ function(List,distmeasure="tanimoto",clust="agnes",linkage="ward"){
 	
 	#Compute Distance Matrix on AllData
 	
-		Distance=function(data,distmeasure){
+	Distance=function(data,distmeasure){
 		data <- data+0
 		
 		tanimoto = function(m){
@@ -90,3 +89,4 @@ function(List,distmeasure="tanimoto",clust="agnes",linkage="ward"){
 	return(out)
 	
 }
+

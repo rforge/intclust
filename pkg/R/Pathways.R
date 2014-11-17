@@ -1,4 +1,4 @@
-Pathways<-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,GENESET=ListGO,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+Pathways<-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,topG=NULL,GENESET=ListGO,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	
 	ListNew=list()
 	element=0
@@ -95,33 +95,37 @@ Pathways<-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),E
 			DataPrepared<-try_default(PreparePathway(List[[k]],GeneExpr,topG,sign),NULL,quiet=TRUE)
 			if(is.null(DataPrepared)){
 				Temp=List[[k]]
+				
 				for(i in unique(clusters)){
 					Compounds=list()
 					Compounds$LeadCpds=names(clusters)[which(clusters==i)] 
-					Compounds$OrderedCpds=as.hclust(Temp$Clust)$labels[as.hclust(Temp$Clust)$order]
+					Compounds$OrderedCpds=as.hclust(List[[k]]$Clust)$labels[as.hclust(List[[k]]$Clust)$order]
+					
 					Temp[[i+1]]=list(Compounds=Compounds)
 					names(Temp)[i+1]=paste("Cluster",i,sep=" ")
+					
 				}
 				DataPrepared<-PreparePathway(Temp,GeneExpr,topG,sign)
+				
 			}
 			
 			PathwaysResults=list()
 			
 			for (i in 1:length(DataPrepared$pvalsgenes)){
-				print(k.i)
+				print(paste(k,i,sep='.'))
 				temp=list()
-				temp[[1]]=DataPrepared$Compounds[[i]] #names of the compounds
-				temp[[2]]=DataPrepared$Genes[[i]]				
+				temp[[1]]=DataPrepared$Compounds[[i]] # the compounds
+				temp[[2]]=DataPrepared$Genes[[i]]		# the genes		
 				pvalscluster=DataPrepared$pvalsgenes[[i]]
 				
 				if(path.method=="MLP"){
 					## WE WILL USE THE RAW P-VALUES TO PUT IN MLP -> LESS GRANULAR
 					
-					names(p.values) = ENTREZID
+					names(pvalscluster) = ENTREZID
 					
 					out.mlp <- MLP(
 							geneSet = geneSet,
-							geneStatistic = p.values,
+							geneStatistic = pvalscluster,
 							minGenes = 5,
 							maxGenes = 100,
 							rowPermutations = TRUE,

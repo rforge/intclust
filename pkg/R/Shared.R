@@ -1,5 +1,4 @@
-Shared <-
-function(DataLimma=NULL,DataMLP=NULL,names=NULL){  #Input=result of DiffGenes.2 and Geneset.intersect
+Shared<-function(DataLimma=NULL,DataMLP=NULL,names=NULL){  #Input=result of DiffGenes and Geneset.intersect
 	
 	if(is.null(DataMLP)){
 		ResultShared=SharedLimma(DataLimma,names)
@@ -45,9 +44,9 @@ function(DataLimma=NULL,DataMLP=NULL,names=NULL){  #Input=result of DiffGenes.2 
 			
 			for(j in 1:nmethods){
 				if(!(is.na(DataLimma[[j]][[i]])[1]) | !(is.na(DataMLP[[j]][[i]])[1])){
-					temp1g=c(temp1g,length(DataLimma[[j]][[i]]$Genes$ID))
+					temp1g=c(temp1g,length(DataLimma[[j]][[i]]$Genes$TopDE$Genes))
 					temp1p=c(temp1p,length(DataMLP[[j]][[i]][[3]]$descriptions))
-					comps=c(comps,length(DataLimma[[j]][[i]]$Compounds))
+					comps=c(comps,length(DataLimma[[j]][[i]]$Compounds$LeadCpds))
 				}
 				else{
 					temp1g=c(temp1g,"-")
@@ -65,15 +64,15 @@ function(DataLimma=NULL,DataMLP=NULL,names=NULL){  #Input=result of DiffGenes.2 
 			Continue=TRUE
 			while (Continue==TRUE){
 				if(!(is.na(DataLimma[[j]][[i]])[1]) | !(is.na(DataMLP[[j]][[i]])[1])){
-					sharedcomps=DataLimma[[j]][[i]]$Compounds
-					sharedgenes=DataLimma[[j]][[i]]$Genes$ID
+					sharedcomps=DataLimma[[j]][[i]]$Compounds$LeadCpds
+					sharedgenes=DataLimma[[j]][[i]]$Genes$TopDE$Genes
 					sharedpaths=DataMLP[[j]][[i]][[3]]$descriptions
 					
 					pvalsg=c(pvalsg,DataLimma[[j]][[i]]$Genes$adj.P.Val)
 					pvalsp=c(pvalsp,DataMLP[[j]][[i]]$mean_p.value)
 					
-					nsharedcomps=length(DataLimma[[j]][[i]]$Compounds)
-					nsharedgenes=length(DataLimma[[j]][[i]]$Genes$ID)
+					nsharedcomps=length(DataLimma[[j]][[i]]$Compounds$LeadCpds)
+					nsharedgenes=length(DataLimma[[j]][[i]]$Genes$TopDE$Genes)
 					nsharedpaths=length(DataMLP[[j]][[i]][[3]]$descriptions)
 					names(nsharedgenes)="nshared"
 					names(nsharedpaths)="nshared"
@@ -87,12 +86,12 @@ function(DataLimma=NULL,DataMLP=NULL,names=NULL){  #Input=result of DiffGenes.2 
 			if(nmethods>=2){
 				for (j in 2:length(DataLimma)){
 					if(!(is.na(DataLimma[[j]][[i]])[1]) | !(is.na(DataMLP[[j]][[i]])[1])){
-						sharedcomps=intersect(sharedcomps,DataLimma[[j]][[i]]$Compounds)
-						sharedgenes=intersect(sharedgenes,DataLimma[[j]][[i]]$Genes$ID)
+						sharedcomps=intersect(sharedcomps,DataLimma[[j]][[i]]$Compounds$LeadCpds)
+						sharedgenes=intersect(sharedgenes,DataLimma[[j]][[i]]$Genes$TopDE$Genes)
 						sharedpaths=intersect(sharedpaths,DataMLP[[j]][[i]][[3]]$descriptions)
 						
-						nsharedcomps=length(intersect(sharedcomps,DataLimma[[j]][[i]]$Compounds))
-						nsharedgenes=length(intersect(sharedgenes,DataLimma[[j]][[i]]$Genes$ID))
+						nsharedcomps=length(intersect(sharedcomps,DataLimma[[j]][[i]]$Compounds$LeadCpds))
+						nsharedgenes=length(intersect(sharedgenes,DataLimma[[j]][[i]]$Genes$TopDE$Genes))
 						nsharedpaths=length(intersect(sharedpaths,DataMLP[[j]][[i]][[3]]$descriptions))
 						names(nsharedgenes)="nshared"
 						names(nsharedpaths)="nshared"
@@ -111,12 +110,12 @@ function(DataLimma=NULL,DataMLP=NULL,names=NULL){  #Input=result of DiffGenes.2 
 					pvalsg=c()
 					for(g in sharedgenes){
 						if(!(is.na(DataLimma[[c]][[i]])[1])){
-							pvalsg=c(pvalsg,DataLimma[[c]][[i]]$Genes$adj.P.Val[DataLimma[[c]][[i]]$Genes$ID==g])	
+							pvalsg=c(pvalsg,DataLimma[[c]][[i]]$Genes$TopDE$adj.P.Val[DataLimma[[c]][[i]]$Genes$TopDE$Genes==g])	
 						}	
 					}
 					
 					pvalsgenes[[c]]=pvalsg
-					#names(pvalsgenes)[c]=paste("Method",c,sep=" ")
+					names(pvalsgenes)[c]=paste("Method",c,sep=" ")
 				}	
 				
 				for(g1 in 1:length(sharedgenes)){
@@ -145,7 +144,7 @@ function(DataLimma=NULL,DataMLP=NULL,names=NULL){  #Input=result of DiffGenes.2 
 					pvalspaths[[c]]=pvalsp
 					
 					
-					#names(pvalspaths)[c]=paste("Method",c,sep=" ")
+					names(pvalspaths)[c]=paste("Method",c,sep=" ")
 				}
 				
 				

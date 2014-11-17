@@ -1,5 +1,4 @@
-BoxPlotDist <-
-function(Data1,Data2,lab1,lab2,limits1,limits2,type=1){ #Data input should be from cluster or integrative cluster function (such that DistM element is available).
+BoxPlotDist<-function(Data1,Data2,lab1,lab2,limits1,limits2,type=1){ #Data input should be from cluster or integrative cluster function (such that DistM element is available).
 #type: 1=plot 1, 2=plot 2, 3=both plots
 	Dist1<-Data1$DistM
 	Dist2<-Data2$DistM

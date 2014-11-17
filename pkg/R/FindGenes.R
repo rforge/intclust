@@ -1,5 +1,4 @@
-FindGenes <-
-function(DataLimma,names=NULL){
+FindGenes<-function(DataLimma,names=NULL){
 	
 	FoundGenes=list()
 	
@@ -21,7 +20,7 @@ function(DataLimma,names=NULL){
 		for(j in 1:nrclusters){ #j == cluster
 			if(!(is.na(DataLimma[[i]][[j]]))[1]){
 				
-				tempgenes=DataLimma[[i]][[j]]$Genes$ID[1:5]		
+				tempgenes=DataLimma[[i]][[j]]$Genes$TopDE$Genes[1:5]		
 				
 				
 				if(!(is.null(tempgenes))){

@@ -1,5 +1,4 @@
-ComparePlot <-
-function(List,nrclusters=7,cols=my_palette2,fusionsLog=FALSE,WeightClust=FALSE,names=NULL,reverse=FALSE,margins=c(8.1,3.1,3.1,4.1),...){
+ComparePlot<-function(List,nrclusters=7,cols=my_palette2,fusionsLog=FALSE,WeightClust=FALSE,names=NULL,reverse=FALSE,margins=c(8.1,3.1,3.1,4.1),...){
 	if(length(List)==1 & (class(List[[1]])=="Weighted"|class(List[[1]])=="CEC"|class(List[[1]])=="WeightedSim") & reverse==TRUE){
 		List[[1]]$Results=rev(List[[1]]$Results)
 	}

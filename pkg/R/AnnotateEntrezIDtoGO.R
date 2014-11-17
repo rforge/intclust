@@ -1,5 +1,4 @@
-AnnotateEntrezIDtoGO <-
-function(entrez,database,attributes=c("entrezgene","go_id","description"),filters="entrezgene",species="Human"){
+AnnotateEntrezIDtoGO<-function(entrez,database,attributes=c("entrezgene","go_id","description"),filters="entrezgene",species="Human"){
 	mart=useMart(database[1])
 	mart=useDataset(database[2],mart=mart)
 	
@@ -27,4 +26,4 @@ function(entrez,database,attributes=c("entrezgene","go_id","description"),filter
 	attr(ListGO,'geneSetSource')<-"GODB"
 	class(ListGO)<-"geneSetMLP"
 	return(ListGO)
-}	
+}

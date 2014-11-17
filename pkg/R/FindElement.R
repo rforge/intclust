@@ -1,5 +1,4 @@
-FindElement <-
-function(What,Object,Element=list()){
+FindElement<-function(What,Object,Element=list()){
 	#str(Object)
 	if(class(Object)=="data.frame"){
 		#search in columns

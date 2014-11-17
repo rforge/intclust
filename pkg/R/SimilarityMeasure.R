@@ -1,5 +1,4 @@
-SimilarityMeasure <-
-function(List,nrclusters=7,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+SimilarityMeasure<-function(List,nrclusters=7,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	
 	if(class(List)!="list"){
 		MatrixColors=List

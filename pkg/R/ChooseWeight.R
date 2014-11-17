@@ -1,5 +1,4 @@
-ChooseWeight <-
-function(List,type=c("data","clusters"),w=seq(0,1,by=0.01),nrclusters=NULL,distmeasure=c("tanimoto","tanimoto"),clust="agnes",linkage="ward",gap=FALSE,maxK=50,names=c("B","FP")){
+ChooseWeight<-function(List,type=c("data","clusters"),w=seq(0,1,by=0.01),nrclusters=NULL,distmeasure=c("tanimoto","tanimoto"),clust="agnes",linkage="ward",gap=FALSE,maxK=50,names=c("B","FP")){
 	if(type=="data"){
 		for(a in 1:length(distmeasure)){
 			if(distmeasure[[a]]=='euclidean'){
@@ -52,7 +51,7 @@ function(List,type=c("data","clusters"),w=seq(0,1,by=0.01),nrclusters=NULL,distm
 	colnames(ResultsWeight)=labels
 	
 	for(i in 1:length(w)){
-			
+		
 		DistW=w[i]*Dist1+(1-w[i])*Dist2
 		hclust1 <- cutree(agnes(Dist1,diss=FALSE,method=linkage), k = nrclusters)
 		

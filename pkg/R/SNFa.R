@@ -1,5 +1,4 @@
-SNFa <-
-function(List,distmeasure=c("tanimoto","tanimoto"),NN=20,alpha=0.5,T=20,clust="agnes",linkage="ward"){
+SNFa<-function(List,distmeasure=c("tanimoto","tanimoto"),NN=20,alpha=0.5,T=20,clust="agnes",linkage="ward"){
 	
 	#Checking required data types and methods:
 	if(class(List) != "list"){
@@ -19,7 +18,7 @@ function(List,distmeasure=c("tanimoto","tanimoto"),NN=20,alpha=0.5,T=20,clust="a
 	
 	
 	#STEP 1: Distance Matrices
-		Distance=function(data,distmeasure){
+	Distance=function(data,distmeasure){
 		data <- data+0
 		
 		tanimoto = function(m){

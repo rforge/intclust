@@ -1,8 +1,7 @@
-WonM <-
-function(List,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25,1),clust="agnes",linkage="ward"){
+WonM=function(List,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25,1),clust="agnes",linkage="ward"){
 	
 	#Step 1: Distance Matrices
-		Distance=function(data,distmeasure){
+	Distance=function(data,distmeasure){
 		data <- data+0
 		
 		tanimoto = function(m){

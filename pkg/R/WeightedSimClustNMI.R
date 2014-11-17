@@ -1,5 +1,4 @@
-WeightedSimClustNMI <-
-function(List,type=c("data","clusters"),w=seq(0,1,0.01),clust="agnes",linkage="ward",distmeasure=c("euclidean","tanimoto"),gap=FALSE,maxK=50,nrclusters=NULL,names=c("B","FP"),AllClusters=FALSE){
+WeightedSimClustNMI<-function(List,type=c("data","clusters"),w=seq(0,1,0.01),clust="agnes",linkage="ward",distmeasure=c("euclidean","tanimoto"),gap=FALSE,maxK=50,nrclusters=NULL,names=c("B","FP"),AllClusters=FALSE){
 	if(length(w)==1){
 		if(type=="data"){
 			#If given data matrices.
@@ -45,7 +44,7 @@ function(List,type=c("data","clusters"),w=seq(0,1,0.01),clust="agnes",linkage="w
 	else{
 		
 		temp=ChooseWeightNMI(List,type,w,nrclusters,distmeasure,clust,linkage,gap,maxK,names)
-				
+		
 		Dist1=temp[[1]]$DistM
 		Dist2=temp[[2]]$DistM
 		

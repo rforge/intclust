@@ -1,5 +1,4 @@
-ClusterDistribution <-
-function(List,Selection,nrclusters,followMaxComps=FALSE,followClust=TRUE,fusionsLog=TRUE,WeightClust=TRUE,names=NULL,reverse=FALSE,Plot=TRUE,Table=TRUE,CompletePlot=FALSE,cols){
+ClusterDistribution <- function(List,Selection,nrclusters,followMaxComps=FALSE,followClust=TRUE,fusionsLog=TRUE,WeightClust=TRUE,names=NULL,reverse=FALSE,Plot=TRUE,Table=TRUE,CompletePlot=FALSE,cols){
 	FoundClusters=list()
 	ClusterDistribution.2<-function(List,Selection,nrclusters,followMaxComps,followClust,fusionsLog,WeightClust,reverse){
 		if ((length(List)==1 & (class(List[[1]])=="Weighted"| class(List[[1]])=="CEC"| class(List[[1]])=="WeightedSim")) & reverse==TRUE){

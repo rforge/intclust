@@ -1,5 +1,4 @@
-CECb <-
-function(List,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25,1),weight=NULL,clust="agnes",linkage="ward",Clustweight=0.5){
+CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25,1),weight=NULL,clust="agnes",linkage="ward",Clustweight=0.5){
 	
 	if(class(List) != "list"){
 		stop("Data must be of type lists")
@@ -41,7 +40,7 @@ function(List,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25,1),weight
 	
 	#Step 2: apply hierarchical clustering on A1_prime and A2_prime + cut tree into nrclusters
 	
-		Distance=function(data,distmeasure){
+	Distance=function(data,distmeasure){
 		data <- data+0
 		
 		tanimoto = function(m){

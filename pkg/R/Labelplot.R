@@ -1,5 +1,4 @@
-LabelPlot <-
-function(Data,Sel1,Sel2=NULL,col1,col2=NULL,...){
+LabelPlot<-function(Data,Sel1,Sel2=NULL,col1,col2=NULL,...){
 	x=Data$Clust
 	
 	d_temp <- dendrapply(as.dendrogram(x,hang=0.02),LabelCols,Sel1,Sel2,col1,col2)

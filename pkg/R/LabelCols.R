@@ -1,5 +1,4 @@
-LabelCols <-
-function(x,Sel1,Sel2=NULL,col1,col2=NULL) {
+LabelCols <- function(x,Sel1,Sel2=NULL,col1,col2=NULL) {
 	colfunc=function(x,Sel1,Sel2,col1,col2){
 		if (x %in% Sel1){
 			return(col1)

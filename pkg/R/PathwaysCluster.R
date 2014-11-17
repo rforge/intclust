@@ -1,4 +1,4 @@
-PathwaysCluster=function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP"),ENTREZIDs=NULL,geneSetSource = "GOBP",GENESET=ListGO,sign=0.05,niter=10){
+PathwaysCluster<-function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP"),ENTREZIDs=NULL,geneSetSource = "GOBP",GENESET=ListGO,sign=0.05,niter=10){
 	#Given the object: look for Genes, p-values and/or names of compounds if p-values and/or genes are not available
 	
 	method.test = function(sign.method,path.method){
@@ -114,4 +114,4 @@ PathwaysCluster=function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP"),
 	names(out)=c("Compounds","Genes","Pathways")
 	return(out)
 	
-}
+}	

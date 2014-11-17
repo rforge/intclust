@@ -1,5 +1,4 @@
-Cluster <-
-function(Data,distmeasure="tanimoto",clust="agnes",linkage="ward",gap=TRUE,maxK=50){
+Cluster<-function(Data,distmeasure="tanimoto",clust="agnes",linkage="ward",gap=TRUE,maxK=50){
 	Data<-Data+0
 	
 	if(clust != "agnes" | linkage != "ward"){

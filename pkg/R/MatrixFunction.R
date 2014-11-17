@@ -1,5 +1,4 @@
-MatrixFunction <-
-function(List,nrclusters=7,fusionsLog=FALSE,WeightClust=FALSE,names=NULL){
+MatrixFunction<-function(List,nrclusters=7,fusionsLog=FALSE,WeightClust=FALSE,names=NULL){
 	
 	matequal <- function(x, y)
 		is.matrix(x) && is.matrix(y) && dim(x) == dim(y) && all(x == y)

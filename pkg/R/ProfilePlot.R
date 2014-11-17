@@ -1,5 +1,4 @@
-ProfilePlot <-
-function(Gene,Comps=Comps,GeneExpr=geneMat,Clusters=NULL,cols=NULL,AddLegend=TRUE,names=NULL,margins=c(8.1,4.1,1.1,6.5),extra,...){
+ProfilePlot<-function(Gene,Comps=Comps,GeneExpr=geneMat,Clusters=NULL,cols=NULL,AddLegend=TRUE,names=NULL,margins=c(8.1,4.1,1.1,6.5),extra,...){
 	GenesComps=as.vector(GeneExpr[which(rownames(GeneExpr)==Gene),colnames(GeneExpr)%in%Comps])
 	Others=as.vector(GeneExpr[which(rownames(GeneExpr)==Gene),!(colnames(GeneExpr)%in%Comps)])
 	if(length(Others)==0){

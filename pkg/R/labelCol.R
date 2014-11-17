@@ -1,5 +1,4 @@
-labelCol <-
-function(x,Sel) {
+LabelCol <- function(x,Sel) {
 	if (is.leaf(x)) {
 		## fetch label
 		label <- attr(x, "label") 

@@ -1,5 +1,4 @@
-SharedMLP <-
-function(DataMLP){
+SharedMLP<-function(DataMLP,names=NULL){
 	which=list()
 	table=c()
 	
@@ -21,9 +20,9 @@ function(DataMLP){
 		
 		for(j in 1:nmethods){
 			if(!(is.na(DataMLP[[j]][[i]])[1])){
-				temp1g=c(temp1g,length(DataMLP[[j]][[i]]$Genes$ID))
+				temp1g=c(temp1g,length(DataMLP[[j]][[i]]$Genes$TopDE$Genes))
 				temp1p=c(temp1p,length(DataMLP[[j]][[i]][[3]]$descriptions))
-				comps=c(comps,length(DataMLP[[j]][[i]]$Compounds))
+				comps=c(comps,length(DataMLP[[j]][[i]]$Compounds$LeadCpds))
 			}
 			else
 			{
@@ -40,12 +39,12 @@ function(DataMLP){
 		Continue=TRUE
 		while(Continue==TRUE){
 			if(!(is.na(DataMLP[[j]][[i]])[1])){
-				sharedcomps=DataMLP[[j]][[i]]$Compounds
-				sharedgenes=DataMLP[[j]][[i]]$Genes$ID
+				sharedcomps=DataMLP[[j]][[i]]$Compounds$LeadCpds
+				sharedgenes=DataMLP[[j]][[i]]$Genes$TopDE$Genes
 				sharedpaths=DataMLP[[j]][[i]][[3]]$descriptions
 				
-				nsharedcomps=length(DataMLP[[1]][[i]]$Compounds)
-				nsharedgenes=length(DataMLP[[1]][[i]]$Genes$ID)
+				nsharedcomps=length(DataMLP[[1]][[i]]$Compounds$LeadCpds)
+				nsharedgenes=length(DataMLP[[1]][[i]]$Genes$TopDE$Genes)
 				nsharedpaths=length(DataMLP[[1]][[i]][[3]]$descriptions)
 				names(nsharedpaths)="nshared"
 				names(nsharedgenes)="nshared"
@@ -59,13 +58,13 @@ function(DataMLP){
 		if(nmethods>=2){
 			for (j in 2:length(DataLimma)){
 				if(!(is.na(DataMLP[[j]][[i]])[1])){
-					sharedcomps=intersect(sharedcomps,DataMLP[[j]][[i]]$Compounds)
-					sharedgenes=intersect(sharedgenes,DataMLP[[j]][[i]]$Genes$ID)
-					sharedpaths=intersect(sharedpaths,DataMLP[[j]][[i]]$descriptions)
+					sharedcomps=intersect(sharedcomps,DataMLP[[j]][[i]]$Compounds$LeadCpds)
+					sharedgenes=intersect(sharedgenes,DataMLP[[j]][[i]]$Genes$TopDE$Genes)
+					sharedpaths=intersect(sharedpaths,DataMLP[[j]][[i]][[3]]$descriptions)
 					
-					nsharedcomps=length(intersect(sharedcomp,DataMLP[[j]][[i]]$Compounds))
-					nsharedgenes=length(intersect(sharedgenes,DataMLP[[2]][[i]]$Genes$ID))
-					nsharedpaths=length(intersect(sharedgenes,DataMLP[[j]][[i]]$descriptions))
+					nsharedcomps=length(intersect(sharedcomps,DataMLP[[j]][[i]]$Compounds$LeadCpds))
+					nsharedgenes=length(intersect(sharedgenes,DataMLP[[2]][[i]]$Genes$TopDE$Genes))
+					nsharedpaths=length(intersect(sharedpaths,DataMLP[[j]][[i]][[3]]$descriptions))
 					names(nsharedpaths)="nshared"
 					names(nsharedgenes)="nshared"
 					names(nsharedcomps)="nsharedcomps"
@@ -83,12 +82,12 @@ function(DataMLP){
 				pvalsg=c()
 				for(g in sharedgenes){
 					if(!(is.na(DataMLP[[c]][[i]])[1])){
-						pvalsg=c(pvalsg,DataMLP[[c]][[i]]$Genes$adj.P.Val[DataMLP[[c]][[i]]$Genes$ID==g])	
+						pvalsg=c(pvalsg,DataMLP[[c]][[i]]$Genes$TopDE$adj.P.Val[DataMLP[[c]][[i]]$Genes$TopDE$Genes==g])	
 					}
 				}	
 				print(pvalsg)
 				pvalsgenes[[c]]=pvalsg
-				#names(pvalsgenes)[c]=paste("Method",c,sep=" ")
+				names(pvalsgenes)[c]=paste("Method",c,sep=" ")
 			}	
 			
 			for(g1 in 1:length(sharedgenes)){
@@ -101,7 +100,7 @@ function(DataMLP){
 				meanpvalsgenes=c(meanpvalsgenes,mean(pvalstemp))			
 			}
 			pvalsgenes[[nmethods+1]]=meanpvalsgenes	
-			#names(pvalsgenes)[nmethods+1]="Mean pvals genes"
+			names(pvalsgenes)[nmethods+1]="Mean pvals genes"
 		}
 		else{pvalsgenes=0}
 		

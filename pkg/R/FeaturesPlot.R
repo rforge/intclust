@@ -1,5 +1,4 @@
-FeaturesPlot <-
-function(LeadCpds,OrderedCpds,Features,Data,Color,nrclusters=7,cols=my_palette2,name=c("FP")){
+FeaturesPlot<-function(LeadCpds,OrderedCpds,Features,Data,Color,nrclusters=7,cols=my_palette2,name=c("FP")){
 	par(mar=c(6,3,0,6))
 	
 	temp=OrderedCpds[which(!(OrderedCpds%in%LeadCpds))]
