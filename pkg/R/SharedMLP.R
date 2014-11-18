@@ -56,7 +56,7 @@ SharedMLP<-function(DataMLP,names=NULL){
 		}
 		
 		if(nmethods>=2){
-			for (j in 2:length(DataLimma)){
+			for (j in 2:length(DataMLP)){
 				if(!(is.na(DataMLP[[j]][[i]])[1])){
 					sharedcomps=intersect(sharedcomps,DataMLP[[j]][[i]]$Compounds$LeadCpds)
 					sharedgenes=intersect(sharedgenes,DataMLP[[j]][[i]]$Genes$TopDE$Genes)

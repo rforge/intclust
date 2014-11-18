@@ -165,7 +165,7 @@ ClusterDistribution <- function(List,Selection,nrclusters,followMaxComps=FALSE,f
 	}
 	
 	if(CompletePlot==TRUE){
-		windows()
+		dev.new()
 		nrcluster=c()
 		nrcomps=c()
 		for(j in 1:length(Found)){

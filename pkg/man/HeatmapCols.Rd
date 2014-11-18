@@ -8,7 +8,8 @@ Heatmap of two dendrograms
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-HeatmapCols(Data1, Data2, names = rownames(fingerprintMat), nrclusters = 7, cols = my_palette)
+HeatmapCols(Data1, Data2, names = rownames(fingerprintMat), nrclusters = 7, 
+cols = Colors2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -52,22 +53,6 @@ HeatmapCols(Data1, Data2, names = rownames(fingerprintMat), nrclusters = 7, cols
 
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (Data1, Data2, names = rownames(fingerprintMat), nrclusters = 7, 
-    cols = my_palette) 
-{
-    data1 = Data1$Clust
-    data2 = Data2$Clust
-    DistM = distanceheatmaps(data1, data2, names, nrclusters)
-    heatmap.2(DistM, Rowv = as.dendrogram(data1), Colv = as.dendrogram(data2), 
-        trace = "none", col = cols, key = FALSE)
-  }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

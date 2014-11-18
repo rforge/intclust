@@ -53,35 +53,6 @@ LabelCols(x, Sel1, Sel2 = NULL, col1, col2 = NULL)
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (x, Sel1, Sel2 = NULL, col1, col2 = NULL) 
-{
-    colfunc = function(x, Sel1, Sel2, col1, col2) {
-        if (x \%in\% Sel1) {
-            return(col1)
-        }
-        else if (x \%in\% Sel2) {
-            return(col2)
-        }
-        else {
-            return("black")
-        }
-    }
-    if (is.leaf(x)) {
-        label <- attr(x, "label")
-        attr(x, "nodePar") <- list(pch = NA, lab.col = colfunc(label, 
-            Sel1, Sel2, col1, col2), lab.cex = 0.9, font = 2)
-        attr(x, "edgePar") <- list(lwd = 2, col = colfunc(label, 
-            Sel1, Sel2, col1, col2))
-    }
-    return(x)
-  }
-}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }

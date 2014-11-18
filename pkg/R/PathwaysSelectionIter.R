@@ -36,7 +36,7 @@ PathwaysSelectionIter<-function(List,Selection,GeneExpr=geneMat,nrclusters=7,met
 		List.output = list()
 		for (i in 1:niter){
 			print(paste("Iteration",i,sep=" "))
-			comps.limma.mlp = Pathways.2(List[[1]],GeneExpr,nrclusters,method,ENTREZID,geneSetSource,top,topG,GENESET,sign=0.05,fusionsLog,WeightClust)
+			comps.limma.mlp = Pathways.2(List[[1]],GeneExpr,nrclusters,method,ENTREZID,geneSetSource,top,topG,GENESET,sign=0.05)
 			List.output[[length(List.output)+1]] = comps.limma.mlp
 			names(List.output)[i]=paste("Iteration",i,sep=" ")
 			#List.cutpoints[[length(list.cutpoints)+1]] = sign		 

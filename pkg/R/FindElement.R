@@ -5,7 +5,7 @@ FindElement<-function(What,Object,Element=list()){
 		if(What %in% colnames(Object)){			
 			Element<-Object[,What]
 		}
-		else if(What %in% rownames(Oject)){
+		else if(What %in% rownames(Object)){
 			Element<-Object[What,]
 		}	
 	}

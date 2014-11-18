@@ -24,8 +24,4 @@ The gene expression matrix
 \references{
 %%  ~~ possibly secondary sources and usages ~~
 }
-\examples{
-data(geneMat)
-## maybe str(geneMat) ; plot(geneMat) ...
-}
 \keyword{datasets}

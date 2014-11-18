@@ -8,7 +8,7 @@ Plot the dendrogram but colored by a result of choice
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-ClusterPlot(Data1, Data2, nrclusters = 7, cols = my_palette2, ...)
+ClusterPlot(Data1, Data2, nrclusters = 7, cols = Colors2, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -52,24 +52,6 @@ ClusterPlot(Data1, Data2, nrclusters = 7, cols = my_palette2, ...)
 
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (Data1, Data2, nrclusters = 7, cols = my_palette2, ...) 
-{
-    x = Data1$Clust
-    Data = Data2$Clust
-    d_temp <- dendrapply(as.dendrogram(x, hang = 0.02), ClusterCols, 
-        Data, nrclusters, cols)
-    plot(d_temp, nodePar = list(pch = NA), edgePar = list(lwd = 2), 
-        ylab = "Height", font.axis = 2, font.lab = 2, font = 2, 
-        ...)
-    axis(side = 2, lwd = 2)
-  }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

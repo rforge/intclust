@@ -8,7 +8,7 @@ Colors for ClusterPlot function
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-ClusterCols(x, Data, nrclusters = 7, cols = my_palette2)
+ClusterCols(x, Data, nrclusters = 7, cols = Colors2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -49,42 +49,6 @@ ClusterCols(x, Data, nrclusters = 7, cols = my_palette2)
 
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (x, Data, nrclusters = 7, cols = my_palette2) 
-{
-    if (length(cols) < nrclusters) {
-        stop("Not for every cluster a color is specified")
-    }
-    Clustdata = cutree(Data, nrclusters)
-    Clustdata = Clustdata[Data$order]
-    ordercolors = Clustdata
-    order = seq(1, nrclusters)
-    for (k in 1:length(unique(Clustdata))) {
-        select = which(Clustdata == unique(Clustdata)[k])
-        ordercolors[select] = order[k]
-    }
-    colfunc = function(x, cols) {
-        indextemp = which(attr(Data$diss, "Labels") == x)
-        index1 = which(Data$order == indextemp)
-        index2 = ordercolors[index1]
-        color = cols[index2]
-        return(color)
-    }
-    if (is.leaf(x)) {
-        label <- attr(x, "label")
-        attr(x, "nodePar") <- list(pch = NA, lab.col = colfunc(label, 
-            cols), lab.cex = 0.9, font = 2)
-        attr(x, "edgePar") <- list(lwd = 2, col = colfunc(label, 
-            cols))
-    }
-    return(x)
-  }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

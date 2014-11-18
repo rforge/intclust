@@ -24,8 +24,4 @@ The gene info matrix
 \references{
 %%  ~~ possibly secondary sources and usages ~~
 }
-\examples{
-data(GeneInfo)
-## maybe str(GeneInfo) ; plot(GeneInfo) ...
-}
 \keyword{datasets}

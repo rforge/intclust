@@ -21,8 +21,4 @@ Second example for colors
 \references{
 %%  ~~ possibly secondary sources and usages ~~
 }
-\examples{
-data(Colors2)
-## maybe str(Colors2) ; plot(Colors2) ...
-}
 \keyword{datasets}

@@ -8,7 +8,7 @@ Function that annotates colors to their names
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-ColorsNames(MatrixColors, cols = my_palette2)
+ColorsNames(MatrixColors, cols = Colors2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -43,25 +43,6 @@ ColorsNames(MatrixColors, cols = my_palette2)
 
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (MatrixColors, cols = my_palette2) 
-{
-    Names = c()
-    for (i in 1:dim(MatrixColors)[2]) {
-        for (j in 1:dim(MatrixColors)[1]) {
-            temp = MatrixColors[j, i]
-            Color = cols[temp]
-            Names = c(Names, Color)
-        }
-    }
-    return(Names)
-  }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

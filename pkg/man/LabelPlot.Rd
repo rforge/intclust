@@ -56,23 +56,6 @@ LabelPlot(Data, Sel1, Sel2 = NULL, col1, col2 = NULL, ...)
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (Data, Sel1, Sel2 = NULL, col1, col2 = NULL, ...) 
-{
-    x = Data$Clust
-    d_temp <- dendrapply(as.dendrogram(x, hang = 0.02), labelCols, 
-        Sel1, Sel2, col1, col2)
-    plot(d_temp, nodePar = list(pch = NA), edgePar = list(lwd = 2), 
-        ylab = "Height", font.axis = 2, font.lab = 2, font = 2, 
-        ...)
-    axis(side = 2, lwd = 2)
-  }
-}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }

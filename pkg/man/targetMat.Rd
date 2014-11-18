@@ -5,7 +5,7 @@
 The target prediction matrix
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of the dataset. ~~
+Binary matrix on the target predictions of the compounds
 }
 \usage{data("targetMat")}
 \format{
@@ -23,9 +23,5 @@ The target prediction matrix
 }
 \references{
 %%  ~~ possibly secondary sources and usages ~~
-}
-\examples{
-data(targetMat)
-## maybe str(targetMat) ; plot(targetMat) ...
 }
 \keyword{datasets}

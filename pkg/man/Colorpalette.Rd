@@ -44,18 +44,6 @@ ColorPalette(colors = c("red", "green"), ncols = 5)
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (colors = c("red", "green"), ncols = 5) 
-{
-    my_palette = colorRampPalette(colors)(ncols)
-    return(my_palette)
-  }
-}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }

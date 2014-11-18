@@ -24,8 +24,4 @@ The fingerprint matrix
 \references{
 %%  ~~ possibly secondary sources and usages ~~
 }
-\examples{
-data(fingerprintMat)
-## maybe str(fingerprintMat) ; plot(fingerprintMat) ...
-}
 \keyword{datasets}

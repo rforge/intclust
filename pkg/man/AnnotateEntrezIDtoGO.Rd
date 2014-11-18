@@ -1,5 +1,5 @@
-\name{ADC}
-\alias{ADC}
+\name{AnnotateEntrezIDtoGO}
+\alias{AnnotateEntrezIDtoGO}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Annotate Genes to GO Locations
@@ -8,7 +8,8 @@ Annotate Genes to GO Locations
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-AnnotateEntrezIDtoGO(entrez,database,attributes=c("entrezgene","go_id","description"),filters="entrezgene",species="Human")
+AnnotateEntrezIDtoGO(entrez,database,attributes=c("entrezgene","go_id",
+"description"),filters="entrezgene",species="Human")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -53,41 +54,6 @@ AnnotateEntrezIDtoGO(entrez,database,attributes=c("entrezgene","go_id","descript
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function(entrez,database,attributes=c("entrezgene","go_id","description"),filters="entrezgene",species="Human"){
-	mart=useMart(database[1])
-	mart=useDataset(database[2],mart=mart)
-	
-	goids = getBM(attributes=attributes, filters=filters, values=entrez, mart=mart)
-
-	transformgoid<-function(goid){
-		uniqueGO<-unique(goid[,2])
-		GONames<-unique(goid[,3])
-		listGO<-list()
-	
-		collect<-function(name,goid){
-			genes<-goids[which(goid[,2]==name),1]
-			return(genes)
-		}
-
-		ListGO<-lapply(uniqueGO,collect,goid)
-		names(ListGO)=uniqueGO
-		attr(ListGO,'descriptions') <- goid[,3]
-		attr(attr(ListGO,"descriptions"),'names')<-goid[,2]
-		return(ListGO)
-	}
-	
-	ListGO=transformgoid(goids)
-	attr(ListGO,'species')<-species	
-	attr(ListGO,'geneSetSource')<-"GODB"
-	class(ListGO)<-"geneSetMLP"
-	return(ListGO)
-}	
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }

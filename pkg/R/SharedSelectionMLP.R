@@ -31,7 +31,7 @@ SharedSelectionMLP<-function(DataMLP=NULL,names=NULL){  #Input=result of DiffGen
 		
 		
 		if (i==1){
-			if(!(is.na(DataLimma[[i]])[1]) | !(is.na(DataMLP[[i]])[1])){
+			if(!(is.na(DataMLP[[i]])[1]) | !(is.na(DataMLP[[i]])[1])){
 				sharedcomps=DataMLP[[i]]$Compounds$LeadCpds
 				sharedgenes=DataMLP[[i]]$Genes$TopDE$Genes
 				sharedpaths=DataMLP[[i]][[3]]$descriptions
@@ -71,7 +71,7 @@ SharedSelectionMLP<-function(DataMLP=NULL,names=NULL){  #Input=result of DiffGen
 		for(c in 1:nmethods){
 			pvalsg=c()
 			for(g in sharedgenes){
-				if(!(is.na(DataLimma[[c]])[1])){
+				if(!(is.na(DataMLP[[c]])[1])){
 					pvalsg=c(pvalsg,DataMLP[[c]]$Genes$TopDE$adj.P.Val[DataMLP[[c]]$Genes$TopDE$Genes==g])	
 				}	
 			}
@@ -83,7 +83,7 @@ SharedSelectionMLP<-function(DataMLP=NULL,names=NULL){  #Input=result of DiffGen
 		for(g1 in 1:length(sharedgenes)){
 			pvalstemp=c()			
 			for(c in 1:nmethods){
-				if(!(is.na(DataLimma[[c]])[1])){
+				if(!(is.na(DataMLP[[c]])[1])){
 					pvalstemp=c(pvalstemp,pvalsgenes[[c]][[g1]])
 				}
 			}			

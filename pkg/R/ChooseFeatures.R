@@ -1,4 +1,4 @@
-ChooseFeatures<-function(Interactive=TRUE,LeadCpds,ClusterResult,ClusterColors=NULL,BinData,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=7,cols=my_palette2,N=1){
+ChooseFeatures<-function(Interactive=TRUE,LeadCpds,ClusterResult,ClusterColors=NULL,BinData,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=7,cols=Colors2,N=1){
 	
 	OrInteractive=Interactive
 	for(a in 1:length(BinData)){
@@ -8,8 +8,7 @@ ChooseFeatures<-function(Interactive=TRUE,LeadCpds,ClusterResult,ClusterColors=N
 		
 	}
 	if(Interactive==TRUE){
-		windows()
-		Clusterplot(ClusterResult,ClusterColors,nrclusters,cols)
+		ClusterPlot(ClusterResult,ClusterColors,nrclusters,cols)
 		hc1<-as.hclust(ClusterResult$Clust)
 		ClusterSpecs<-list()
 		ClusterSpecs=identify(hc1, N=N, MAXCLUSTER = ncol(BinData[[1]]), function(j) ChooseFeatures(Interactive=FALSE,LeadCpds=colnames(BinData[[1]][,j]),ClusterResult,ClusterColors=NULL,BinData,Datanames,GeneExpr,topChar,topG,sign,nrclusters,cols))		

@@ -22,7 +22,7 @@ PathwaysCluster<-function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP")
 	path.method = method.out$path.method
 	
 	if(is.null(ENTREZIDs)){
-		ENTREZIDs = FoundGenes$Genes_1$All_Genes
+		ENTREZIDs = colnames(GeneExpr)
 	}
 	
 	# Determining the genesets if they were not given with the function input
@@ -36,8 +36,10 @@ PathwaysCluster<-function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP")
 	
 	
 	PreparedData=PreparePathway(Object,GeneExpr,topG,sign)
-	pvalsgenes=PreparedData[[1]]
-	Compounds=PreparedData[[2]]
+	pvalsgenes=PreparedData$pvalsgenes
+	Compounds=PreparedData$Compounds
+	Genes=PreparedData$Genes
+	
 	
 	Pathways=list()
 	for(k in 1:length(pvalsgenes)){
@@ -110,7 +112,7 @@ PathwaysCluster<-function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP")
 		
 	}
 	
-	out=list(CompsP,FoundGenes,Pathways)
+	out=list(Compounds,Genes,Pathways)
 	names(out)=c("Compounds","Genes","Pathways")
 	return(out)
 	
