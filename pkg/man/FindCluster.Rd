@@ -1,11 +1,11 @@
 \name{FindCluster}
 \alias{FindCluster}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Find a cluster in a matrix of clusters
+Find a selection of compounds in the output of \code{MatrixFunction}
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+\code{FindCluster} selects the compounds belonging to a cluster 
+after the results of the methods have been rearranged by the \code{MatrixFunction}.
 }
 \usage{
 FindCluster(List, nrclusters, select = c(1, 4), fusionsLog = TRUE, 
@@ -14,50 +14,46 @@ WeightClust = TRUE, names = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-%%     ~~Describe \code{List} here~~
+A list of the outputs from the methods to be compared. The first element of the
+list will be used as the reference.
 }
   \item{nrclusters}{
-%%     ~~Describe \code{nrclusters} here~~
+The number of clusters to cut the dendrogram in.
 }
   \item{select}{
-%%     ~~Describe \code{select} here~~
+The row (the method) and the number of the cluster to select.
 }
   \item{fusionsLog}{
-%%     ~~Describe \code{fusionsLog} here~~
+To be handed to \code{MatrixFunction}.
 }
   \item{WeightClust}{
-%%     ~~Describe \code{WeightClust} here~~
+To be handed to \code{MatrixFunction}.
 }
   \item{names}{
-%%     ~~Describe \code{names} here~~
+Optional. Names of the methods.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+A character vector containing the names of the compounds in the
+selected cluster.
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
+
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+data(fingerprintMat)
+data(targetMat)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+L=list(MCF7_F,MCF7_T)
+names=c("FP","TP")
+
+Comps=FindCluster(L,nrclusters=7,select=c(1,4))
+Comps
+
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

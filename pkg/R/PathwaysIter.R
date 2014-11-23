@@ -1,4 +1,4 @@
-PathwaysIter<-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,topG=NULL,GENESET=ListGO,sign=0.05,niter=10,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+PathwaysIter=function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,topG=NULL,GENESET=ListGO,sign=0.05,niter=10,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	ListNew=list()
 	element=0
 	for(i in 1:length(List)){
@@ -38,7 +38,7 @@ PathwaysIter<-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP
 		List.output = list()
 		for (i in 1:niter){
 			print(paste("Iteration",i,sep=" "))
-			comps.limma.mlp = Pathways.2(List[[1]],GeneExpr,nrclusters,method,ENTREZID,geneSetSource,top,topG,GENESET,sign=0.05)
+			comps.limma.mlp = Pathways.2(List[[1]],GeneExpr,nrclusters,method,ENTREZID,geneSetSource,top,topG,GENESET,sign=0.05,names)
 			List.output[[length(List.output)+1]] = comps.limma.mlp
 			names(List.output)[i]=paste("Iteration",i,sep=" ")
 			#List.cutpoints[[length(list.cutpoints)+1]] = sign		 

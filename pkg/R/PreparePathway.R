@@ -28,7 +28,7 @@ PreparePathway<-function(Object,GeneExpr,topG,sign){
 				GeneExpr$LeadCmpds<-group		
 				DElead <- limmaTwoLevels(GeneExpr,"LeadCmpds")
 				
-				allDE <- topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
+				allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
 				
 				if(is.null(allDE$ID)){
 					allDE$Genes <- rownames(allDE)
@@ -51,7 +51,7 @@ PreparePathway<-function(Object,GeneExpr,topG,sign){
 				design = model.matrix(~label.factor)
 				fit = lmFit(GeneExpr,design=design)
 				fit = eBayes(fit)
-				allDE = topTable(fit,coef=2,adjust="fdr",n=dim(GeneExpr)[1],resort.by = "logFC", sort.by="p")
+				allDE = limma::topTable(fit,coef=2,adjust="fdr",n=dim(GeneExpr)[1],resort.by = "logFC", sort.by="p")
 				
 				if(is.null(allDE$ID)){
 					allDE$Genes <- rownames(allDE)

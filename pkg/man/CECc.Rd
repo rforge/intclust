@@ -1,11 +1,15 @@
 \name{CECc}
 \alias{CECc}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Complementary Ensemble Clustering - version c
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Function \code{CECc} performs complementary ensemble clustering in which
+in every iteration the number of random samples taken is randomly set
+between m/2 and m-1 with m the total number of features. The number of
+features to sample can also be prespecified by the user. Further, each
+resulting dendrogram can be cut numerous times into a different specific
+number of clusters.
 }
 \usage{
 CECc(List, distmeasure = c("tanimoto", "tanimoto"), t = 10, r = NULL, 
@@ -15,59 +19,78 @@ Clustweight = 0.5)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-%%     ~~Describe \code{List} here~~
+A list of data matrices (max two matrices). It is assumed the 
+rows are corresponding with the objects.~
 }
   \item{distmeasure}{
-%%     ~~Describe \code{distmeasure} here~~
+A character vector with the distance measure for each data matrix.
+Should be one of "tanimoto", "euclidean", "jaccard".
 }
   \item{t}{
-%%     ~~Describe \code{t} here~~
+The number of iterations.
 }
   \item{r}{
-%%     ~~Describe \code{r} here~~
+Optional. The number of features to take for the random sample.
 }
   \item{nrclusters}{
-%%     ~~Describe \code{nrclusters} here~~
+A sequence of numbers of clusters to cut the dendrogram in.
 }
   \item{weight}{
-%%     ~~Describe \code{weight} here~~
+ Optional. A specific weight to give to the first co-association matrix.
+ If NULL, the weight is sequence from 0 to 1 and a result is produced 
+ for each.
 }
   \item{clust}{
-%%     ~~Describe \code{clust} here~~
+Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
-%%     ~~Describe \code{linkage} here~~
+Choice of inter group dissimilarity (character). Defaults to "ward".
 }
   \item{Clustweight}{
-%%     ~~Describe \code{Clustweight} here~~
+A weight for which the result will be put aside of the other results.
+This was done for comparative reason and easy access.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+Ensemble clustering is performed on each data matrix. This comes down to 
+repeatedly applying hierarchical clustering. A random sample of features is taken 
+in each application. Further, variation is inserted by not splitting the 
+dendrogram a single time into one specific number of clusters but multiple times
+and for a range of numbers of clusters.Afterwards the two incidence matrices
+are combined in a weighted sum and hierarchical clustering is performed
+once more. More information can be found in Fodeh et al. (2013).
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+The returned value is a list with the following four elements.
+\item{Incidence}{The summed incidence matrices for each data matrix}
+\item{IncidenceComb}{The co-association matrix after a weighted sum of the
+elements of Incidence for each weight}
+\item{Results}{The hierarchical clustering result for each element in 
+IncidenceComb}
+\item{Clust}{The result for the weight specified in Clustweight}
+The value has class 'CEC'
 }
 \references{
-%% ~put references to the literature/web site here ~
+FODEH, J. S., BRANDT, C., LUONG, B. T., HADDAD, A., SCHULTZ, M., MURPHY, T.,
+KRAUTHAMMER, M. (2013). Complementary Ensemble Clustering of Biomedical Data.
+J Biomed Inform. 46(3) pp.436-443.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
+}
+\examples{
+data(fingerprintMat)
+data(targetMat)
+L=list(fingerprintMat,targetMat)
+MCF7_CECc=CECc(L,distmeasure=c("tanimoto","tanimoto"),t=10,r=c(187,357),
+nrclusters=seq(5,25,1),clust="agnes",linkage="ward")
 }
 \note{
-%%  ~~further notes~~
+For now, only hierarchical clustering with the \code{agnes} 
+function and the ward link is implemented.
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{CECa}},\code{\link{CECc}}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ Complementary Ensemble Clustering }
+\keyword{ Integrative Clustering }

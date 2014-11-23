@@ -1,76 +1,88 @@
 \name{DiffGenesSelection}
 \alias{DiffGenesSelection}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-DE for a selection of compounds
+Differential gene expression for a selection of compounds
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The function \code{DiffGenesSelection} performs the same procedure as 
+\code{DiffGenes} but only for a specific selection of compounds and 
+only for the cluster that contains the maximum number of
+compounds of the selection over the multiple methods.
 }
 \usage{
 DiffGenesSelection(List, Selection, GeneExpr = geneMat, nrclusters = 7,
  method = "limma", sign = 0.05, top = NULL, fusionsLog = TRUE, 
  WeightClust = TRUE, names = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-%%     ~~Describe \code{List} here~~
+A list of the outputs from the methods to be compared. The first element of 
+the list will be used as the reference.
 }
   \item{Selection}{
-%%     ~~Describe \code{Selection} here~~
+The selection of objects to follow.
 }
   \item{GeneExpr}{
-%%     ~~Describe \code{GeneExpr} here~~
+The gene expression matrix of the objects.
 }
   \item{nrclusters}{
-%%     ~~Describe \code{nrclusters} here~~
+The number of clusters to cut the dendrogram in.
 }
   \item{method}{
-%%     ~~Describe \code{method} here~~
+The method to applied to look for DE genes. For now, only the limma method
+is available
 }
   \item{sign}{
-%%     ~~Describe \code{sign} here~~
+The significance level to be handled.
 }
   \item{top}{
-%%     ~~Describe \code{top} here~~
+Overrules sign. The number of top genes to be shown.
 }
   \item{fusionsLog}{
-%%     ~~Describe \code{fusionsLog} here~~
+To be handed to \code{MatrixFunction}.
 }
   \item{WeightClust}{
-%%     ~~Describe \code{WeightClust} here~~
+To be handed to \code{MatrixFunction}.
 }
   \item{names}{
-%%     ~~Describe \code{names} here~~
+Optional. Names of the methods.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The returned value is a list with an element for each
+method. Per method, there is only the cluster that
+contains the maximum number of compounds and this contains
+another list of the following elements:
+\item{Compounds}{A list with the elements LeadCpds (the compounds of interest) and 
+OrderedCpds (all compounds in the order of the clustering result)}
+\item{Genes}{A list with the elements TopDE (a table with information on the top
+genes) and AllDE (a table with information on all genes)}
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
+\examples{
+data(fingerprintMat)
+data(targetMat)
+data(geneMat)
+
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+
+L=list(MCF7_F,MCF7_T)
+names=c('FP','TP')
+
+Comps=FindCluster(L,nrclusters=7,select=c(1,1))
+Comps
+
+MCF7_SelFLimma=DiffGenesSelection(L,Comps,names=names,GeneExpr=geneMat,nrclusters=7,
+method="limma",sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE)
+
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{DiffGenes}}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{Differential Gene Expression }
+\keyword{ limma }

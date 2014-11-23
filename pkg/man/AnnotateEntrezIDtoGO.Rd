@@ -1,60 +1,63 @@
 \name{AnnotateEntrezIDtoGO}
 \alias{AnnotateEntrezIDtoGO}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Annotate Genes to GO Locations
+Annotate ENTREZID from genes to GO terms
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The function \code{AnnotateEntrezIDtoGO} relies on the biomaRt package.
+The function annotates ENTREZID's from genes to GO locations of which 
+the database can be specified by the users. The available
+databases and data sets can be seen by the function \code{listMarts()
+} and \code{listDatasets("name of selected database")} respectively.
 }
 \usage{
 AnnotateEntrezIDtoGO(entrez,database,attributes=c("entrezgene","go_id",
 "description"),filters="entrezgene",species="Human")
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{entrez}{
-%%     ~~Describe \code{List} here~~
+The ENTREZ ID's from the genes.
 }
   \item{database}{
-%%     ~~Describe \code{distmeasure} here~~
+A character vector with the first element the selected database and the
+ second the data set.
 }
   \item{attributes}{
-%%     ~~Describe \code{clust} here~~
+A character vector of the attributes from the genes one wishes to select
+ from the data set. 
+Defaults to c("entrezgene","go_id","description").
 }
   \item{filters}{
-%%     ~~Describe \code{linkage} here~~
+A character string one wishes to filter the data set on. Defaults to 
+"entrezgene".
 }
  \item{species}{
-%%     ~~Describe \code{linkage} here~~
+A character string indicating the species of the GO annotations. Defaults
+to "Human". This is rather here to complete the class of the object than
+it has a specific use in the function.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
-}
+The function relies only on one function of the biomaRt package:\code{getBM}
+and was written with the purpose of no longer needing the org.Hs.eg.db package
+on which the MLP package relies since this package has been reported to fail
+occasionally. The result of the \code{getBM} function is transformed to the
+ correct data structure to fit in the \code{MLP} function of the MLP package.
+ }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The returned output is a list with one element per GO term. Each GO term
+contains the genes it was annotated to. The value has class "geneSetMLP"
+to fit in the \code{MLP} function.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
+\examples{
+data(GeneInfo)
+\dontrun{
+ListGO<-AnnotateEntrezIDtoGO(GeneInfo[,1],database=c("ensembl","hsapiens_gene_ensembl"),
+attributes=c("entrezgene","go_id","description"),filters="entrezgene",species="Human")
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ Annotation to GO }
+\keyword{ Pathway Analysis }

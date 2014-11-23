@@ -5,7 +5,8 @@
 List of GO Annotations
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of the dataset. ~~
+A list that contains the GO annotations produced by AnnotateEntrezIDtoGO for the
+genes in the geneMat data.
 }
 \usage{data("ListGO")}
 \format{
@@ -23,14 +24,5 @@ List of 7599
  - attr(*, "species")= chr "Human"
  - attr(*, "geneSetSource")= chr "GODB"
  - attr(*, "class")= chr "geneSetMLP"
-}
-\details{
-%%  ~~ If necessary, more details than the __description__ above ~~
-}
-\source{
-%%  ~~ reference to a publication or URL from which the data were obtained ~~
-}
-\references{
-%%  ~~ possibly secondary sources and usages ~~
 }
 \keyword{datasets}

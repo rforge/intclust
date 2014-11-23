@@ -1,50 +1,49 @@
 \name{FindGenes}
 \alias{FindGenes}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Find Genes
+Find genes over multiple clusters and methods
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Due to the shifting of compounds over the clusters for the different methods,
+it is possible that the same gene is found significant for a different cluster
+in another method. These can be tracked with the \code{FindGenes} function. Per method
+and per cluster, it will take note of the genes found significant and investigate
+if these were also find for another cluster in another method.
 }
 \usage{
 FindGenes(DataLimma, names = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{DataLimma}{
-%%     ~~Describe \code{DataLimma} here~~
+Preferably an output of one of the \code{DiffGenes} functions. If not, an ID element of the
+top genes must be present for each cluster of each method specified in the data structure.
 }
   \item{names}{
-%%     ~~Describe \code{names} here~~
+Optional. Names of the methods.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The returned value is a list with an element per cluster and per cluster one
+for every gene.  Per gene, a vector is given which contain the methods for
+which the gene was found. If the cluster is changed compared to the reference
+method of DataLimma,  this is indicated with an underscore.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+data(fingerprintMat)
+data(targetMat)
+data(geneMat)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+MCF7_DiffGenes_FandT10=DiffGenes(list(MCF7_F,MCF7_T),geneMat,
+nrclusters=7,"limma",0.05,top=10)
+
+MCF7_SharedGenes=FindGenes(DataLimma=MCF7_DiffGenes_FandT10,names=c("FP","TP"))
+
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

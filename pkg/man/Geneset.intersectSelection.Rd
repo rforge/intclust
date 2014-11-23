@@ -1,60 +1,71 @@
 \name{Geneset.intersectSelection}
 \alias{Geneset.intersectSelection}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Find the intersection of PathwaysSelectionIter function
+Intersection over resulting gene sets of \code{PathwaysIterSelection} function
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The function \code{Geneset.intersectSelection} performs the same procedure as 
+\code{Geneset.intersect} but only for a specific selection of compounds and 
+only for the cluster that contains the maximum number of compounds of the 
+selection. It works on the output of \code{PathwaysIterSelection}.
 }
 \usage{
 Geneset.intersectSelection(list.output, sign, names = NULL, 
 seperatetables = FALSE, separatepvals = FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{list.output}{
-%%     ~~Describe \code{list.output} here~~
+The output of the \code{PathwaysIterSelection} function
 }
   \item{sign}{
-%%     ~~Describe \code{sign} here~~
+The significance level to be handled for cutting of the pathways.
 }
   \item{names}{
-%%     ~~Describe \code{names} here~~
+Optional. Names of the methods.
 }
   \item{seperatetables}{
-%%     ~~Describe \code{seperatetables} here~~
+Logical. If TRUE, a separate element is created per cluster. containing
+the pathways for each iteration.
 }
   \item{separatepvals}{
-%%     ~~Describe \code{separatepvals} here~~
+Logical. If TRUE, the p-values of the each iteration of each pathway
+in the intersection is given. If FALSE, only the mean p-value is provided.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The output is a list with an element per method. For each method, it is
+portrayed for the cluster with the maximum number of compounds which 
+pathways belong to the intersection over all iterations and their 
+corresponding mean p-values.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+\dontrun{
+data(fingerprintMat)
+data(targetMat)
+data(geneMat)
+data(GeneInfo)
+data(ListGO)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+L=list(MCF7_F,MCF7_T)
+names=c('FP','TP')
+
+Comps=FindCluster(L,nrclusters=7,select=c(1,4))
+Comps
+
+MCF7_Paths=PathwaysSelectionIter(L,Comps,names=names,GeneExpr=geneMat,
+nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = 
+"GOBP",top=NULL,topG=NULL,GENESET=ListGO,sign=0.05,niter=2,fusionsLog=TRUE,
+WeightClust=TRUE)
+
+MCF7_Paths_Inter=Geneset.intersectSelection(MCF7_Paths,sign=0.05,
+names=names,seperatetables=FALSE,separatepvals=FALSE)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+}

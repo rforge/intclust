@@ -1,50 +1,64 @@
 \name{SharedMLP}
 \alias{SharedMLP}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Intersection over multiple methods over pathways
+Intersection of genes and pathways over multiple methods
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Finds the shared genes and pathways of outputs of the \code{Geneset.intersect} function.
 }
 \usage{
 SharedMLP(DataMLP,names=NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{DataMLP}{
-%%     ~~Describe \code{DataMLP} here~~
+The output of \code{Geneset.intersect} function.
 }
   \item{names}{
-%%     ~~Describe \code{names} here~~
+Optional. Names of the methods.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The function \code{SharedMLP} will provide this information. Given the outputs of the
+\code{Geneset.intersect} function, it investigates how many genes and pathways
+are expressed by each cluster per method, how many of these are shared over the methods and which
+ones are shared including their respective p-values of each method and a mean p-value. This is very
+handy to look into the shared genes and pathways of clusters that share many objects but also of 
+those that only share only a few. Further, the result also includes the number of compounds per
+cluster per method and how many of these are shared over the methods.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
+\examples{
+\dontrun{
+data(fingerprintMat)
+data(targetMat)
+data(geneMat)
+data(GeneInfo)
+data(ListGO)
+
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+
+L=list(MCF7_F,MCF7_T)
+names=c('FP','TP')
+
+MCF7_Paths_FandT=PathwaysIter(L,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),
+ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,topG=NULL,GENESET=ListGO,sign=0.05,
+niter=2,fusionsLog=TRUE,WeightClust=TRUE,names=c("FP","TP"))
+
+MCF7_Paths_intersection=Geneset.intersect(MCF7_Paths_FandT,0.05,names=names,
+seperatetables=FALSE,separatepvals=FALSE)
+
+MCF7_SharedMLP=SharedMLP(DataMLP=MCF7_Paths_intersection)
+str(MCF7_SharedMLP)
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+}
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{SharedLimma}},\code{\link{Shared}},\code{\link{SharedSelection}}
+\code{\link{SharedSelectionLimma}},\code{\link{SharedSelectionMLP}}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

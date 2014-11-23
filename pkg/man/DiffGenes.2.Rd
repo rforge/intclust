@@ -1,11 +1,12 @@
 \name{DiffGenes.2}
 \alias{DiffGenes.2}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-DE for one result
+Differential gene expression for a list of length one
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The \code{DiffGenes.2} function finds differential gene expression
+for a list of one element. It is also an internal function of \code{DiffGenes}
+if only one method is specified.
 }
 \usage{
 DiffGenes.2(Data, GeneExpr = geneMat, nrclusters = 7, method = "limma", 
@@ -14,50 +15,59 @@ sign = 0.05, top = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{Data}{
-%%     ~~Describe \code{Data} here~~
+One clustering result of one of the integrated data clustering functions
+of the package.
 }
   \item{GeneExpr}{
-%%     ~~Describe \code{GeneExpr} here~~
+The gene expression matrix or ExpressionSet of the objects.
 }
   \item{nrclusters}{
-%%     ~~Describe \code{nrclusters} here~~
+The number of clusters to cut the dendrogram in.
 }
   \item{method}{
-%%     ~~Describe \code{method} here~~
+The method to applied to look for DE genes. For now, only the limma method
+is available.
 }
   \item{sign}{
-%%     ~~Describe \code{sign} here~~
+The significance level to be handled.
 }
   \item{top}{
-%%     ~~Describe \code{top} here~~
+Overrules sign. The number of top genes to be shown.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+For each cluster, it is investigated which genes are differential expressed by
+the limma method. The cluster is tested versus all other compounds combined.
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+The returned value is a list with an element per cluster.
+Each element is a list with the following elements:
+\item{Compounds}{A list with the elements LeadCpds (the compounds of interest) and 
+OrderedCpds (all compounds in the order of the clustering result)}
+\item{Genes}{A list with the elements TopDE (a table with information on the top
+genes) and AllDE (a table with information on all genes)}
 }
 \references{
-%% ~put references to the literature/web site here ~
+SMYTH, G. K. (2004). Linear models and empirical Bayes methods for assessing
+differential expression in microarray experiments. Statistical Applications
+in Genetics and Molecular Biology. 3(1).
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{DiffGenes}}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\examples{
+data(fingerprintMat)
+data(geneMat)
+
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+
+MCF7_F_DE = DiffGenes.2(Data=MCF7_F,GeneExpr=geneMat,nrclusters=7,method="limma",
+sign=0.05,top=10)
+
+}
+\keyword{Differential Gene Expression }
+\keyword{ limma }

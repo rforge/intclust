@@ -5,7 +5,8 @@
 The gene expression matrix
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of the dataset. ~~
+The gene expression data for 2434 genes for the compounds in the
+CMAP MCF7 data.
 }
 \usage{data("geneMat")}
 \format{
@@ -14,14 +15,5 @@ The gene expression matrix
  - attr(*, "dimnames")=List of 2
   ..$ : chr [1:2434] "MED6" "LOC100129361" "PDCD6IP" "TOMM6" ...
   ..$ : chr [1:56] "metformin" "phenformin" "phenyl biguanide" "estradiol" ...
-}
-\details{
-%%  ~~ If necessary, more details than the __description__ above ~~
-}
-\source{
-%%  ~~ reference to a publication or URL from which the data were obtained ~~
-}
-\references{
-%%  ~~ possibly secondary sources and usages ~~
 }
 \keyword{datasets}

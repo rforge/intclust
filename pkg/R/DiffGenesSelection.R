@@ -76,7 +76,7 @@ DiffGenesSelection<-function(List,Selection,GeneExpr=geneMat,nrclusters=7,method
 				GeneExpr.2$LeadCmpds<-label.factor 
 				DElead <- limmaTwoLevels(GeneExpr.2,"LeadCpds")
 				
-				allDE <- topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
+				allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
 				if(is.null(allDE$ID)){
 					allDE$Genes <- rownames(allDE)
 				}
@@ -104,7 +104,7 @@ DiffGenesSelection<-function(List,Selection,GeneExpr=geneMat,nrclusters=7,method
 				fit = lmFit(GeneExpr.2,design=design)
 				fit = eBayes(fit)
 				
-				allDE=topTable(fit,coef=2,n=dim(GeneExpr)[1],adjust="fdr",resort.by = "logFC",sort.by="p")
+				allDE=limma::topTable(fit,coef=2,n=dim(GeneExpr)[1],adjust="fdr",resort.by = "logFC",sort.by="p")
 				if(is.null(allDE$ID)){
 					allDE$Genes <- rownames(allDE)
 				}

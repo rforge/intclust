@@ -1,11 +1,13 @@
 \name{LabelCols}
 \alias{LabelCols}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Function for colors in LabelPlot
+Internal function of Labelplot
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Sometimes only one or two particular clusters are of interest if for example these
+contain an object of great importance. Then it would be nice not to color all
+clusters but just the compounds of these clusters and see where these are now.
+This can be done with the function \code{LabelCols}.
 }
 \usage{
 LabelCols(x, Sel1, Sel2 = NULL, col1, col2 = NULL)
@@ -13,47 +15,43 @@ LabelCols(x, Sel1, Sel2 = NULL, col1, col2 = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-%%     ~~Describe \code{x} here~~
+The dendrogram to be colored.
 }
   \item{Sel1}{
-%%     ~~Describe \code{Sel1} here~~
+The selection of objects to be colored.
 }
   \item{Sel2}{
-%%     ~~Describe \code{Sel2} here~~
+An optional second selection to be colored.
 }
   \item{col1}{
-%%     ~~Describe \code{col1} here~~
+The color for the first selection.
 }
   \item{col2}{
-%%     ~~Describe \code{col2} here~~
+The color for the optional second selection.~~
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+A dendrogram of which the leaves of the selection(s) are colored.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+data(fingerprintMat)
+data(targetMat)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+ClustF_6=cutree(MCF7_F$Clust,6)
+
+SelF=rownames(fingerprintMat)[ClustF_6==6]
+SelF
+
+d_F <- dendrapply(as.dendrogram(MCF7_F$Clust,hang=0.02),LabelCols,
+Sel1=SelF,Sel2=NULL,col1="darkorchid3")
+
+d_F
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ Dendrogran }
+

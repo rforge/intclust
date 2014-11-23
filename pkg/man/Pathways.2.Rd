@@ -1,76 +1,92 @@
 \name{Pathways.2}
 \alias{Pathways.2}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Pathways for one result
+Pathways analysis for a list of length one
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The \code{Pathways.2} function finds pathway analysis for a list of one
+element. It is also an internal function of \code{Pathways} if only one
+method is specified.
 }
 \usage{
 Pathways.2(Data, GeneExpr = geneMat, nrclusters = 7, method = c("limma", 
 "MLP"), ENTREZID = GeneInfo[, 1], geneSetSource = "GOBP", top = NULL, 
-topG = NULL, GENESET = ListGO, sign = 0.05)
+topG = NULL, GENESET = ListGO, sign = 0.05,names=NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{Data}{
-%%     ~~Describe \code{Data} here~~
+One clustering result of one of the integrated data clustering functions
+of the package.The output of \code{ChooseFeatures} is also
+accepted.
 }
   \item{GeneExpr}{
-%%     ~~Describe \code{GeneExpr} here~~
+The gene expression matrix or ExpressionSet  of the objects.
 }
   \item{nrclusters}{
-%%     ~~Describe \code{nrclusters} here~~
+The number of clusters to cut the dendrogram in.
 }
   \item{method}{
-%%     ~~Describe \code{method} here~~
+The method to applied to look for DE genes. For now, only the limma method
+is available
 }
   \item{ENTREZID}{
-%%     ~~Describe \code{ENTREZID} here~~
+Vector containing the ENTREZID's of the genes. If not provided, the rownames
+of the matrix will be considered.
 }
   \item{geneSetSource}{
-%%     ~~Describe \code{geneSetSource} here~~
+The source for the getGeneSets function ("GOBP", "GOMF","GOCC", "KEGG"
+or "REACTOME").
 }
   \item{top}{
-%%     ~~Describe \code{top} here~~
+Overrules sign. The number of pathways to display for each cluster. 
+If not specified, only the significant genes are shown.
 }
   \item{topG}{
-%%     ~~Describe \code{topG} here~~
+Overrules sign. The number of top genes to be returned in the result.
+If not specified, only the significant genes are shown.
 }
   \item{GENESET}{
-%%     ~~Describe \code{GENESET} here~~
+Optional. Can provide own candidate gene sets.
 }
   \item{sign}{
-%%     ~~Describe \code{sign} here~~
+The significance level to be handled.
 }
+  \item{names}{
+Optional. Name of the method.
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The returned value is a list with an element per cluster. This element is again a
+list with the following four elements:
+\item{Compounds}{A list with the elements LeadCpds (the compounds of interest) and 
+OrderedCpds (all compounds in the order of the clustering result)}
+\item{Characteristics}{The found (top) characteristics of the feauture data}
+\item{Genes}{A list with the elements TopDE (a table with information on the top
+genes) and AllDE (a table with information on all genes)}
+\item{Pathways}{A list with the element ranked.genesets.table which is a data frame containing
+the genesets, their p-values and their descriptions. The second element is nr.genesets and
+contains the used and total number of genesets.}
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
+\examples{
+\dontrun{
+data(fingerprintMat)
+data(geneMat)
+data(GeneInfo)
+data(ListGO)
+
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+
+MCF7_PathsF=Pathways.2(MCF7_F, GeneExpr = geneMat, nrclusters = 7, method = c("limma", 
+"MLP"), ENTREZID = GeneInfo[, 1], geneSetSource = "GOBP", top = NULL, 
+topG = NULL, GENESET = ListGO, sign = 0.05)
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
+}
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{Pathways}}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ Pathway Analysis }
+

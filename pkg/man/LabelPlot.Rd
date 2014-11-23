@@ -1,11 +1,11 @@
 \name{LabelPlot}
 \alias{LabelPlot}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Color the leaves of the dendrogram
+Coloring specific leaves of a dendrogram
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Just as the function \code{ClusterCols}, \code{LabelCols} as its own plotting
+function \code{LabelPlot} which plots the dendrogram.
 }
 \usage{
 LabelPlot(Data, Sel1, Sel2 = NULL, col1, col2 = NULL, ...)
@@ -13,50 +13,44 @@ LabelPlot(Data, Sel1, Sel2 = NULL, col1, col2 = NULL, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{Data}{
-%%     ~~Describe \code{Data} here~~
+The result of a method which contains the dendrogram to be colored.
 }
   \item{Sel1}{
-%%     ~~Describe \code{Sel1} here~~
+The selection of objects to be colored.
 }
   \item{Sel2}{
-%%     ~~Describe \code{Sel2} here~~
+An optional second selection to be colored.
 }
   \item{col1}{
-%%     ~~Describe \code{col1} here~~
+The color for the first selection.
 }
   \item{col2}{
-%%     ~~Describe \code{col2} here~~
+The color for the optional second selection.
 }
   \item{\dots}{
-%%     ~~Describe \code{\dots} here~~
+Other options which can be given to the plot function.
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
+
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+A plot of the dendrogram of which the leaves of the selection(s)
+are colored.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+data(fingerprintMat)
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+ClustF_6=cutree(MCF7_F$Clust,6)
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+SelF=rownames(fingerprintMat)[ClustF_6==6]
+SelF
+
+LabelPlot(MCF7_F,Sel1=SelF,Sel2=NULL,col1='darkorchid')
+
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ Dendrogram }
+

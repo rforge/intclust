@@ -37,7 +37,7 @@ ChooseWeight<-function(List,type=c("data","clusters"),w=seq(0,1,by=0.01),nrclust
 		Dist2=List[[2]]$DistM
 		
 		if((all(range(Dist1)==c(0,1)) & (range(Dist2)[1] !=0 & range(Dist2)[2]!=1)) | ((range(Dist1)[1] !=0 & range(Dist1)[2]!=1) & all(range(Dist2)==c(0,1)))){
-			print('warning: the distance matrices do not have the same range. It might be that that one data set is bainary and the other is continuous. Standardzie the variables.')
+			print('warning: the distance matrices do not have the same range. It might be that that one data set is binary and the other is continuous. Standardize the variables.')
 			
 		}
 		

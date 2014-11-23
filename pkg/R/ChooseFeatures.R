@@ -1,4 +1,4 @@
-ChooseFeatures<-function(Interactive=TRUE,LeadCpds,ClusterResult,ClusterColors=NULL,BinData,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=7,cols=Colors2,N=1){
+ChooseFeatures<-function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ClusterColors=NULL,BinData,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=7,cols=Colors2,N=1){
 	
 	OrInteractive=Interactive
 	for(a in 1:length(BinData)){
@@ -69,7 +69,7 @@ ChooseFeatures<-function(Interactive=TRUE,LeadCpds,ClusterResult,ClusterColors=N
 				DElead <- limmaTwoLevels(GeneExpr,"LeadCpds")
 				
 				#allDE <- topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
-				allDE <- topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL),sort.by="p")
+				allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL),sort.by="p")
 				if(is.null(allDE$ID)){
 					allDE$Genes <- rownames(allDE)
 				}
@@ -101,7 +101,7 @@ ChooseFeatures<-function(Interactive=TRUE,LeadCpds,ClusterResult,ClusterColors=N
 				fit = eBayes(fit)
 				
 				#allDE = topTable(fit,coef=2,adjust="fdr",n=nrow(GeneExpr),resort.by = "logFC", sort.by="p")
-				allDE = topTable(fit,coef=2,adjust="fdr",n=nrow(GeneExpr), sort.by="p")
+				allDE = limma::topTable(fit,coef=2,adjust="fdr",n=nrow(GeneExpr), sort.by="p")
 				if(is.null(allDE$ID)){
 					allDE$Genes <- rownames(allDE)
 				}

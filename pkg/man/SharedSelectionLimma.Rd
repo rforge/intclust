@@ -1,50 +1,58 @@
 \name{SharedSelectionLimma}
 \alias{SharedSelectionLimma}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Intersection over multiple methods over genes for a selection of compounds
+Intersection of genes over multiple methods for a selection of compounds
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Finds the shared genes over outputs of the \code{DiffGenesSelection} function.
 }
 \usage{
 SharedSelectionLimma(DataLimma = NULL, names = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{DataLimma}{
-%%     ~~Describe \code{DataLimma} here~~
+The output of a \code{DiffGenesSelection} function
 }
   \item{names}{
-%%     ~~Describe \code{names} here~~
+Optional. Names of the methods.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The result of the \code{SharedSelection} function is a list with two elements.
+The first element Table is a table indicating how many genes were found to be
+differentially expressed and how many of these are shared. The table also
+contains the number of compounds shared between the clusters of the different
+methods. The second element Which is another list with a component per cluster.
+Each component consists of two vectors: sharedcomps indicating which objects
+were shared across the method and sharedgenes represents the shared genes.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
+\examples{
+data(fingerprintMat)
+data(targetMat)
+data(geneMat)
+data(GeneInfo)
+data(ListGO)
+
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+
+L=list(MCF7_F,MCF7_T)
+names=c('FP','TP')
+
+Comps=FindCluster(L,nrclusters=7,select=c(1,1))
+Comps
+
+MCF7_SelFLimma=DiffGenesSelection(L,Comps,names=names,GeneExpr=geneMat,nrclusters=7,
+method="limma",sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE)
+
+MCF7_SelSharedLimma=SharedSelectionLimma(MCF7_SelFLimma)
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{SharedLimma}},\code{\link{SharedMLP}},\code{\link{Shared}}
+\code{\link{SharedSelection}},\code{\link{SharedSelectionMLP}}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

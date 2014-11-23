@@ -2,10 +2,10 @@
 \alias{fingerprintMat}
 \docType{data}
 \title{
-The fingerprint matrix
+The fingerprint matrix for the MCF7 data
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of the dataset. ~~
+A binary data set that contains 250 fingerprints for the CMAP MCF7 data.
 }
 \usage{data("fingerprintMat")}
 \format{
@@ -14,14 +14,5 @@ The fingerprint matrix
  - attr(*, "dimnames")=List of 2
   ..$ : chr [1:56] "metformin" "phenformin" "phenyl biguanide" "estradiol" ...
   ..$ : chr [1:250] "-2147375257" "-2147119955" "-2146474760" "-2145840573" ...
-}
-\details{
-%%  ~~ If necessary, more details than the __description__ above ~~
-}
-\source{
-%%  ~~ reference to a publication or URL from which the data were obtained ~~
-}
-\references{
-%%  ~~ possibly secondary sources and usages ~~
 }
 \keyword{datasets}

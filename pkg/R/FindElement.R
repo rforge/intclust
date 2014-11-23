@@ -3,10 +3,12 @@ FindElement<-function(What,Object,Element=list()){
 	if(class(Object)=="data.frame"){
 		#search in columns
 		if(What %in% colnames(Object)){			
-			Element<-Object[,What]
+			Element[[length(Element)+1]]<-Object[,What]
+			names(Element)[length(Element)]=paste(What,"_",length(Element),sep="")
 		}
 		else if(What %in% rownames(Object)){
-			Element<-Object[What,]
+			Element[[length(Element)+1]]<-Object[What,]
+			names(Element)[length(Element)]=paste(What,"_",length(Element),sep="")
 		}	
 	}
 	if(class(Object)=="list"){
@@ -38,7 +40,11 @@ FindElement<-function(What,Object,Element=list()){
 				#	names(Element)[length(Element)]=paste(What,"_",length(Element),sep="")
 				#}
 				
-			}					
+			}
+			else if(class(Object[[i]])[1]=="data.frame"){
+				Element=FindElement(What,Object[[i]],Element=Element)
+				
+			}
 		}
 	}	
 	return(Element)

@@ -1,50 +1,52 @@
 \name{ColorsNames}
 \alias{ColorsNames}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Function that annotates colors to their names
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The \code{ColorsNames} function is used on the output of the \code{MatrixFunction}
+and matches the cluster numbers indicated by the cell with the names of the colors. 
+This is necessary to produce the plot of the \code{ComparePlot} function and is
+therefore an internal function of this function but can also be applied separately.
 }
 \usage{
 ColorsNames(MatrixColors, cols = Colors2)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{MatrixColors}{
-%%     ~~Describe \code{MatrixColors} here~~
+A matrix which is the output of the MatrixFunction function.
 }
   \item{cols}{
-%%     ~~Describe \code{cols} here~~
+The hex codes of the colors to be used.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+A vector containing the hex code of the color that corresponds to each cell of 
+the matrix. This function is called upon by the \code{ComparePlot} function.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
+\examples{
+data(fingerprintMat)
+data(targetMat)
+data(Colors2)
+
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+
+L=list(MCF7_F,MCF7_T)
+names=c("FP","TP")
+
+MatrixColors=MatrixFunction(L,nrclusters=7,fusionsLog=TRUE,WeightClust=TRUE,
+names=names)
+
+Names=ColorsNames(MatrixColors,cols=Colors2)
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+ \code{\link{MatrixFunction}}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ hex color codes }
+

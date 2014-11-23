@@ -1,69 +1,74 @@
 \name{FeaturesPlot}
 \alias{FeaturesPlot}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Plot of a selection of features
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The function \code{FeaturesPlot} plots the binary data matrix for a 
+selection of features. It is possible to separate between compounds
+of interest and the other compounds. This is a visualization to see which
+characterist are (not) expressed in a specific cluster.
 }
 \usage{
 FeaturesPlot(LeadCpds, OrderedCpds, Features, Data, Color, nrclusters = 7, 
 cols = Colors2, name = c("FP"))
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{LeadCpds}{
-%%     ~~Describe \code{LeadCpds} here~~
+A character vector containing the compounds one wants to separate 
+from the others.
 }
   \item{OrderedCpds}{
-%%     ~~Describe \code{OrderedCpds} here~~
+A character vector containing all compounds and in which order thet should
+be plotted after putting the LeadCpds aside. 
 }
   \item{Features}{
-%%     ~~Describe \code{Features} here~~
+A character vector containing the selection of features to be plotted.
 }
   \item{Data}{
-%%     ~~Describe \code{Data} here~~
+The data matrix the features are derived from.
 }
   \item{Color}{
-%%     ~~Describe \code{Color} here~~
+The clustering result that determines the color of the labels of the
+objects in the plot.
 }
   \item{nrclusters}{
-%%     ~~Describe \code{nrclusters} here~~
+The number of clusters to consider.
 }
   \item{cols}{
-%%     ~~Describe \code{cols} here~~
+The colors for the labels of the objects.
 }
   \item{name}{
-%%     ~~Describe \code{name} here~~
+The overall name to give the features.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+A plot indicating the values of the features of the LeadCpds in green 
+and those of the others in blue.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+data(fingerprintMat)
+data(targetMat)
+data(geneMat)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+\dontrun{
+MCF7_Interactive=ChooseFeatures(Interactive=TRUE,LeadCpds=NULL,ClusterResult=MCF7_T,
+ClusterColors=MCF7_F,BinData=list(fingerprintMat),Datanames=c("FP"),geneMat,
+topChar = 20, topG = 20,nrclusters=7,N=1)
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+Lead=MCF7_Interactive$"Choice 1"$Compounds$LeadCpds
+Order=MCF7_Interactive$"Choice 1"$Compounds$OrderedCpds
+Feat=MCF7_Interactive$"Choice 1"$Characteristic$FP
+
+FeaturesPlot(LeadCpds=Lead,OrderedCpds=Order,Features=Feat,Data=fingerprintMat,Color=MCF7_F,
+nrclusters=7,cols=Colors1,name=c("FP"))
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+}
+\keyword{Features Plot}

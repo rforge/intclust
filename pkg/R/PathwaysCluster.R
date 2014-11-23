@@ -1,4 +1,4 @@
-PathwaysCluster<-function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP"),ENTREZIDs=NULL,geneSetSource = "GOBP",GENESET=ListGO,sign=0.05,niter=10){
+PathwaysCluster=function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP"),ENTREZID=NULL,geneSetSource = "GOBP",GENESET=ListGO,sign=0.05,niter=10){
 	#Given the object: look for Genes, p-values and/or names of compounds if p-values and/or genes are not available
 	
 	method.test = function(sign.method,path.method){
@@ -21,8 +21,8 @@ PathwaysCluster<-function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP")
 	sign.method = method.out$sign.method
 	path.method = method.out$path.method
 	
-	if(is.null(ENTREZIDs)){
-		ENTREZIDs = colnames(GeneExpr)
+	if(is.null(ENTREZID)){
+		ENTREZID = FoundGenes$Genes_1$All_Genes
 	}
 	
 	# Determining the genesets if they were not given with the function input
@@ -36,10 +36,8 @@ PathwaysCluster<-function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP")
 	
 	
 	PreparedData=PreparePathway(Object,GeneExpr,topG,sign)
-	pvalsgenes=PreparedData$pvalsgenes
-	Compounds=PreparedData$Compounds
-	Genes=PreparedData$Genes
-	
+	pvalsgenes=PreparedData[[1]]
+	Compounds=PreparedData[[2]]
 	
 	Pathways=list()
 	for(k in 1:length(pvalsgenes)){
@@ -51,7 +49,7 @@ PathwaysCluster<-function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP")
 			Paths=function(pvaluesRaw,path.method){			
 				if(path.method=="MLP"){
 					## WE WILL USE THE RAW P-VALUES TO PUT IN MLP -> LESS GRANULAR				
-					names(pvaluesRaw) = ENTREZIDs				
+					names(pvaluesRaw) = ENTREZID			
 					out.mlp <- MLP(
 							geneSet = geneSet,
 							geneStatistic = pvaluesRaw,
@@ -112,8 +110,8 @@ PathwaysCluster<-function(Object,GeneExpr,topG,topP=NULL,method=c("limma","MLP")
 		
 	}
 	
-	out=list(Compounds,Genes,Pathways)
+	out=list(CompsP,FoundGenes,Pathways)
 	names(out)=c("Compounds","Genes","Pathways")
 	return(out)
 	
-}	
+}

@@ -1,11 +1,16 @@
 \name{Ultimate}
 \alias{Ultimate}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Function that performs any aggregated data function
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The function \code{Ultimate} has the ability to perform multiple of the methods
+listed above simultaneously. The only necessary input are the data matrices
+and specification of the options. First, clustering is based on each data matrix
+separately after which the specified integrative analysis methods are conducted.
+A plot comparing the results is made automatically with ComparePlot. If weights
+are involved in the method, a comparison plot of the results for these weights
+is made as well.
 }
 \usage{
 Ultimate(List, distmeasure, NN = 20, alpha = 0.5, T = 20, t = 10, 
@@ -19,98 +24,99 @@ r = NULL, nrclusters = 7, nrclusterssep = c(7, 7), nrclustersseq
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-%%     ~~Describe \code{List} here~~
+A list of data matrices.
 }
   \item{distmeasure}{
-%%     ~~Describe \code{distmeasure} here~~
+A vector of the distance measures to be used on each data matrix.
 }
   \item{NN}{
-%%     ~~Describe \code{NN} here~~
+The number of neighbours to be used in SNF.
 }
   \item{alpha}{
-%%     ~~Describe \code{alpha} here~~
+A parameter in SNF.
 }
   \item{T}{
-%%     ~~Describe \code{T} here~~
+The number of iterations in SNF.
 }
   \item{t}{
-%%     ~~Describe \code{t} here~~
+The number of iterations in ADEC and CEC.
 }
   \item{r}{
-%%     ~~Describe \code{r} here~~
+Optional. The number of features to take for the random sample in ADEC and
+CEC.
 }
   \item{nrclusters}{
-%%     ~~Describe \code{nrclusters} here~~
+The number of clusters to cut the dendrogram in for ADEC and the plot.
 }
   \item{nrclusterssep}{
-%%     ~~Describe \code{nrclusterssep} here~~
+Optional. Vector of the number of clusters to cut the dendrogram in of each data
+source. If NULL, the value of nclusters is used for each.
 }
   \item{nrclustersseq}{
-%%     ~~Describe \code{nrclustersseq} here~~
+The sequence of number of clusters to cut the dendrogram in for ADECb, CECb
+and WonM.
 }
   \item{weight}{
-%%     ~~Describe \code{weight} here~~
+The weights to be used in CEC and WeightedClust.
 }
   \item{Clustweight}{
-%%     ~~Describe \code{Clustweight} here~~
+Optional. To be used for the outputs of CEC or WeightedClust. Then only the
+result of the Clust element is considered.
 }
   \item{clust}{
-%%     ~~Describe \code{clust} here~~
+Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
-%%     ~~Describe \code{linkage} here~~
+Choice of inter group dissimilarity (character). Defaults to "ward".
 }
   \item{gap}{
-%%     ~~Describe \code{gap} here~~
+Logical indicator if gap statistics should be computed. Setting to FALSE will
+greatly reduce the computation time.
 }
   \item{maxK}{
-%%     ~~Describe \code{maxK} here~~
+The maximum number of clusters to be considered during the gap.
 }
   \item{IntClust}{
-%%     ~~Describe \code{IntClust} here~~
+Specification of the methods to be applied.
 }
   \item{fusionsLog}{
-%%     ~~Describe \code{fusionsLog} here~~
+To be handed to MatrixFunction.
 }
   \item{WeightClust}{
-%%     ~~Describe \code{WeightClust} here~~
+To be handed to MatrixFunction.
 }
   \item{PlotCompare}{
-%%     ~~Describe \code{PlotCompare} here~~
+Logical. Should the plot over the methods and weight be produced?
 }
   \item{cols}{
-%%     ~~Describe \code{cols} here~~
+Color scheme to be used in the plots.
 }
   \item{\dots}{
-%%     ~~Describe \code{\dots} here~~
+Options to be given to ComparePlot.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The output of \code{Ultimate} is a list . The first element contains
+the results of the clustering of the first data source and the
+last element on the second data source . In between are the results of the
+integrative methods.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+\dontrun{
+data(fingerprintMat)
+data(targetMat)
+data(Colors2)
+L=list(fingerprintMat,targetMat)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+MCF7_All=Ultimate(L,distmeasure=c("tanimoto","tanimoto"),NN=20,alpha=0.5,
+T=20,t=25,r=NULL,nrclusters=7,nrclustersseq=c(5,25,1),
+weight=seq(1,0,-0.1),Clustweight=0.5,clust="agnes",
+linkage="ward",gap=FALSE,IntClust=c("ADC","ADECa","ADECb",
+"ADECc","WonM","CECa","CECb","CECc","WeightedClust","WeightedSim",
+"SNFa","SNFb","SNFc"),fusionsLog=TRUE,WeightClust=TRUE,PlotCompare=TRUE,
+cols=Colors2)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+}

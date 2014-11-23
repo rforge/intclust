@@ -1,47 +1,45 @@
 \name{SharedComps}
 \alias{SharedComps}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Intersection over multiple methods over compounds
+Intersection of compounds over multiple methods over compounds
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The \code{SharedComps} function is an easy function to select the compounds over a number of methods.
+To be used on cluster elements of the \code{DiffGenes} elements.
 }
 \usage{
 SharedComps(List)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-%%     ~~Describe \code{List} here~~
+A list of the outputs of clusters for different methods.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+A vector containing the shared compounds of all listed elements.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+data(fingerprintMat)
+data(targetMat)
+data(geneMat)
+data(GeneInfo)
+data(ListGO)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+L=list(MCF7_F,MCF7_T)
+names=c('FP','TP')
+
+MCF7_DiffGenes_FandT10=DiffGenes(list(MCF7_F,MCF7_T),geneMat,nrclusters=7,
+"limma",0.05,top=10)
+
+Comps=SharedComps(list(MCF7_DiffGenes_FandT10$`Method 1`$"Cluster 1",
+MCF7_DiffGenes_FandT10$`Method 2`$"Cluster 1"))
+
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

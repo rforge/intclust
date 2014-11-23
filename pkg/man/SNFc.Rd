@@ -1,11 +1,12 @@
 \name{SNFc}
 \alias{SNFc}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Similarity Network Fusion - version c
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Function \code{SNFc} performs SNF but first a normalization over all objects
+is performed before taking the k neighbours of each object as a subset in
+ obtaining the kernel matrix.
 }
 \usage{
 SNFc(List, distmeasure = c("tanimoto", "tanimoto"), NN = 20, alpha = 0.5,
@@ -14,53 +15,57 @@ SNFc(List, distmeasure = c("tanimoto", "tanimoto"), NN = 20, alpha = 0.5,
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-%%     ~~Describe \code{List} here~~
+A list of data matrices of the same type.It is assumed the rows are corresponding
+with the objects.
 }
   \item{distmeasure}{
-%%     ~~Describe \code{distmeasure} here~~
+A vector of the distance measures to be used on each data matrix.
 }
   \item{NN}{
-%%     ~~Describe \code{NN} here~~
+The number of neighbours to be used in the procedure. 
 }
   \item{alpha}{
-%%     ~~Describe \code{alpha} here~~
+The parameter epsilon. The value is recommended to be between 0.3 and 0.8.
 }
   \item{T}{
-%%     ~~Describe \code{T} here~~
+The number of iterations.
 }
   \item{clust}{
-%%     ~~Describe \code{clust} here~~
+Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
-%%     ~~Describe \code{linkage} here~~
+Choice of inter group dissimilarity (character). Defaults to "ward".
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+The returned value is a list with two elements:
+ \item{FusedM }{The fused similarity matrix}
+ \item{Clus}{The resulting clustering}
 }
 \references{
-%% ~put references to the literature/web site here ~
+WANG, B., MEZLINI, M. A., DEMIR, F., FIUME, M., TU, Z., BRUDNO, M.,
+HAIBE-KAINS, B., GOLDENBERG, A. (2014). Similarity Network Fusion
+for aggregating data types on a genomic scale. Nature. 11(3) pp. 
+333-337.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
+}
+\examples{
+data(fingerprintMat)
+data(targetMat)
+L=list(fingerprintMat,targetMat)
+
+MCF7_SNFc=SNFc(list(fingerprintMat,targetMat),distmeasure=c("tanimoto",
+"tanimoto"),NN=10,alpha=0.5,T=20,clust="agnes",linkage="ward")
 }
 \note{
-%%  ~~further notes~~
+For now, only hierarchical clustering with the \code{agnes} 
+function and the ward link is implemented.
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{SNFa}},\code{\link{SNFb}}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ Similarity Network Fusion}
+\keyword{ Integrative Clustering }

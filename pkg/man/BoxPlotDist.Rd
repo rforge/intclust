@@ -1,65 +1,60 @@
 \name{BoxPlotDist}
 \alias{BoxPlotDist}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Box Plot of Distances
+Box Plots of one distance matrix categorized against another distance matrix.
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Given two distance matrices, the function categorizes one distance matrix and
+produces a box plot from the other distance matrix against the created 
+categories. The option is available to choose one of the plots or to have both
+plots. The function also works on outputs from ADEC and CEC functions which do 
+not have distance matrices but incidence matrices.
 }
 \usage{
-BoxPlotDist(Data1, Data2, lab1, lab2, limits1, limits2, type = 1)
+BoxPlotDist(Data1, Data2, lab1, lab2, limits1=NULL, limits2=NULL, type = 1)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{Data1}{
-%%     ~~Describe \code{Data1} here~~
+The outcome of one of the integrated data cluster functions of the package.
 }
   \item{Data2}{
-%%     ~~Describe \code{Data2} here~~
+The outcome of one of the integrated data cluster functions of the package.
 }
   \item{lab1}{
-%%     ~~Describe \code{lab1} here~~
+The label to plot for Data1.
 }
   \item{lab2}{
-%%     ~~Describe \code{lab2} here~~
+The label to plot for Data2.
 }
   \item{limits1}{
-%%     ~~Describe \code{limits1} here~~
+The limits for the categories of Data1.
 }
   \item{limits2}{
-%%     ~~Describe \code{limits2} here~~
+The limits for the categories of Data2.
 }
   \item{type}{
-%%     ~~Describe \code{type} here~~
+The type of plot:
+1 - Plot the values of Data1 versus the categories of Data2.
+2 - Plot the values of Data2 versus the categories of Data1.
+3 - Plot both types 1 and 2.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+One/multiple box plots.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+data(fingerprintMat)
+data(targetMat)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+
+BoxPlotDist(MCF7_F,MCF7_T,"FP","TP",limits1=c(0.3,0.7),limits2=c(0.3,0.7),type=1)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ Box Plot}

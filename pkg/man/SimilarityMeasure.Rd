@@ -1,60 +1,59 @@
 \name{SimilarityMeasure}
 \alias{SimilarityMeasure}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-A measure of similarity over the functions
+A measure of similarity for the outputs of the different methods
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The function \code{SimilarityMeasure} computes the similarity of the methods. 
+Given a list of outputs as input, the first element will be seen as the reference. 
+Function \code{MatrixFunction} is called upon and the cluster numbers are 
+rearranged according to the reference. Per method, \code{SimilarityMeasure} 
+investigates which objects have the same cluster number in reference and said method.
+This number is divided by the total number of objects and used as a similarity measure.
 }
 \usage{
 SimilarityMeasure(List, nrclusters = 7, fusionsLog = TRUE, 
 WeightClust = TRUE, names = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-%%     ~~Describe \code{List} here~~
+A list of the outputs from the methods to be compared. The first element of the
+list will be used as the reference.
 }
   \item{nrclusters}{
-%%     ~~Describe \code{nrclusters} here~~
+The number of clusters to cut the dendrogram in.~~
 }
   \item{fusionsLog}{
-%%     ~~Describe \code{fusionsLog} here~~
+To be handed to MatrixFunction.
 }
   \item{WeightClust}{
-%%     ~~Describe \code{WeightClust} here~~
+To be handed to MatrixFunction.
 }
   \item{names}{
-%%     ~~Describe \code{names} here~~
+Optional. Names of the methods.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+A vector of similarity measures, one for each method given as input.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+data(fingerprintMat)
+data(targetMat)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+L=list(MCF7_F,MCF7_T)
+names=c("FP","TP")
+
+MCF7_SimFandT=SimilarityMeasure(L,nrclusters=7,fusionsLog=TRUE,WeightClust=TRUE,
+names=names)
+
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ Similarity Meausure }
+

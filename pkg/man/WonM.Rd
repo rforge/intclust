@@ -1,60 +1,63 @@
 \name{WonM}
 \alias{WonM}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Weighting on Membership
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Weighting on membership is performed with the \code{WonM} function. The first step is to compute the
+appropriate distance matrices for each data source and to use these for hierarchical clustering. This
+is executed with the agnes function and the ward link. The user may specify a range of values for
+the number of clusters to cut the resulting dendrograms in. For each value of number of clusters,
+an incidence matrix is computed and these are added for each data source separately. Eventually,
+the sums of the incidence matrices are joined together as well, resulting in one consensus matrix.
+Hierarchical clustering is performed on the consensus matrix to obtain the final clustering result.
 }
 \usage{
 WonM(List, distmeasure = c("tanimoto", "tanimoto"), nrclusters = 
 seq(5, 25, 1), clust = "agnes", linkage = "ward")
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-%%     ~~Describe \code{List} here~~
+A list of data matrices of the same type. It is assumed the rows are corresponding
+with the objects.
 }
   \item{distmeasure}{
-%%     ~~Describe \code{distmeasure} here~~
+A vector of the distance measures to be used on each data matrix.
 }
   \item{nrclusters}{
-%%     ~~Describe \code{nrclusters} here~~
+A sequence of the number of clusters to cut the dendrogram in.
 }
   \item{clust}{
-%%     ~~Describe \code{clust} here~~
+Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
-%%     ~~Describe \code{linkage} here~~
+Choice of inter group dissimilarity (character). Defaults to "ward".
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The returned value is list with four elements:
+\item{DistM}{A list with the distance matrix for each
+data structure}
+\item{ClustSep }{The hierarchical clustering result on each
+data set}
+\item{Consensus }{The computed consensus matrix over
+all data sources}
+\item{Clust}{The resulting clustering}
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
+}
+\examples{
+data(fingerprintMat)
+data(targetMat)
+L=list(fingerprintMat,targetMat)
+
+MCF7_WonM=WonM(L,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25),
+clust="agnes",linkage="ward")
 }
 \note{
-%%  ~~further notes~~
+For now, only hierarchical clustering with the \code{agnes} 
+function and the ward link is implemented.
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ Weighting on Membership }
+\keyword{ Integrative Clustering }

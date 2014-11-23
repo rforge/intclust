@@ -5,7 +5,8 @@
 The target prediction matrix
 }
 \description{
-Binary matrix on the target predictions of the compounds
+A binary data matrix that contains 477 target predictions for the CMAP
+MCF7 data.
 }
 \usage{data("targetMat")}
 \format{
@@ -14,14 +15,5 @@ Binary matrix on the target predictions of the compounds
  - attr(*, "dimnames")=List of 2
   ..$ : chr [1:56] "metformin" "phenformin" "phenyl biguanide" "estradiol" ...
   ..$ : chr [1:477] "Arachidonate_15.lipoxygenase" "Estradiol_17.beta.dehydrogenase_2" "Estradiol_17.beta.dehydrogenase_1" "Lanosterol_synthase" ...
-}
-\details{
-%%  ~~ If necessary, more details than the __description__ above ~~
-}
-\source{
-%%  ~~ reference to a publication or URL from which the data were obtained ~~
-}
-\references{
-%%  ~~ possibly secondary sources and usages ~~
 }
 \keyword{datasets}

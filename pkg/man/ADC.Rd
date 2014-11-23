@@ -1,56 +1,66 @@
 \name{ADC}
 \alias{ADC}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Aggregated Data Clustering
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+In order to perform aggregated data clustering, the \code{ADClust}
+function was written. The data matrices are aggregated into one
+and hierarchical clustering is performed.
 }
 \usage{
 ADC(List, distmeasure = "tanimoto", clust = "agnes", linkage = "ward")
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-%%     ~~Describe \code{List} here~~
+A list of data matrices containing the data. It is assumed the 
+rows are corresponding with the objects.
 }
   \item{distmeasure}{
-%%     ~~Describe \code{distmeasure} here~~
+Choice of metric for the dissimilarity matrix (character).
+Should be one of "tanimoto", "euclidean", "jaccard".
 }
   \item{clust}{
-%%     ~~Describe \code{clust} here~~
+Choice of clustering function (character). Defaults to "agnes". 
 }
   \item{linkage}{
-%%     ~~Describe \code{linkage} here~~
+Choice of inter group dissimilarity (character). Defaults to "ward".
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+In order to perform aggregated data clustering, the \code{ADClust}
+function was written.A list of data matrices of the same type 
+(continuous or binary) is required as input which are combined 
+into a single (larger) matrix. Hierarchical clustering is performed
+with the \code{agnes} function and the ward link on the resulting
+data matrix and an applicable distance measure is indicated by the
+user.
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+The returned value is a list with the following three elements.
+\item{AllData}{Fused data matrix of the data matrices}
+\item{DistM}{The distance matrix computed from the AllData element}
+\item{Clust}{The resulting clustering}
+The value has class 'ADC'. The Clust element will be of interest for
+ further applications.
 }
 \references{
-%% ~put references to the literature/web site here ~
+FODEH, J. S., BRANDT, C., LUONG, B. T., HADDAD, A., SCHULTZ, M., MURPHY, T.,
+KRAUTHAMMER, M. (2013). Complementary Ensemble Clustering of Biomedical Data.
+J Biomed Inform. 46(3) pp.436-443.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
+}
+\examples{
+data(fingerprintMat)
+data(targetMat)
+L=list(fingerprintMat,targetMat)
+MCF7_ADC=ADC(L,distmeasure="tanimoto",clust="agnes",linkage="ward")
 }
 \note{
-%%  ~~further notes~~
+For now, only hierarchical clustering with the \code{agnes} 
+function and the ward link is implemented.
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ Aggregated Data Clustering }
+\keyword{ Integrative Clustering }

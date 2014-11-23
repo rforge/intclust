@@ -1,60 +1,70 @@
 \name{Geneset.intersect}
 \alias{Geneset.intersect}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Find the intersection of PathwaysIter function
+Intersection over resulting gene sets of \code{PathwaysIter} function
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The function \code{Geneset.intersect} puts per method the results of the 
+\code{PathwaysIter} function together for each cluster and takes the intersection
+over the iterations per cluster per method. This is to see if over the 
+different resamplings of the data, similar pathways were discovered.
 }
 \usage{
 Geneset.intersect(list.output, sign, names = NULL, seperatetables = FALSE, 
 separatepvals = FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{list.output}{
-%%     ~~Describe \code{list.output} here~~
+The output of the \code{PathwaysIter} function.
 }
   \item{sign}{
-%%     ~~Describe \code{sign} here~~
+The significance level to be handled for cutting of the pathways.
 }
   \item{names}{
-%%     ~~Describe \code{names} here~~
+Optional. Names of the methods.
 }
   \item{seperatetables}{
-%%     ~~Describe \code{seperatetables} here~~
+Logical. If TRUE, a separate element is created per cluster. containing
+the pathways for each iteration.
 }
   \item{separatepvals}{
-%%     ~~Describe \code{separatepvals} here~~
+Logical. If TRUE, the p-values of the each iteration of each pathway
+in the intersection is given. If FALSE, only the mean p-value is provided.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The output is a list with an element per method. For each method, it
+is portrayed per cluster which pathways belong to the intersection over
+all iterations and their corresponding mean p-values.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{PathwaysIter}}
+}\examples{
+\dontrun{
+data(fingerprintMat)
+data(targetMat)
+data(geneMat)
+data(GeneInfo)
+data(ListGO)
+
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+
+L=list(MCF7_F,MCF7_T)
+
+MCF7_Paths_FandT=PathwaysIter(list(MCF7_F,MCF7_T),GeneExpr=geneMat,nrclusters=7,
+method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,
+topG=NULL,GENESET=ListGO,sign=0.05,niter=2,fusionsLog=TRUE,WeightClust=TRUE,
+names=c("FP","TP"))
+
+MCF7_Paths_intersection=Geneset.intersect(MCF7_Paths_FandT,0.05,names=c("FP",
+"TP"),seperatetables=FALSE,separatepvals=FALSE)
+
+str(MCF7_Paths_intersection)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+}

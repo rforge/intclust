@@ -1,59 +1,60 @@
 \name{ClusterPlot}
 \alias{ClusterPlot}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Plot the dendrogram but colored by a result of choice
+Plot a dendrogram with leaves colored by a result of choice
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The above described function \code{ClusterCols} is used in the function
+Clusterplot which actually plots the dendrogram made by ClusterCols.
+Further, given the outputs of any other functions, it is capable of 
+selectimg the elements needed for ClusterCols.
 }
 \usage{
 ClusterPlot(Data1, Data2, nrclusters = 7, cols = Colors2, ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{Data1}{
-%%     ~~Describe \code{Data1} here~~
+The resulting list method 1 which contains the dendrogram to
+be colored.
 }
   \item{Data2}{
-%%     ~~Describe \code{Data2} here~~
+The resulting list method 2 , i.e. the resulting clustering
+on which the colors should be based.
 }
   \item{nrclusters}{
-%%     ~~Describe \code{nrclusters} here~~
+The number of clusters to cut the dendrogram in.
 }
   \item{cols}{
-%%     ~~Describe \code{cols} here~~
+The colors for the clusters.
 }
   \item{\dots}{
-%%     ~~Describe \code{\dots} here~~
+Other options which can be given to the plot function.
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+This function relies ion the \code{ClusterCols} function.
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+A plot of the dendrogram of method 1 with colored leaves of
+which the colors are determined by method 2.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{ClusterCols}}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\examples{
+data(fingerprintMat)
+data(targetMat)
+data(Colors2)
+
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+
+ClusterPlot(MCF7_T ,MCF7_F,nrcluster=7,cols=Colors2,main="Clustering on Fingerprints: Dendrogram",
+ylim=c(-0.1,1.8))
+}
+\keyword{ Dendrogram }

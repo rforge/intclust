@@ -1,53 +1,50 @@
 \name{FindElement}
 \alias{FindElement}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Find an element in a data structure
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The function \code{FindElement} is used internally in the
+\code{PreparePathway} function but might come in handy for other uses
+as well. Given the name of an object, the function searches for that
+object in the data structure and extracts it. When multiple objects 
+have the same name, all are extracted.
 }
 \usage{
 FindElement(What, Object, Element = list())
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{What}{
-%%     ~~Describe \code{What} here~~
+A character string indicating which object to look for.
 }
   \item{Object}{
-%%     ~~Describe \code{Object} here~~
+The data structure to look into. Only the classes data frame
+and list are supported.
 }
   \item{Element}{
-%%     ~~Describe \code{Element} here~~
+Not to be specified by the user.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The returned value is a list with an element for each object
+found. The element contains everything the object contained
+in the original data structure.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+data(fingerprintMat)
+data(targetMat)
+data(geneMat)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+gap=FALSE,maxK=55)
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+MCF7_DiffGenes_FandT10=DiffGenes(list(MCF7_F,MCF7_T),geneMat,
+nrclusters=7,"limma",0.05,top=10)
+
+Find=FindElement('TopDE',MCF7_DiffGenes_FandT10)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

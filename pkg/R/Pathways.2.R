@@ -1,4 +1,8 @@
-Pathways.2<-function(Data,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,topG=NULL,GENESET=ListGO,sign=0.05){
+Pathways.2<-function(Data,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,topG=NULL,GENESET=ListGO,sign=0.05,names=NULL){
+	
+	if(is.null(names)){
+		names=c("Method 1")	
+	}
 	
 	DataPrepared<-try_default(PreparePathway(Data,GeneExpr,topG,sign),NULL,quiet=TRUE)
 	
@@ -106,5 +110,8 @@ Pathways.2<-function(Data,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP")
 		ResultMLP[[i]]=temp
 		names(ResultMLP)[i]=paste("Cluster",i,sep=" ")
 	}
-	return(ResultMLP)	
+	MethodPaths=list()
+	MethodPaths[[1]]=ResultMLP
+	names(MethodPaths)=names	
+	return(MethodPaths)	
 }

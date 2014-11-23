@@ -137,6 +137,7 @@ ADECc<-function(List,distmeasure="tanimoto",t=10,r=NULL,nrclusters=seq(5,25,1),c
 	Clust=agnes(Incidence,diss=FALSE,method=linkage)
 	
 	out=list(AllData=AllData,S=Incidence,Clust=Clust)
+	class(out)='ADEC'
 	return(out)
 	
 }

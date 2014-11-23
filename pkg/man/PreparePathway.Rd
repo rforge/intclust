@@ -1,56 +1,71 @@
 \name{PreparePathway}
 \alias{PreparePathway}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Preparing a data set for pathway analysis if this is not the case
+Preparing a data set for pathway analysis
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+The functions for pathway analysis in this package can also work on 
+results of the integrated data functions. However, a differential
+gene expression needs to be conducted to perform pathway analysis.
+The function \code{PreparePathway} checks if the necessary elements
+are present in the data structures and if not, the elements such as
+p-values are created. It is an internal function to all pathway analysis
+functions but can be used separately as well.
 }
 \usage{
 PreparePathway(Object, GeneExpr, topG, sign)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{Object}{
-%%     ~~Describe \code{Object} here~~
+A list with at least an element with the name "Compounds" such that the function knows
+ which compounds to test for differential gene expression. If the elements "Genes"
+ and "pvalsgenes" are present as well, these will be collected.
 }
   \item{GeneExpr}{
-%%     ~~Describe \code{GeneExpr} here~~
+The gene expression matrix or ExpressionSet of the objects.
 }
   \item{topG}{
-%%     ~~Describe \code{topG} here~~
+Overrules sign. The number of top genes to be returned in the result.
+If not specified, only the significant genes are shown.
 }
   \item{sign}{
-%%     ~~Describe \code{sign} here~~
+The significance level to be handled.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+The returned value is a list with three elements:
+ \item{pvalsgenses }{This is a list with that contains a vector of raw
+ p-values for every group of tested compounds.}
+ \item{Compounds}{This is a list with that contains another list per group
+ of tested compounds. Every list contains the lead compounds and the ordered
+ compounds.}
+  \item{Genes }{This is a list with that contains contains another list per group
+ of tested compounds. Every list contains two data frames, one with information
+ on the top genes and one with information on all genes.}
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
-}
+\examples{
+data(fingerprintMat)
+data(geneMat)
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
+		gap=FALSE,maxK=55)
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+L1=list(MCF7_F)
+
+Comps1=FindCluster(L1,nrclusters=7,select=c(1,1))
+Comps2=FindCluster(L1,nrclusters=7,select=c(1,2))
+Comps3=FindCluster(L1,nrclusters=7,select=c(1,3))
+
+
+L2=list()
+
+L2$'Cluster 1'$Compounds$LeadCpds=Comps1
+L2$'Cluster 2'$Compounds$LeadCpds=Comps2
+L2$'Cluster 3'$Compounds$LeadCpds=Comps2
+
+MCF7_PreparePaths=PreparePathway(L2,geneMat,NULL,0.05)
+str(MCF7_PreparePaths)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

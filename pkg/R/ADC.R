@@ -86,6 +86,7 @@ ADC<-function(List,distmeasure="tanimoto",clust="agnes",linkage="ward"){
 	}
 	
 	out=list(AllData=AllData,Dist=AllDataDist,Clust=HClust)
+	class(out)='ADC'
 	return(out)
 	
 }

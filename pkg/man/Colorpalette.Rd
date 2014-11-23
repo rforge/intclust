@@ -1,50 +1,35 @@
 \name{ColorPalette}
 \alias{ColorPalette}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Create color palette
+Create a color palette to be used in the plots
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+In order to facilitate the visualization of the influence of the different
+methods on the clustering of the compounds, colors can be used. The function
+\code{ColorPalette} is able to pick out as many colors as there are clusters.
+This is done with the help of the \code{ColorRampPalette} function of the 
+grDevices package
 }
 \usage{
 ColorPalette(colors = c("red", "green"), ncols = 5)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{colors}{
-%%     ~~Describe \code{colors} here~~
+A vector containing the colors of choice
 }
   \item{ncols}{
-%%     ~~Describe \code{ncols} here~~
+The number of colors to be specified. If higher than the number of colors,
+it specifies colors in the region between the given colors.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+A vector containing the hex codes of the chosen colors.
 }
 \author{
-%%  ~~who you are~~
+Marijke Van Moerbeke
 }
-\note{
-%%  ~~further notes~~
+\examples{
+Colors1<-ColorPalette(c("cadetblue2","chocolate","firebrick2",
+"darkgoldenrod2", "darkgreen","blue2","darkorchid3","deeppink2"), ncols=8)
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ Colors }
