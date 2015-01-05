@@ -4,16 +4,12 @@ ADECa<-function(List,distmeasure="tanimoto",t=10,r=NULL,nrclusters=NULL,clust="a
 		stop("Data must be of type lists")
 	}
 	
-	if(length(List) != 2){
-		stop("Method is just implemented for 2 data modalities.")
-	}
-	
 	if(is.null(nrclusters)){
 		stop("Give a number of cluters to cut the dendrogram into.")
 	}
 	
 	if(clust != "agnes" | linkage != "ward"){
-		print("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
+		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
 						coassociation matrix.")
 		clust="agnes"
 		linkage="ward"
@@ -49,7 +45,7 @@ ADECa<-function(List,distmeasure="tanimoto",t=10,r=NULL,nrclusters=NULL,clust="a
 	
 	
 	for(g in 1:t){
-		print(g)
+		message(g)
 		
 		#if r is not fixed: changes per iteration. Need 1 value for r.
 		if(is.null(r)){
@@ -63,80 +59,29 @@ ADECa<-function(List,distmeasure="tanimoto",t=10,r=NULL,nrclusters=NULL,clust="a
 		A_prime=AllData[,temp1]
 		
 		
-		#Step 2: apply hierarchical clustering on A1_prime and A2_prime + cut tree into nrclusters
-		
-		Distance=function(data,distmeasure){
-			data <- data+0
-			
-			tanimoto = function(m){
-				S = matrix(0,nrow=dim(m)[1],ncol=dim(m)[1])
-				
-				for(i in 1:dim(m)[1]){
-					for(j in 1:i){
-						N.A = sum(m[i,])
-						N.B = sum(m[j,])
-						N.C = sum(m[i,(m[i,]==m[j,])])
-						
-						if(N.A==0&N.B==0){
-							coef = 1				
-						}
-						else{
-							coef = N.C / (N.A+N.B-N.C)
-						}
-						S[i,j] = coef
-						S[j,i] = coef
-					}
-					
-				}
-				D = 1 - S
-				return(D)
-			}
-			
-			# Computing the distance matrices
-			
-			if(distmeasure=="jaccard"){
-				dist = dist.binary(data,method=1)
-				dist = as.matrix(dist)
-			}
-			else if(distmeasure=="tanimoto"){
-				dist = tanimoto(data)
-				dist = as.matrix(dist)
-				rownames(dist) <- rownames(data)
-			}
-			else if(distmeasure=="euclidean"){
-				dist = daisy(data,metric="euclidean")
-				dist = as.matrix(dist)
-			}
-			
-			else{
-				stop("Incorrect choice of distmeasure. Must be one of: tanimoto, jaccard or euclidean.")
-			}
-			
-			return(dist)
-		}
+		#Step 2: apply hierarchical clustering on A_prime  + cut tree into nrclusters
 		
 		DistM=Distance(A_prime,distmeasure)
 		
 		HClust_A_prime=agnes(DistM,diss=TRUE,method=linkage)
-		
-		
+				
 		Temp=cutree(HClust_A_prime,nrclusters)	
-		MembersofClust=matrix(0,dim(AllData)[1],dim(AllData)[1])
+		MembersofClust=matrix(1,dim(AllData)[1],dim(AllData)[1])
 		
 		for(l in 1:length(Temp)){
 			label=Temp[l]
 			sameclust=which(Temp==label)
-			MembersofClust[l,sameclust]=1	
+			MembersofClust[l,sameclust]=0
 			
 		}
 		
 		Incidence=Incidence+MembersofClust		
 	}
 	
-	Clust=agnes(Incidence,diss=FALSE,method=linkage)
+	Clust=agnes(Incidence,diss=TRUE,method=linkage)
 	
 	out=list(AllData=AllData,Se=Incidence,Clust=Clust)
-	class(out)='ADEC'
+	attr(out,'method')<-'ADEC'	
 	return(out)
 	
 }

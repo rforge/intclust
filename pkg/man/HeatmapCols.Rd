@@ -11,7 +11,7 @@ s function the number of colors should be one more than the number of clusters
 to color the so called zero cells in the distance matrix.
 }
 \usage{
-HeatmapCols(Data1, Data2, names = rownames(fingerprintMat), nrclusters = 7, 
+HeatmapCols(Data1, Data2, names = rownames(fingerprintMat), nrclusters = NULL, 
 cols = Colors2)
 }
 \arguments{

@@ -10,7 +10,7 @@ Further, given the outputs of any other functions, it is capable of
 selectimg the elements needed for ClusterCols.
 }
 \usage{
-ClusterPlot(Data1, Data2, nrclusters = 7, cols = Colors2, ...)
+ClusterPlot(Data1, Data2, nrclusters = NULL, cols = Colors2, ...)
 }
 \arguments{
   \item{Data1}{

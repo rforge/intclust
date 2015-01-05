@@ -1,5 +1,5 @@
-FindCluster<-function(List,nrclusters,select=c(1,4),fusionsLog=TRUE, WeightClust=TRUE,names=NULL){
-	Matrix=MatrixFunction(List,nrclusters,fusionsLog,WeightClust,names)
+FindCluster<-function(List,nrclusters=NULL,select=c(1,4),fusionsLog=TRUE, WeightClust=TRUE,names=NULL){
+	Matrix=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
 	methodnr=select[1]
 	clusternr=select[2]
 	Comps=names(which(Matrix[methodnr,]==clusternr))

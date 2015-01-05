@@ -1,25 +1,36 @@
-Geneset.intersect<-function(list.output,sign,names=NULL,seperatetables=FALSE,separatepvals=FALSE){
+Geneset.intersect<-function(PathwaysOutput,Selection=FALSE,sign=0.05,names=NULL,seperatetables=FALSE,separatepvals=FALSE){
+	
+	if(Selection==TRUE){
+		if(length(PathwaysOutput$'Iteration 1')==1 & is.null(names)){
+			names="Selection"
+		}
+		Intersect=Geneset.intersectSelection(PathwaysOutput,sign,names,seperatetables,separatepvals)	
+	}
+	
+	else{
+	
 	if(is.null(names)){
-		for(j in 1:length(list.output$"Iteration 1")){
+		for(j in 1:length(PathwaysOutput$"Iteration 1")){
 			names[j]=paste("Method",j,sep=" ")	
 		}
 	}
 	
+	
 	#put all of same method together:preparation of lists
 	subsets=list()
-	nmethods=length(list.output$"Iteration 1") 
+	nmethods=length(PathwaysOutput$"Iteration 1") 
 	for(i in 1:nmethods){
 		subsets[[i]]=list()
 		
 	}
 	names(subsets)=names
 	
-	#put all of same method together: go through list.output
-	for(j in 1:length(list.output)){
-		name1=names(list.output)[j]
+	#put all of same method together: go through PathwaysOutput
+	for(j in 1:length(PathwaysOutput)){
+		name1=names(PathwaysOutput)[j]
 		for(k in 1:nmethods){
 			name2=names[k]
-			subsets[[name2]][[name1]]=list.output[[name1]][[name2]]
+			subsets[[name2]][[name1]]=PathwaysOutput[[name1]][[name2]]
 			
 		}
 		
@@ -60,7 +71,6 @@ Geneset.intersect<-function(list.output,sign,names=NULL,seperatetables=FALSE,sep
 					cut = Clusters[[a]][[b]]$Pathways$ranked.genesets.table[  Clusters[[a]][[b]]$Pathways$ranked.genesets.table[,2]<=sign,]
 					colnames(cut)[2] = paste("values.",b,sep="")
 					cut = cut[,c(1,3,2)]
-					#print(paste("For geneset table ",i,": ",dim(cut)[1]," of the ", dim(list.output[[i]]$ranked.genesets.table)[1]," remain."))
 					result.out[[b]] = cut
 					result.name = c(result.name,paste("genesettable",b,sep=""))
 				}
@@ -79,7 +89,6 @@ Geneset.intersect<-function(list.output,sign,names=NULL,seperatetables=FALSE,sep
 					result.out$genesets.table.intersect=genesets.table.intersect[,c(1,2,ncol(genesets.table.intersect))]
 				}
 				
-				#print(paste("All tables share ",dim(genesets.table.intersect)[1]," genesets in total."))
 				
 				if(seperatetables==FALSE){
 					result.out=result.out$genesets.table.intersect
@@ -99,7 +108,7 @@ Geneset.intersect<-function(list.output,sign,names=NULL,seperatetables=FALSE,sep
 		
 		Intersect[[i]]=IntersectM
 		
-		
+		}
 	}
 	names(Intersect)=names
 	

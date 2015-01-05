@@ -41,8 +41,9 @@ gap=FALSE,maxK=55)
 MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
 gap=FALSE,maxK=55)
 
-MCF7_DiffGenes_FandT10=DiffGenes(list(MCF7_F,MCF7_T),geneMat,
-nrclusters=7,"limma",0.05,top=10)
+MCF7_DiffGenes_FandT10=DiffGenes(list(MCF7_F,MCF7_T),Selection=NULL,GeneExpr=geneMat,
+nrclusters=7,method="limma",sign=0.05,top=10,fusionsLog = TRUE, WeightClust = TRUE, 
+names = NULL)
 
 MCF7_SharedGenes=FindGenes(DataLimma=MCF7_DiffGenes_FandT10,names=c("FP","TP"))
 

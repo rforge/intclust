@@ -1,9 +1,6 @@
-ComparePlot<-function(List,nrclusters=7,cols=Colors2,fusionsLog=FALSE,WeightClust=FALSE,names=NULL,reverse=FALSE,margins=c(8.1,3.1,3.1,4.1),...){
-	if(length(List)==1 & (class(List[[1]])=="Weighted"|class(List[[1]])=="CEC"|class(List[[1]])=="WeightedSim") & reverse==TRUE){
-		List[[1]]$Results=rev(List[[1]]$Results)
-	}
+ComparePlot<-function(List,nrclusters=NULL,cols=Colors2,fusionsLog=FALSE,WeightClust=FALSE,names=NULL,margins=c(8.1,3.1,3.1,4.1),...){
 	
-	MatrixColors=MatrixFunction(List,nrclusters,fusionsLog,WeightClust,names)
+	MatrixColors=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
 	
 	Names=ColorsNames(MatrixColors,cols)
 	

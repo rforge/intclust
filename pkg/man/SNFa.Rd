@@ -39,7 +39,9 @@ Choice of inter group dissimilarity (character). Defaults to "ward".
 \value{
 The returned value is a list with two elements:
  \item{FusedM }{The fused similarity matrix}
- \item{Clus}{The resulting clustering}
+ \item{DistM }{The distance matrix computed by
+ subtracting FusedM from one}
+ \item{Clust}{The resulting clustering}
 }
 \references{
 WANG, B., MEZLINI, M. A., DEMIR, F., FIUME, M., TU, Z., BRUDNO, M.,

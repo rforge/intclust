@@ -6,7 +6,8 @@ Similarity Network Fusion - version c
 \description{
 Function \code{SNFc} performs SNF but first a normalization over all objects
 is performed before taking the k neighbours of each object as a subset in
- obtaining the kernel matrix.
+ obtaining the kernel matrix. The function is based on the functions \code{affinityMatrix} and \code{snf}
+from the SNFtool package.
 }
 \usage{
 SNFc(List, distmeasure = c("tanimoto", "tanimoto"), NN = 20, alpha = 0.5,
@@ -40,13 +41,18 @@ Choice of inter group dissimilarity (character). Defaults to "ward".
 \value{
 The returned value is a list with two elements:
  \item{FusedM }{The fused similarity matrix}
- \item{Clus}{The resulting clustering}
+  \item{DistM }{The distance matrix computed by
+ subtracting FusedM from one}
+ \item{Clust}{The resulting clustering}
 }
 \references{
 WANG, B., MEZLINI, M. A., DEMIR, F., FIUME, M., TU, Z., BRUDNO, M.,
 HAIBE-KAINS, B., GOLDENBERG, A. (2014). Similarity Network Fusion
 for aggregating data types on a genomic scale. Nature. 11(3) pp. 
 333-337.
+WANG, B., MEZLINI, M. A., DEMIR, F., FIUME, M., TU, Z., BRUDNO, M.,
+HAIBE-KAINS, B., GOLDENBERG, A. (2014). SNFtool: Similarity Network Fusion.
+R package version 2.2
 }
 \author{
 Marijke Van Moerbeke

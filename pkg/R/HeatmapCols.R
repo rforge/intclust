@@ -1,4 +1,4 @@
-HeatmapCols<-function(Data1,Data2,names=rownames(fingerprintMat),nrclusters=7,cols=Colors2){
+HeatmapCols<-function(Data1,Data2,names=rownames(fingerprintMat),nrclusters=NULL,cols=Colors2){
 	data1=Data1$Clust
 	data2=Data2$Clust
 	

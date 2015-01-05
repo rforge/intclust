@@ -1,4 +1,4 @@
-FeaturesPlot<-function(LeadCpds,OrderedCpds,Features,Data,Color,nrclusters=7,cols=Colors2,name=c("FP")){
+FeaturesPlot<-function(LeadCpds,OrderedCpds,Features,Data,Color,nrclusters=NULL,cols=Colors2,name=c("FP")){
 	par(mar=c(6,3,0,6))
 	
 	temp=OrderedCpds[which(!(OrderedCpds%in%LeadCpds))]
@@ -10,8 +10,8 @@ FeaturesPlot<-function(LeadCpds,OrderedCpds,Features,Data,Color,nrclusters=7,col
 	x<-c(1:length(AllCpds))
 	y<-c(1:length(Features))
 	PlotData<-t(Data[Features,AllCpds])
-	image(x,y,PlotData,col=c('gray90','blue'),axes=FALSE)
-	image(x[1:length(LeadCpds)],y,PlotData[1:length(LeadCpds),],col=c('gray90','green'),add=TRUE)
+	image(x,y,PlotData,col=c('gray90','blue'),xlab="",axes=FALSE,ann=FALSE,xaxt='n')
+	image(x[1:length(LeadCpds)],y,PlotData[1:length(LeadCpds),],col=c('gray90','green'),add=TRUE,xlab="",axes=FALSE,ann=FALSE,xaxt='n')
 	
 	if(!(is.null(Color))){
 		Data1 <- Color$Clust
@@ -34,9 +34,9 @@ FeaturesPlot<-function(LeadCpds,OrderedCpds,Features,Data,Color,nrclusters=7,col
 		names(colors) <-names(ordercolors)	
 	}
 	
-	
+	#axis(1, labels=FALSE)
 	mtext(colnames(PlotData), side = 4, at= c(1:ncol(PlotData)), line=0, las=2,cex=0.8)
 	mtext(name, side = 2,  line=1, las=0, cex=1)
-	mtext(rownames(PlotData), side = 1, at= c(1:nrow(PlotData)), line=0, las=2, cex=0.8,col=colors[AllCpds])
+	mtext(rownames(PlotData), side = 1, at= c(1:nrow(PlotData)), line=0.2, las=2, cex=0.8,col=colors[AllCpds])
 	
 }

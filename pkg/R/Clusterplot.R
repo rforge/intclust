@@ -1,4 +1,4 @@
-ClusterPlot<-function(Data1,Data2,nrclusters=7,cols=Colors2,...){
+ClusterPlot<-function(Data1,Data2,nrclusters=NULL,cols=Colors2,...){
 	x=Data1$Clust
 	Data=Data2$Clust
 	

@@ -12,7 +12,7 @@ methods is provided, DiffGenes will perform the limma function
 for each method. 
 }
 \usage{
-DiffGenes(List, GeneExpr = geneMat, nrclusters = 7, method = "limma", 
+DiffGenes(List,Selection=NULL, GeneExpr = geneMat, nrclusters = NULL, method = "limma", 
 sign = 0.05, top = NULL, fusionsLog = TRUE, WeightClust = TRUE, 
 names = NULL)
 }
@@ -22,6 +22,10 @@ names = NULL)
 A list of the outputs from the methods to be compared. The first element
 of the list will be used as the reference.
 }
+ \item{Selection}{
+If differential gene expression should be investigated for a specific selection of compounds, this selection can be provided here.
+Selection can be of the type "character" (names of the compounds) or "numeric" (the number of specific cluster).
+ }
   \item{GeneExpr}{
 The gene expression matrix or ExpressionSet of the objects.
 }
@@ -40,10 +44,10 @@ The significance level to be handled.
 Overrules sign. The number of top genes to be shown.
 }
   \item{fusionsLog}{
-To be handed to \code{MatrixFunction}.
+To be handed to \code{ReorderToReference}.
 }
   \item{WeightClust}{
-To be handed to \code{MatrixFunction}.
+To be handed to \code{ReorderToReference}.
 }
   \item{names}{
 Optional. Names of the methods.
@@ -52,7 +56,7 @@ Optional. Names of the methods.
 \details{
 The function rearranges the clusters of the methods to a 
 reference method such that a comparison is made easier. 
-Given a list of methods, it calls upon \code{MatrixFunction} to
+Given a list of methods, it calls upon \code{ReorderToReference} to
 rearrange the number of clusters according to the first
 element of the list which will be used as the reference.
 }
@@ -87,9 +91,6 @@ L=list(MCF7_T ,MCF7_F)
 MCF7_FT_DE = DiffGenes(L,GeneExpr=geneMat,nrclusters=7,method="limma",
 sign=0.05,top=10,fusionsLog=TRUE,WeightClust=TRUE)
 
-}
-\seealso{
-\code{\link{DiffGenes.2}}
 }
 \keyword{Differential Gene Expression }
 \keyword{ limma }

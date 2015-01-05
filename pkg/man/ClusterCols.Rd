@@ -8,7 +8,7 @@ The ClusterCols function is capable of coloring the leaves of a dendrogram of on
 the colors (and thus cluster) the compounds had in the clustering of another method. 
 }
 \usage{
-ClusterCols(x, Data, nrclusters = 7, cols = Colors2)
+ClusterCols(x, Data, nrclusters = NULL, cols = Colors2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

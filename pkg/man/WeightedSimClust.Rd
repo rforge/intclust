@@ -13,7 +13,7 @@ weight the distance matrices are linearly combined and hierarchical clustering
 is performed. 
 }
 \usage{
-WeightedSimClust(List, type = c("data", "clusters"), w = seq(0, 1, 0.01),
+WeightedSimClust(List, type = c("data", "clusters"), weight = seq(0, 1, 0.01),
  clust = "agnes", linkage = "ward", distmeasure = c("euclidean",
   "tanimoto"), gap = FALSE, maxK = 50, nrclusters = NULL, 
   names = c("B", "FP"), AllClusters = FALSE)
@@ -28,9 +28,10 @@ with the objects.
 Indicates whether data matrices or clustering results were given in List.
 Should be one of "data" or "clusters".
 }
-  \item{w}{
-One specific weight to perform clustering on or a sequence of weights
-to test.
+  \item{weight}{
+One specific weight to perform clustering on or a list with different weight
+combinations. If different weight combinations are provided, the function
+\code{Chooseweight} is called and an optimal combination is chosen.
 }
   \item{clust}{
 Choice of clustering function (character). Defaults to "agnes".
@@ -59,6 +60,15 @@ The labels to give to the elements in List.
   \item{AllClusters}{
 Logical. Whether clustering should be performed for every weight.
 }
+}
+\details{
+The weight combinations should be provided as elements in a list. For three data
+matrices an example could be: weights=list(c(0.5,0.2,0.3),c(0.1,0.5,0.4)). To provide
+a fixed weight for some data sets and let it vary randomly for others, the element "x" 
+indicates a free parameter. An example is weights=list(c(0.7,"x","x")). The weight 0.7 
+is now fixed for the first data matrix while the remaining 0.3 weight will be divided over
+the other two data sets. This implies that every combination of the sequence from 0 to 0.3
+with steps of 0.1 will be reported and clustering will be performed for each.
 }
 \value{
 The returned value is a list with four elements:
@@ -91,13 +101,13 @@ data(targetMat)
 
 L=list(fingerprintMat,targetMat)
 
-MCF7_WeightSim=WeightedSimClust(L,type="data", w=seq(0,1,0.01),clust="agnes",
+MCF7_WeightSim=WeightedSimClust(L,type="data", weight=seq(0,1,0.01),clust="agnes",
 linkage="ward",distmeasure=c("tanimoto","tanimoto"), gap=FALSE,maxK=50,
 nrclusters=7,names=c("FP","B"),AllClusters=FALSE)
 
 }
 \seealso{
-\code{\link{ChooseWeight}}
+\code{\link{DetermineWeight}}
 }
 \keyword{ Weighted Similarity Clustering }
 \keyword{ Integrated Data Clustering }

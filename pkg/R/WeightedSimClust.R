@@ -1,5 +1,12 @@
-WeightedSimClust<-function(List,type=c("data","clusters"),w=seq(0,1,0.01),clust="agnes",linkage="ward",distmeasure=c("euclidean","tanimoto"),gap=FALSE,maxK=50,nrclusters=NULL,names=c("B","FP"),AllClusters=FALSE){
-	if(length(w)==1){
+WeightedSimClust<-function(List,type=c("data","clusters"),weight=seq(0,1,0.01),clust="agnes",linkage="ward",distmeasure=c("euclidean","tanimoto"),gap=FALSE,maxK=50,nrclusters=NULL,names=c("B","FP"),AllClusters=FALSE){
+	if(clust != "agnes" | linkage != "ward"){
+		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
+						fused matrix.")
+		clust="agnes"
+		linkage="ward"
+	}
+	
+	if(length(weight)==1){
 		if(type=="data"){
 			#If given data matrices.
 			##1: clustering on separate sources.
@@ -19,66 +26,117 @@ WeightedSimClust<-function(List,type=c("data","clusters"),w=seq(0,1,0.01),clust=
 			}
 			
 			
-			Clust1 <- Cluster(List[[1]], distmeasure = distmeasure[1], clust, linkage, gap, maxK)
-			Clust2 <- Cluster(List[[2]], distmeasure = distmeasure[2], clust, linkage, gap, maxK)
+			Clusterings=lapply(seq(length(List)),function(i) Cluster(List[[i]],distmeasure[i],clust,linkage,gap,maxK))		
+			Dist=lapply(seq(length(List)),function(i) Clusterings[[i]]$DistM)
 			
-			Dist1=Clust1$DistM
-			Dist2=Clust2$DistM
-			
-			#need: gap? ncluster?
+			if(is.null(nrclusters)){
+				if(gap==FALSE){
+					stop("Specify a number of clusters of put gap to TRUE")
+				}
+				else{
+					clusters=sapply(seq(length(List)),function(i) Clusterings[[i]]$k$Tibs2001SEmax)
+					nrclusters=ceiling(mean(clusters))
+				}
+			}
+	
 		}
 		else{
 			
-			Dist1=List[[1]]$DistM
-			Dist2=List[[2]]$DistM
-			
-			if((all(range(Dist1)==c(0,1)) & (range(Dist2)[1] !=0 & range(Dist2)[2]!=1)) | ((range(Dist1)[1] !=0 & range(Dist1)[2]!=1) & all(range(Dist2)==c(0,1)))){
-				print('warning: the distance matrices do not have the same range. It might be that that one data set is bainary and the other is continuous. Standardzie the variables.')
-				
-			}
-			
-		}
-		Weight=w
+			Dist=lapply(seq(length(List)),function(i) Clusterings[[i]]$DistM)
+			message("Warning: Are the distace matrices of the same range? If not, standardization is recommended.")	
+		
+		}	
+		Weight=weight
 		
 	}
 	else{
 		
-		temp=ChooseWeight(List,type,w,nrclusters,distmeasure,clust,linkage,gap,maxK,names)
+		temp=DetermineWeight(List,type,weight,nrclusters,distmeasure,clust,linkage,gap,maxK,names)
 		
-		
-		Dist1=temp[[1]]$DistM
-		Dist2=temp[[2]]$DistM
-		
-		Weight=temp[[4]]		
+		Dist=lapply(seq(length(List)),function(i) temp[[1]][[i]]$DistM)
+			
+		Weight=temp$Weight		
 	}
 	
 	#Weighted Distance matrix
 	
-	DistW=Weight*Dist1+(1-Weight)*Dist2
+	weightedcomb<-function(w,Dist){
+		temp=lapply(seq_len(length(Dist)),function(i) w[i]*Dist[[i]])
+		temp=Reduce("+",temp)	
+		return(temp)
+	}
+	DistW=weightedcomb(Weight,Dist)
 	
 	#Clustering on weighted distance matrix
-	
-	if(clust!="agnes"|linkage!="ward"){
-		print("Only agglomerative hierarchical clustering with ward linkage implemented.")
-	}
-	
+		
 	WeightedSimCluster=agnes(DistW,diss=TRUE,method=linkage)
-	
-	out=list(Dist1, Dist2, Weight,DistW,Clust=WeightedSimCluster)	
-	names(out)=c("Dist1","Dist2","Weight","DistW","Clust")
+
+	out=list(Dist,Weight,DistW,Clust=WeightedSimCluster)	
+	names(out)=c("Dist","Weight","DistW","Clust")
 	
 	AllCluster=list()
 	if(AllClusters==TRUE){
-		for(a in 1:length(w)){
-			W1=w[a]*Dist1+(1-w[a])*Dist2
-			AllCluster[[a]]=agnes(W1,diss=TRUE,method=linkage)
-			names(AllCluster)[a]=paste("Weight_",w[a],sep="")
+		if(class(weight)!="list"){
+			condition<-function(l){		
+				l=as.numeric(l)
+				if( sum(l)==1 ){  #working with characters since with the numeric values of comb or permutations something goes not the way is should: 0.999999999<0.7+0.3<1??
+					#return(row.match(l,t1))
+					return(l)
+				}
+				else(return(0))
+			}
+			
+			t1=permutations(n=length(weight),r=length(List),v=as.character(weight),repeats.allowed = TRUE)
+			t2=lapply(seq_len(nrow(t1)), function(i) if(sum(as.numeric(t1[i,]))==1) return(as.numeric(t1[i,])) else return(0)) 
+			t3=sapply(seq(length(t2)),function(i) if(!all(t2[[i]]==0)) return (i) else return(0))
+			t4=t2[which(t3!=0)]
+			weight=lapply(seq(length(t4)),function(i) rev(t4[[i]]))
 			
 		}
 		
-		out=list(Dist1, Dist2, Weight,DistW,Clust=WeightedSimCluster,AllCluster)	
-		names(out)=c("Dist1","Dist2","Weight","DistW","Clust","Results")
+		if(class(weight)=="list" & "x" %in% weight[[1]]){ #x indicates a free weight
+			for(i in 1:length(weight)){
+				w=weight[[i]]
+				weightsfordata=which(w!="x") #position of the provided weight = position of the data to which the weight is given
+				givenweights=as.numeric(w[weightsfordata])
+				
+				stilltodistribute=1-sum(givenweights)
+				
+				newweights=seq(stilltodistribute,0,-0.1)
+				
+				t1=permutations(n=length(newweights),r=length(List)-length(weightsfordata),v=as.character(newweights),repeats.allowed = TRUE)
+				Input1=as.list(seq_len(nrow(t1)))
+				Input2=lapply(seq(length(Input1)),function(i) {Input1[[i]][length(Input1[[i]])+1]=stilltodistribute
+							return(Input1[[i]])})
+				t2=lapply(seq(length(Input2)), FUN=function(i){if(sum(as.numeric(t1[Input2[[i]][1],])+0.00000000000000002775)==Input2[[i]][2]) return(as.numeric(t1[i,])) else return(0)}) #make this faster: lapply on a list or adapt permutations function itself: first perform combinations under restriction then perform permutations
+				t3=sapply(seq(length(t2)),function(i) if(!all(t2[[i]]==0)) return (i) else return(0))
+				weightsforotherdata=t2[which(t3!=0)]
+				
+				new=list()
+				for(i in 1:length(weightsforotherdata)){
+					w1=weightsforotherdata[[i]]
+					new[[i]]=rep(0,length(List))
+					new[[i]][weightsfordata]=givenweights
+					new[[i]][which(new[[i]]==0)]=w1
+				}
+				
+				weight=new
+			}
+		}
+		
+		
+		weightedcomb<-function(w,Dist){
+			temp=lapply(seq_len(length(Dist)),function(i) w[i]*Dist[[i]])
+			temp=Reduce("+",temp)	
+			return(temp)
+		}
+		DistM=lapply(weight,weightedcomb,Dist)
+		
+		hclustW=lapply(seq(length(weight)),function(i) agnes(DistM[[i]],diss=TRUE,method=linkage))
+				
+		out=list(Dist, Weight,DistW,AllCluster=hclustW,Clust=WeightedSimCluster)	
+		names(out)=c("Dist","Weight","DistW","Results","Clust")
 	}	
-	class(out)="WeightedSim"
+	attr(out,'method')<-'WeightedSim'
 	return(out)
 }

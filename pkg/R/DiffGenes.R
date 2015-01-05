@@ -1,8 +1,11 @@
-DiffGenes<-function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+DiffGenes=function(List,Selection=NULL,GeneExpr=geneMat,nrclusters=NULL,method="limma",sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	if(method != "limma"){
 		stop("Only the limma method is implemented to find differentially expressed genes")
-	} 
-	
+	} 	
+	if(!is.null(Selection)){
+		ResultLimma=DiffGenesSelection(List,Selection,GeneExpr,nrclusters,method,sign,top,fusionsLog,WeightClust,names)
+	}
+	else{
 	ListNew=list()
 	element=0
 	for(i in 1:length(List)){
@@ -38,11 +41,6 @@ DiffGenes<-function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,
 		}
 	}
 	
-	if(length(List)==1){
-		ResultLimma=DiffGenes.2(List[[1]],GeneExpr,nrclusters,method,sign,top)
-	}
-	
-	else{
 		if(is.null(top)){
 			top1=FALSE
 		}
@@ -51,7 +49,7 @@ DiffGenes<-function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,
 		}	
 		
 		
-		MatrixClusters=MatrixFunction(List,nrclusters,fusionsLog,WeightClust,names)
+		MatrixClusters=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
 		
 		ResultLimma=list()
 		maxclus=0
@@ -81,14 +79,14 @@ DiffGenes<-function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,
 					GeneExpr.2$LeadCmpds<-label.factor	
 					DElead <- limmaTwoLevels(GeneExpr.2,"LeadCpds")
 					
-					allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
+					allDE <-a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
 					
 					if(is.null(allDE$ID)){
-						allDE$Genes <- rownames(allDE)
+						allDE$ID<- rownames(allDE)
 					}
 					else
 					{
-						allDE$Genes=allDE$ID
+						allDE$ID=allDE$ID
 					}
 					
 					if(top1==TRUE){
@@ -112,11 +110,11 @@ DiffGenes<-function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,
 					allDE=limma::topTable(fit,n=dim(GeneExpr)[1],coef=2,adjust="fdr",resort.by = "logFC",sort.by="p")
 					
 					if(is.null(allDE$ID)){
-						allDE$Genes <- rownames(allDE)
+						allDE$ID <- rownames(allDE)
 					}
 					else
 					{
-						allDE$Genes=allDE$ID
+						allDE$ID=allDE$ID
 					}
 					
 					if(top1==TRUE){
@@ -130,7 +128,6 @@ DiffGenes<-function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,
 					}
 				}	
 				
-				# p.values = result$adj.P.Val
 				temp[[2]]=result
 				
 				names(temp)=c("Compounds","Genes")
@@ -159,7 +156,7 @@ DiffGenes<-function(List,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,
 				}
 			}
 		} 	
+
 	}
-	
 	return(ResultLimma)
 }

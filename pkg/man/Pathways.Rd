@@ -7,10 +7,10 @@ Pathway analysis for multiple clustering results
 A pathway analysis per the cluster per method is conducted.
 }
 \usage{
-Pathways(List, GeneExpr = geneMat, nrclusters = 7, method = c("limma", "MLP"),
- ENTREZID = GeneInfo[, 1], geneSetSource = "GOBP", top = NULL, topG = NULL, 
- GENESET = ListGO, sign = 0.05, fusionsLog = TRUE, WeightClust = TRUE, 
- names = NULL)
+Pathways(List, Selection=NULL, GeneExpr = geneMat, nrclusters = NULL, method = 
+c("limma", "MLP"),ENTREZID = GeneInfo[, 1], geneSetSource = "GOBP", top = NULL,
+topG = NULL,GENESET = ListGO, sign = 0.05, fusionsLog = TRUE, WeightClust = TRUE, 
+names = NULL)
 }
 \arguments{
   \item{List}{
@@ -18,6 +18,10 @@ A list of the outputs from the methods to be compared. The first element of the
 list will be used as the reference. The output of \code{ChooseFeatures} is also
 accepted.
 }
+ \item{Selection}{
+If pathway analysis should be conducted for a specific selection of compounds, this selection can be provided here.
+Selection can be of the type "character" (names of the compounds) or "numeric" (the number of specific cluster).
+ }
   \item{GeneExpr}{
 The gene expression matrix or ExpressionSet of the objects.
 }
@@ -51,10 +55,10 @@ Optional. Can provide own candidate gene sets.
 The significance level to be handled.
 }
   \item{fusionsLog}{
-To be handed to MatrixFunction.
+To be handed to ReorderToReference.
 }
   \item{WeightClust}{
-To be handed to MatrixFunction.
+To be handed to ReorderToReference.
 }
   \item{names}{
 Optional. Names of the methods.
@@ -74,7 +78,7 @@ Entrez Gene identifiers related to that particular pathway. The default values f
 maximum number of genes in a gene set for it to be considered were used. For MLP this is 
 respectively 5 and 100. If a list of outputs of several methods is provided as data input, the
 cluster numbers are rearranged according to a reference method. The first method is taken as the 
-reference and MatrixFunction is applied to get the correct ordering. When the clusters haven been
+reference and ReorderToReference is applied to get the correct ordering. When the clusters haven been
 re-appointed, the pathway analysis as described above is performed for each cluster of each method.
 }
 \value{

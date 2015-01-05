@@ -10,13 +10,17 @@ over the iterations per cluster per method. This is to see if over the
 different resamplings of the data, similar pathways were discovered.
 }
 \usage{
-Geneset.intersect(list.output, sign, names = NULL, seperatetables = FALSE, 
-separatepvals = FALSE)
+Geneset.intersect(PathwaysOutput, Selection=FALSE, sign=0.05, names = NULL,
+seperatetables = FALSE, separatepvals = FALSE)
 }
 \arguments{
-  \item{list.output}{
+  \item{PathwaysOutput}{
 The output of the \code{PathwaysIter} function.
 }
+ \item{Selection}{
+ Logical. Indicates whether or not the output of the pathways function were concentrated on a specific selection of compounds.
+If this was the case, Selection should be put to TRUE. Otherwise, it should be put to FALSE.
+ }
   \item{sign}{
 The significance level to be handled for cutting of the pathways.
 }

@@ -70,7 +70,7 @@ Marijke Van Moerbeke
 data(fingerprintMat)
 data(targetMat)
 L=list(fingerprintMat,targetMat)
-MCF7_ADECc=ADECc(L,distmeasure="tanimoto",t=10,r=544,nrclusters=seq(5,25,1),
+MCF7_ADECc=ADECc(L,distmeasure="tanimoto",t=10,r=NULL,nrclusters=seq(5,25,1),
 clust="agnes",linkage="ward")
 }
 \note{

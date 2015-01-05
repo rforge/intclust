@@ -1,7 +1,90 @@
-DiffGenesSelection<-function(List,Selection,GeneExpr=geneMat,nrclusters=7,method="limma",sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,method="limma",sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	if(method != "limma"){
 		stop("Only the limma method is implemented to find differentially expressed genes")
 	} 
+	
+	if(is.null(top)){
+		top1=FALSE
+	}
+	else{
+		top1=TRUE
+	}	
+	
+	if(class(Selection)=="character"){
+		ResultLimma=list()
+		Genes=list()
+		temp=list()
+		
+		LeadCpds=Selection #names of the compounds
+		OrderedCpds=colnames(geneMat)
+		temp[[1]]=list(LeadCpds,OrderedCpds)
+		names(temp[[1]])=c("LeadCpds","OrderedCpds")
+		
+		label = rep(0,dim(GeneExpr)[2])
+		label[which(colnames(GeneExpr)%in%Selection)] = 1
+		label.factor = factor(label)
+	
+		
+		if(class(GeneExpr)[1]=="ExpressionSet"){
+			GeneExpr$LeadCmpds<-label.factor 
+			DElead <- limmaTwoLevels(GeneExpr,"LeadCpds")
+			
+			allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
+			if(is.null(allDE$ID)){
+				allDE$ID <- rownames(allDE)
+			}
+			else
+			{
+				allDE$ID=allDE$ID
+			}
+			if(top1==TRUE){
+				result = list(allDE[1:top,],allDE)
+				names(result)=c("TopDE","AllDE")
+				
+			}
+			else if(top1==FALSE){
+				top=length(which(allDE$adj.P.Val<=sign))
+				result = list(allDE[1:top,],allDE)
+				names(result)=c("TopDE","AllDE")
+				
+			}
+			
+		}
+		else{
+			
+			design = model.matrix(~label.factor)
+			fit = lmFit(GeneExpr,design=design)
+			fit = eBayes(fit)
+			
+			allDE=limma::topTable(fit,coef=2,n=dim(GeneExpr)[1],adjust="fdr",resort.by = "logFC",sort.by="p")
+			if(is.null(allDE$ID)){
+				allDE$ID <- rownames(allDE)
+			}
+			else
+			{
+				allDE$ID=allDE$ID
+			}
+			if(top1==TRUE){
+				result = list(allDE[1:top,],allDE)
+				names(result)=c("TopDE","AllDE")
+				
+			}
+			else if(top1==FALSE){
+				top=length(which(allDE$adj.P.Val<=sign))
+				result = list(allDE[1:top,],allDE)
+				names(result)=c("TopDE","AllDE")
+				
+			}	
+			
+		}
+		temp[[2]]=result
+		
+		names(temp)=c("Compounds","Genes")
+		ResultLimma[[1]]=temp
+		names(ResultLimma)="Selection"
+		
+	}
+	else if(class(Selection)=="numeric" & !(is.null(List))){
 	
 	ListNew=list()
 	element=0
@@ -38,36 +121,24 @@ DiffGenesSelection<-function(List,Selection,GeneExpr=geneMat,nrclusters=7,method
 		}
 	}
 	
-	if(length(List)==1){
-		ResultLimma=DiffGenes.2(List[[1]],GeneExpr,nrclusters,method,sign,top)
-	}
 	
-	else{
-		if(is.null(top)){
-			top1=FALSE
-		}
-		else{
-			top1=TRUE
-		}	
-		
-		
-		Matrix=MatrixFunction(List,nrclusters,fusionsLog,WeightClust,names)
+		Matrix=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
 		
 		ResultLimma=list()
 		for(k in 1:dim(Matrix)[1]){	
-			maxcluster=names(which(table(Matrix[k,which(colnames(Matrix)%in%Selection)])==max(table(Matrix[k,which(colnames(Matrix)%in%Selection)]))))
+			cluster=Selection
 			
 			hc<-as.hclust(List[[k]]$Clust)
 			OrderedCpds <- hc$labels[hc$order]
 			
 			Genes=list()
 			temp=list()
-			LeadCpds=colnames(Matrix)[which(Matrix[k,]==maxcluster)] #names of the compounds
+			LeadCpds=colnames(Matrix)[which(Matrix[k,]==cluster)] #names of the compounds
 			temp[[1]]=list(LeadCpds,OrderedCpds)
 			names(temp[[1]])=c("LeadCpds","OrderedCpds")
 			
 			label = rep(0,dim(Matrix)[2])
-			label[which(Matrix[k,]==maxcluster)] = 1
+			label[which(Matrix[k,]==cluster)] = 1
 			label.factor = factor(label)
 			
 			GeneExpr.2=GeneExpr[,colnames(Matrix)]
@@ -78,11 +149,11 @@ DiffGenesSelection<-function(List,Selection,GeneExpr=geneMat,nrclusters=7,method
 				
 				allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
 				if(is.null(allDE$ID)){
-					allDE$Genes <- rownames(allDE)
+					allDE$ID <- rownames(allDE)
 				}
 				else
 				{
-					allDE$Genes=allDE$ID
+					allDE$ID=allDE$ID
 				}
 				if(top1==TRUE){
 					result = list(allDE[1:top,],allDE)
@@ -106,11 +177,11 @@ DiffGenesSelection<-function(List,Selection,GeneExpr=geneMat,nrclusters=7,method
 				
 				allDE=limma::topTable(fit,coef=2,n=dim(GeneExpr)[1],adjust="fdr",resort.by = "logFC",sort.by="p")
 				if(is.null(allDE$ID)){
-					allDE$Genes <- rownames(allDE)
+					allDE$ID <- rownames(allDE)
 				}
 				else
 				{
-					allDE$Genes=allDE$ID
+					allDE$ID=allDE$ID
 				}
 				if(top1==TRUE){
 					result = list(allDE[1:top,],allDE)
@@ -129,10 +200,13 @@ DiffGenesSelection<-function(List,Selection,GeneExpr=geneMat,nrclusters=7,method
 			
 			names(temp)=c("Compounds","Genes")
 			ResultLimma[[k]]=temp
-			names(ResultLimma)[k]=paste(names[k],k,": Cluster", maxcluster, sep=" ")
+			names(ResultLimma)[k]=paste(names[k],": Cluster", cluster, sep="")
 		}		
 	}
-	
+
+	else{
+		message("If a specific cluster is specified, clustering results must be provided in List")
+	}
 	return(ResultLimma)
 	
 }

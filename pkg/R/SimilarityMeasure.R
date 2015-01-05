@@ -4,7 +4,7 @@ SimilarityMeasure<-function(List,nrclusters=7,fusionsLog=TRUE,WeightClust=TRUE,n
 		MatrixColors=List
 	}	
 	else{
-		MatrixColors=MatrixFunction(List,nrclusters,fusionsLog,WeightClust,names)
+		MatrixColors=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
 	}
 	
 	#Compare every row to the first row

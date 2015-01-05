@@ -1,13 +1,28 @@
-Pathways<-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,topG=NULL,GENESET=ListGO,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+Pathways<-function(List,Selection=NULL,GeneExpr=geneMat,nrclusters=NULL,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,topG=NULL,GENESET=ListGO,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	
+	if(!(is.null(Selection))){
+		ResultMLP=PathwaysSelection(List,Selection,GeneExpr,nrclusters,method,ENTREZID,geneSetSource,top,topG,GENESET,sign,fusionsLog,WeightClust,names)
+			
+	}
+	else if(class(List)=="ChosenClusters"){
+		ResultMLP=list()
+		for(i in 1:length(List)){	
+			Selection=List[[i]]$Compounds$LeadCpds
+			L=List[i]
+			ResultMLP[[i]]=PathwaysSelection(List=L,Selection,GeneExpr,nrclusters,method,ENTREZID,geneSetSource,top,topG,GENESET,sign,fusionsLog,WeightClust,names)	
+			names(ResultMLP)=paste("Choice",i,sep=' ')
+		}	
+	}
+	else{
+		
 	ListNew=list()
 	element=0
 	for(i in 1:length(List)){
-		if(class(List[[i]]) != "CEC" & class(List[[i]]) != "Weighted" & class(List[[i]]) != "WeightedSim"){
+		if(attributes(List[[1]])$method != "CEC" & attributes(List[[1]])$method != "Weighted" & attributes(List[[1]])$method != "WeightedSim"){
 			element=element+1
 			ListNew[[element]]=List[[i]]
 		}
-		else if(class(List[[i]])=="CEC" | class(List[[i]])=="Weighted" | class(List[[i]]) == "WeightedSim"){
+		else if(attributes(List[[1]])$method=="CEC" | attributes(List[[1]])$method=="Weighted" | attributes(List[[1]])$method == "WeightedSim"){
 			ResultsClust=list()
 			if(WeightClust==TRUE){
 				ResultsClust[[1]]=list()
@@ -30,12 +45,8 @@ Pathways<-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),E
 		}	
 	}
 	List=ListNew
-	
-	if(length(List)==1){
-		ResultMLP=Pathways.2(List[[1]],GeneExpr,nrclusters,method,ENTREZID,geneSetSource,top,GENESET,sign)
-	}
-	else{
-		method.test = function(sign.method,path.method){
+
+	method.test = function(sign.method,path.method){
 			method.choice = FALSE
 			
 			if( sign.method=="limma"  & path.method=="MLP"  ){
@@ -48,12 +59,12 @@ Pathways<-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),E
 				stop("Incorrect choice of method.")
 			}
 			
-		}
+	}
 		
-		method.out = method.test(method[1],method[2])
+	method.out = method.test(method[1],method[2])
 		
-		sign.method = method.out$sign.method
-		path.method = method.out$path.method
+	sign.method = method.out$sign.method
+	path.method = method.out$path.method
 		
 		if(length(ENTREZID)==1){
 			ENTREZID = colnames(GeneExpr)
@@ -80,12 +91,12 @@ Pathways<-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),E
 			}
 		}
 		
-		MatrixClusters=MatrixFunction(List,nrclusters,fusionsLog,WeightClust,names)
+		MatrixClusters=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
 		
 		ResultMLP=list()
 		maxclus=0
 		for (k in 1:dim(MatrixClusters)[1]){
-			print(k)
+			message(k)
 			clusters=MatrixClusters[k,]
 			
 			if(max(clusters)>maxclus){
@@ -112,7 +123,7 @@ Pathways<-function(List,GeneExpr=geneMat,nrclusters=7,method=c("limma", "MLP"),E
 			PathwaysResults=list()
 			
 			for (i in 1:length(DataPrepared$pvalsgenes)){
-				print(paste(k,i,sep='.'))
+				message(paste(k,i,sep='.'))
 				temp=list()
 				temp[[1]]=DataPrepared$Compounds[[i]] # the compounds
 				temp[[2]]=DataPrepared$Genes[[i]]		# the genes		

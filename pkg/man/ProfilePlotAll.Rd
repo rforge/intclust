@@ -10,7 +10,7 @@ the mean.
 }
 \usage{
 ProfilePlotAll(Genes = Genes, Comps = Comps, GeneExpr = geneMat, 
-Raw = FALSE, Order = NULL, Color = NULL, nrclusters = 7, 
+Raw = FALSE, Order = NULL, Color = NULL, nrclusters = NULL, 
 Clusters = NULL, cols = NULL, AddLegend = TRUE, 
 margins = c(8.1, 4.1, 1.1, 6.5), extra = 5, ...)
 }

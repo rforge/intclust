@@ -11,16 +11,20 @@ as described in \code{Pathways} a specified number of times. The input can be on
 a list as in \code{Pathway.2} and \code{Pathways}.
 }
 \usage{
-PathwaysIter(List, GeneExpr = geneMat, nrclusters = 7, method = c("limma",
- "MLP"), ENTREZID = GeneInfo[, 1], geneSetSource = "GOBP", top = NULL, 
- topG = NULL, GENESET = ListGO, sign = 0.05, niter = 10, fusionsLog = TRUE,
-  WeightClust = TRUE, names = NULL)
+PathwaysIter(List, Selection=NULL, GeneExpr = geneMat, nrclusters = NULL, 
+method = c("limma", "MLP"), ENTREZID = GeneInfo[, 1], geneSetSource = "GOBP",
+top = NULL, topG = NULL, GENESET = ListGO, sign = 0.05, niter = 10, 
+fusionsLog = TRUE, WeightClust = TRUE, names = NULL)
 }
 \arguments{
   \item{List}{
 A list of the outputs from the methods to be compared. The first element of the
 list will be used as the reference.
 }
+ \item{Selection}{
+If pathway analysis should be conducted for a specific selection of compounds, this selection can be provided here.
+Selection can be of the type "character" (names of the compounds) or "numeric" (the number of specific cluster).
+ }
   \item{GeneExpr}{
 The gene expression matrix of the objects.
 }
@@ -57,10 +61,10 @@ The significance level to be handled.
 The number of times to perform pathway analysis.
 }
   \item{fusionsLog}{
-To be handed to MatrixFunction.
+To be handed to ReorderToReference.
 }
   \item{WeightClust}{
-To be handed to MatrixFunction.
+To be handed to ReorderToReference.
 }
   \item{names}{
 Optional. Names of the methods.

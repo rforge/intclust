@@ -10,7 +10,7 @@ of interest and the other compounds. This is a visualization to see which
 characterist are (not) expressed in a specific cluster.
 }
 \usage{
-FeaturesPlot(LeadCpds, OrderedCpds, Features, Data, Color, nrclusters = 7, 
+FeaturesPlot(LeadCpds, OrderedCpds, Features, Data, Color, nrclusters = NULL, 
 cols = Colors2, name = c("FP"))
 }
 \arguments{

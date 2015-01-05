@@ -13,7 +13,7 @@ Geneset.intersectSelection<-function(list.output,sign,names=NULL,seperatetables=
 		
 	}
 	names(subsets)=names
-	
+
 	#put all of same method together: go through list.output
 	for(j in 1:length(list.output)){
 		name1=names(list.output)[j]
@@ -50,7 +50,6 @@ Geneset.intersectSelection<-function(list.output,sign,names=NULL,seperatetables=
 			cut = Clusters[[a]]$Pathways$ranked.genesets.table[  Clusters[[a]]$Pathways$ranked.genesets.table[,2]<=sign,]
 			colnames(cut)[2] = paste("values.",a,sep="")
 			cut = cut[,c(1,3,2)]
-			#print(paste("For geneset table ",i,": ",dim(cut)[1]," of the ", dim(list.output[[i]]$ranked.genesets.table)[1]," remain."))
 			result.out[[a]] = cut
 			result.name = c(result.name,paste("genesettable",a,sep=""))
 		}
@@ -69,7 +68,6 @@ Geneset.intersectSelection<-function(list.output,sign,names=NULL,seperatetables=
 			result.out$genesets.table.intersect=genesets.table.intersect[,c(1,2,ncol(genesets.table.intersect))]
 		}
 		
-		#print(paste("All tables share ",dim(genesets.table.intersect)[1]," genesets in total."))
 		
 		if(seperatetables==FALSE){
 			result.out=result.out$genesets.table.intersect

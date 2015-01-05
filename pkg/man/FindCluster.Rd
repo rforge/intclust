@@ -1,14 +1,14 @@
 \name{FindCluster}
 \alias{FindCluster}
 \title{
-Find a selection of compounds in the output of \code{MatrixFunction}
+Find a selection of compounds in the output of \code{ReorderToReference}
 }
 \description{
 \code{FindCluster} selects the compounds belonging to a cluster 
-after the results of the methods have been rearranged by the \code{MatrixFunction}.
+after the results of the methods have been rearranged by the \code{ReorderToReference}.
 }
 \usage{
-FindCluster(List, nrclusters, select = c(1, 4), fusionsLog = TRUE, 
+FindCluster(List, nrclusters=NULL, select = c(1, 4), fusionsLog = TRUE, 
 WeightClust = TRUE, names = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -24,10 +24,10 @@ The number of clusters to cut the dendrogram in.
 The row (the method) and the number of the cluster to select.
 }
   \item{fusionsLog}{
-To be handed to \code{MatrixFunction}.
+To be handed to \code{ReorderToReference}.
 }
   \item{WeightClust}{
-To be handed to \code{MatrixFunction}.
+To be handed to \code{ReorderToReference}.
 }
   \item{names}{
 Optional. Names of the methods.

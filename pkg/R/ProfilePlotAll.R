@@ -1,4 +1,4 @@
-ProfilePlotAll<-function(Genes=Genes,Comps=Comps,GeneExpr=geneMat,Raw=FALSE,Order=NULL,Color=NULL,nrclusters=7,Clusters=NULL,cols=NULL,AddLegend=TRUE,margins=c(8.1,4.1,1.1,6.5),extra=5,...){
+ProfilePlotAll<-function(Genes=Genes,Comps=Comps,GeneExpr=geneMat,Raw=FALSE,Order=NULL,Color=NULL,nrclusters=NULL,Clusters=NULL,cols=NULL,AddLegend=TRUE,margins=c(8.1,4.1,1.1,6.5),extra=5,...){
 	par(mar=margins,xpd=TRUE)
 	
 	if(class(GeneExpr)[1]=="ExpressionSet"){
@@ -121,7 +121,7 @@ ProfilePlotAll<-function(Genes=Genes,Comps=Comps,GeneExpr=geneMat,Raw=FALSE,Orde
 	#Indices=c(colnames(GeneExpr)[which(colnames(GeneExpr)%in%Comps)],colnames(GeneExpr)[which(!colnames(GeneExpr)%in%Comps)])
 	if(!is.null(Color)){
 		axis(1, labels=FALSE)
-		box("outer")
+		#box("outer")
 		mtext(substr(Indices,1,15), side = 1,  at=seq(0.5,(ncol(GeneExpr)-0.5)), line=0, las=2, cex=0.70,col=colors[Indices])
 		
 	}

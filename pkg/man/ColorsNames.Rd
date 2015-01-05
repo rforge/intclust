@@ -4,7 +4,7 @@
 Function that annotates colors to their names
 }
 \description{
-The \code{ColorsNames} function is used on the output of the \code{MatrixFunction}
+The \code{ColorsNames} function is used on the output of the \code{ReorderToReference}
 and matches the cluster numbers indicated by the cell with the names of the colors. 
 This is necessary to produce the plot of the \code{ComparePlot} function and is
 therefore an internal function of this function but can also be applied separately.
@@ -14,15 +14,15 @@ ColorsNames(MatrixColors, cols = Colors2)
 }
 \arguments{
   \item{MatrixColors}{
-A matrix which is the output of the MatrixFunction function.
+A matrix which is the output of the ReorderToReference function.
 }
   \item{cols}{
 The hex codes of the colors to be used.
 }
 }
 \value{
-A vector containing the hex code of the color that corresponds to each cell of 
-the matrix. This function is called upon by the \code{ComparePlot} function.
+A matrix containing the hex code of the color that corresponds to each cell of 
+the matrix to be colored. This function is called upon by the \code{ComparePlot} function.
 }
 \author{
 Marijke Van Moerbeke
@@ -40,13 +40,13 @@ gap=FALSE,maxK=55)
 L=list(MCF7_F,MCF7_T)
 names=c("FP","TP")
 
-MatrixColors=MatrixFunction(L,nrclusters=7,fusionsLog=TRUE,WeightClust=TRUE,
+MatrixColors=ReorderToReference(L,nrclusters=7,fusionsLog=TRUE,WeightClust=TRUE,
 names=names)
 
 Names=ColorsNames(MatrixColors,cols=Colors2)
 }
 \seealso{
- \code{\link{MatrixFunction}}
+ \code{\link{ReorderToReference}}
 }
 \keyword{ hex color codes }
 

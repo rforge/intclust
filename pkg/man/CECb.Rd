@@ -12,12 +12,12 @@ dendrogram several times, each time into a different number of cluster.
 \usage{
 CECb(List, distmeasure = c("tanimoto", "tanimoto"), nrclusters = 
 seq(5, 25, 1), weight = NULL, clust = "agnes", linkage = "ward", 
-Clustweight = 0.5)
+WeightClust = 0.5)
 }
 \arguments{
   \item{List}{
-A list of data matrices (max two matrices). It is assumed the 
-rows are corresponding with the objects.
+A list of data matrices. It is assumed the  rows are corresponding
+ with the objects.
 }
   \item{distmeasure}{
 A character vector with the distance measure for each data matrix.
@@ -27,9 +27,10 @@ Should be one of "tanimoto", "euclidean", "jaccard".
 A sequence of numbers of clusters to cut the dendrogram in.
 }
   \item{weight}{
- Optional. A specific weight to give to the first co-association matrix.
- If NULL, the weight is sequence from 0 to 1 and a result is produced 
- for each.
+ Optional. A list of different weight combinations for the data sets in List.
+ If NULL, the weight is sequence from 0 to 1  with steps of 0.1 and a result is produced 
+ for each. It is further possible to fix weights for some data matrices and to
+ let it vary randomly for the remaining data sets. An example is provided in the details.
 }
   \item{clust}{
 Choice of clustering function (character). Defaults to "agnes".
@@ -37,7 +38,7 @@ Choice of clustering function (character). Defaults to "agnes".
   \item{linkage}{
 Choice of inter group dissimilarity (character). Defaults to "ward".
 }
-  \item{Clustweight}{
+  \item{WeightClust}{
 A weight for which the result will be put aside of the other results.
 This was done for comparative reason and easy access.
 }
@@ -50,6 +51,14 @@ a single time into one specific number of clusters but multiple times and
 for a range of numbers of clusters. Afterwards the two incidence matrices
 are combined in a weighted sum and hierarchical clustering is performed
 once more. More information can be found in Fodeh et al. (2013).
+
+The weight combinations should be provided as elements in a list. For three data
+matrices an example could be: weights=list(c(0.5,0.2,0.3),c(0.1,0.5,0.4)). To provide
+a fixed weight for some data sets and let it vary randomly for others, the element "x" 
+indicates a free parameter. An example is weights=list(c(0.7,"x","x")). The weight 0.7 
+is now fixed for the first data matrix while the remaining 0.3 weight will be divided over
+the other two data sets. This implies that every combination of the sequence from 0 to 0.3
+with steps of 0.1 will be reported and clustering will be performed for each.
 }
 \value{
 The returned value is a list with the following four elements.
