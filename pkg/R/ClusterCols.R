@@ -1,4 +1,4 @@
-ClusterCols <- function(x,Data,nrclusters=NULL,cols=Colors2) {
+ClusterCols <- function(x,Data,nrclusters=NULL,cols=NULL) {
 	if(length(cols)<nrclusters){
 		stop("Not for every cluster a color is specified")
 	}	

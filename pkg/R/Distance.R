@@ -1,5 +1,9 @@
-Distance=function(Data,distmeasure="tanimoto"){
+Distance=function(Data,distmeasure=c("tanimoto","jaccard","euclidean","hamming"), normalize=FALSE,method=NULL){
 	Data <- Data+0
+	distmeasure=match.arg(distmeasure)
+	if((distmeasure=="euclidean") & normalize==TRUE){
+		Data=Normalization(Data,method)				
+	}
 	
 	tanimoto = function(m){
 		S = matrix(0,nrow=dim(m)[1],ncol=dim(m)[1])
@@ -40,10 +44,14 @@ Distance=function(Data,distmeasure="tanimoto"){
 		dist = daisy(Data,metric="euclidean")
 		dist = as.matrix(dist)
 	}
-	
+	else if(distmeasure=="hamming"){
+		dist=hamming.distance(Data)
+		dist=as.matrix(dist)
+	}
 	else{
 		stop("Incorrect choice of distmeasure. Must be one of: tanimoto, jaccard or euclidean.")
 	}
+	colnames(dist)=rownames(dist)
 	
 	return(dist)
 }

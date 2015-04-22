@@ -10,9 +10,10 @@ and characteristic features are determined. It is also possible to provide the
 compounds of interest without producing the plot.
 }
 \usage{
-ChooseCluster(Interactive = TRUE, LeadCpds=NULL, ClusterResult, ClusterColors 
+ChooseCluster(Interactive = TRUE, LeadCpds=NULL, ClusterResult, ColorLab 
 = NULL, BinData, Datanames = c("FP"), GeneExpr, topChar = 20, topG = 20, 
-sign = 0.05, nrclusters = 7, cols = Colors2, N = 1)
+sign = 0.05, nrclusters = 7, cols = NULL, N = 1)
+
 }
 \arguments{
   \item{Interactive}{
@@ -26,19 +27,19 @@ these are determined by the mouse-click and it defaults to NULL.
 The output of one of the aggregated cluster functions,
 The clustering result of interest.
 }
-  \item{ClusterColors}{
+  \item{ColorLab}{
 The clustering result the dendrogram should be colored after as in 
 \code{ClusterPlot}. It is the output of one of the clustering functions.
 }
   \item{BinData}{
 A list of binary data matrices with the characteristics of the compounds as for 
-example fingerpints or target predictions.
+example fingerprints or target predictions.
 }
   \item{Datanames}{
 A character vector of the labels to give to the matrices in BinData.
 }
   \item{GeneExpr}{
-A gene expression matrix, may also be an ExpressionSet.
+A gene expression matrix, may also be an ExpressionSet. The rows should correspond with the genes.
 }
   \item{topChar}{
 The number of top characteristics to return. If NULL, only the significant 
@@ -84,13 +85,13 @@ data(fingerprintMat)
 data(targetMat)
 data(geneMat)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 MCF7_Interactive=ChooseCluster(Interactive=TRUE,LeadCpds=NULL,ClusterResult=MCF7_T,
-ClusterColors=MCF7_F,BinData=list(fingerprintMat),Datanames=c("FP"),geneMat,
+ColorLab=MCF7_F,BinData=list(fingerprintMat),Datanames=c("FP"),geneMat,
 topChar = 20, topG = 20,nrclusters=7,N=1)
 }
 

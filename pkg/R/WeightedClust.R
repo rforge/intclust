@@ -1,4 +1,4 @@
-WeightedClust <- function(List,distmeasure=c("tanimoto","tanimoto"),weight=seq(1,0,-0.1),WeightClust=0.5,clust="agnes",linkage="ward"){ # weight = weight to data1
+WeightedClust <- function(List,type=c("data","dist","clusters"),distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,weight=seq(1,0,-0.1),WeightClust=0.5,clust="agnes",linkage="ward",StopRange=FALSE){ # weight = weight to data1
 	if(clust != "agnes" | linkage != "ward"){
 		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
 						fused matrix.")
@@ -6,21 +6,57 @@ WeightedClust <- function(List,distmeasure=c("tanimoto","tanimoto"),weight=seq(1
 		linkage="ward"
 	}
 	
-	for(a in 1:length(distmeasure)){
-		if(distmeasure[[a]]=='euclidean'){
-			stand<-function(c){
-				minc=min(c)
-				maxc=max(c)
-				c1=(c-minc)/(maxc-minc)
-				return(c1)				
-			}
-			List[[a]]=apply(List[[a]],2,stand)			
-		}
-		
-	}
+	#for(a in 1:length(distmeasure)){
+		#if(distmeasure[[a]]=='euclidean' & normalize==TRUE){
+		#	stand<-function(c){
+		#		minc=min(c)
+		#		maxc=max(c)
+		#		c1=(c-minc)/(maxc-minc)
+		#		return(c1)				
+		#	}
+		#	List[[a]]=apply(List[[a]],2,stand)			
+		#}
+		#
+	#}
 	
 	#Step 1: compute distance matrices:
-	Dist=lapply(seq(length(List)),function(i) Distance(List[[i]],distmeasure[i]))
+	type<-match.arg(type)
+	
+	CheckDist<-function(Dist,StopRange){
+		if(StopRange==FALSE & !(0<=min(Dist) & max(Dist)<=1)){
+			message("It was detected that a distance matrix had values not between zero and one. Range Normalization was performed to secure this. Put StopRange=TRUE if this was not necessary")
+			Dist=Normalization(Dist,method="Range")
+		}
+		else{
+			Dist=Dist
+		}
+	}
+	
+	
+	if(type=="data"){
+		OrderNames=rownames(List[[1]])
+		for(i in 1:length(List)){
+			List[[i]]=List[[i]][OrderNames,]
+		}
+		Dist=lapply(seq(length(List)),function(i) Distance(List[[i]],distmeasure[i],normalize,method))
+		Dist=lapply(seq(length(Dist)),function(i) CheckDist(Dist[[i]],StopRange))
+	}
+	else if(type=="dist"){
+		OrderNames=rownames(List[[1]])
+		for(i in 1:length(List)){
+			List[[i]]=List[[i]][OrderNames,OrderNames]
+		}
+		Dist=List
+		Dist=lapply(seq(length(Dist)),function(i) CheckDist(Dist[[i]],StopRange))
+	}
+	else{
+		Dist=lapply(seq(length(List)),function(i) return(List[[i]]$Dist))
+		Dist=lapply(seq(length(Dist)),function(i) CheckDist(Dist[[i]],StopRange))
+		OrderNames=rownames(DistM[[1]])
+		for(i in 1:length(DistM)){
+			DistM[[i]]=DistM[[i]][OrderNames,OrderNames]
+		}
+	}
 	
 	#Step 2: Weighted linear combination of the distance matrices:
 	if(is.null(weight)){
@@ -28,9 +64,6 @@ WeightedClust <- function(List,distmeasure=c("tanimoto","tanimoto"),weight=seq(1
 	}
 	else if(class(weight)=='list' & length(weight[[1]])!=length(List)){
 		stop("Give a weight for each data matrix or specify a sequence of weights")
-	}
-	else{
-		message('The weights are considered to be a sequence, each situation is investigated')
 	}
 	
 	if(class(weight)!="list"){
@@ -43,6 +76,18 @@ WeightedClust <- function(List,distmeasure=c("tanimoto","tanimoto"),weight=seq(1
 			else(return(0))
 		}
 		
+		if(all(seq(1,0,-0.1)!=weight)){
+			for(i in 1:length(weight)){
+				rest=1-weight[i]
+				if(!(rest%in%weight)){
+					weight=c(weight,rest)
+				}
+			}
+		}
+		
+		
+
+				
 		t1=permutations(n=length(weight),r=length(List),v=as.character(weight),repeats.allowed = TRUE)
 		t2=lapply(seq_len(nrow(t1)), function(i) if(sum(as.numeric(t1[i,]))==1) return(as.numeric(t1[i,])) else return(0)) #make this faster: lapply on a list or adapt permutations function itself: first perform combinations under restriction then perform permutations
 		t3=sapply(seq(length(t2)),function(i) if(!all(t2[[i]]==0)) return (i) else return(0))
@@ -51,8 +96,9 @@ WeightedClust <- function(List,distmeasure=c("tanimoto","tanimoto"),weight=seq(1
 		
 	}
 	if(class(weight)=="list" & "x" %in% weight[[1]]){ #x indicates a free weight
-		for(i in 1:length(weight)){
-			w=weight[[i]]
+		newweight=list()
+		for(k in 1:length(weight)){
+			w=weight[[k]]
 			weightsfordata=which(w!="x") #position of the provided weight = position of the data to which the weight is given
 			givenweights=as.numeric(w[weightsfordata])
 			
@@ -76,8 +122,10 @@ WeightedClust <- function(List,distmeasure=c("tanimoto","tanimoto"),weight=seq(1
 				new[[i]][which(new[[i]]==0)]=w1
 			}
 			
-			weight=new
+			newweight[k]=new
 		}
+		
+		weight=newweight
 	}
 	weightedcomb<-function(w,Dist){
 		temp=lapply(seq_len(length(Dist)),function(i) w[i]*Dist[[i]])
@@ -85,17 +133,21 @@ WeightedClust <- function(List,distmeasure=c("tanimoto","tanimoto"),weight=seq(1
 		return(temp)
 	}
 	DistM=lapply(seq(length(weight)),function(i) weightedcomb(weight[[i]],Dist=Dist))
-
+	namesweights=c()
 	WeightedClust=lapply(seq(length(weight)),function(i) agnes(DistM[[i]],diss=TRUE,method=linkage))
 	for(i in 1:length(WeightedClust)){
-		names(WeightedClust)[i]=paste("Weight",weight[i],sep=" ")
+		namesweights=c(namesweights,paste("Weight",weight[i],sep=" "))
 		if(all(weight[[i]]==WeightClust)){
-			Clust=WeightedClust[[i]]			
+			Clust=WeightedClust[i]	
+			DistClust=DistM[i]
 		}
 	}	
 	
+	Results=lapply(seq(1,length(WeightedClust)),function(i) return(c("DistM"=DistM[i],"Clust"=WeightedClust[i])))
+	names(Results)=namesweights
+	
 	# return list with objects
-	out=list(Dist=Dist,DistM=DistM,Results=WeightedClust,Clust=Clust)
+	out=list(Dist=Dist,Results=Results,Clust=c("DistM"=DistClust,"Clust"=Clust))
 	attr(out,'method')<-'Weighted'
 	return(out)
 	

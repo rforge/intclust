@@ -13,21 +13,42 @@ are involved in the method, a comparison plot of the results for these weights
 is made as well.
 }
 \usage{
-Ultimate(List, distmeasure, NN = 20, alpha = 0.5, T = 20, t = 10, 
-r = NULL, nrclusters = 7, nrclusterssep = c(7, 7), nrclustersseq 
-= NULL, weight = NULL, Clustweight = 0.5, clust = "agnes", linkage
- = "ward", gap = FALSE, maxK = 50, IntClust = c("ADC", "ADECa", "ADECb",
-  "ADECc", "WonM", "CECa", "CECb", "CECc", "WeightedClust", 
-  "WeightedSim", "SNFa", "SNFb", "SNFc"), fusionsLog = TRUE, WeightClust
-   = TRUE, PlotCompare = FALSE, cols = Colors2, ...)
+Ultimate(List,type=c("data","dist","clusters"),distmeasure,normalize=FALSE,method=NULL,
+StopRange=FALSE,NN = 20,alpha = 0.5, T = 20, t = 10, r = NULL, nrclusters = NULL,
+nrclusterssep = c(7, 7),nrclustersseq = NULL, weight = NULL, Clustweight = 0.5, 
+clust = "agnes", linkage= "ward", gap = FALSE, maxK = 50, IntClust = c("ADC", 
+"ADECa", "ADECb","ADECc", "WonM", "CECa", "CECb", "CECc", "WeightedClust", 
+"WeightedSim", "SNFa", "SNFb", "SNFc"), fusionsLog = TRUE, WeightClust
+= TRUE, PlotCompare = FALSE, cols = NULL, ...)  
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-A list of data matrices.
+A list of matrices of the same type. It is assumed that the rows are corresponding
+to the objects.
+}
+  \item{type}{
+Type indicates whether the provided matrices in "List" are either data or distance
+matrices obtained from the data. If type="dist" the calculation of the distance
+matrices is skipped and the methods ADC ,ADECa, ADECb, ADECc, CECa, CECb and
+CECc are not performed. Type should be one of "data" or "dist".		
 }
   \item{distmeasure}{
 A vector of the distance measures to be used on each data matrix.
+}
+  \item{normalize}{
+Logical. Indicates whether to normalize the distance matrices or not.
+This is recommended if different distance types are used. More details
+on standardization in \code{Distance}.
+}
+  \item{method}{
+A method of normalization. Should be one of "Quantile","Fisher-Yates",
+"standardize","Range" or any of the first letters of these names.
+}
+  \item{StopRange}{
+Logical. Indicates whether the distance matrices with values not between zero and one should be standardized to have so.
+If FALSE the range normalization is performed. See \code{Normalization}. If TRUE, the distance matrices are not changed.
+This is recommended if different types of data are used such that these are comparable.
 }
   \item{NN}{
 The number of neighbours to be used in SNF.
@@ -111,9 +132,9 @@ data(targetMat)
 data(Colors2)
 L=list(fingerprintMat,targetMat)
 
-MCF7_All=Ultimate(L,distmeasure=c("tanimoto","tanimoto"),NN=20,alpha=0.5,
-T=20,t=25,r=NULL,nrclusters=7,nrclustersseq=c(5,25,1),
-weight=seq(1,0,-0.1),Clustweight=0.5,clust="agnes",
+MCF7_All=Ultimate(L,type="data",distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
+method=NULL,StopRange=FALSE,NN=20,alpha=0.5,T=20,t=25,r=NULL,nrclusters=7,
+nrclustersseq=c(5,25,1),weight=seq(1,0,-0.1),Clustweight=0.5,clust="agnes",
 linkage="ward",gap=FALSE,IntClust=c("ADC","ADECa","ADECb",
 "ADECc","WonM","CECa","CECb","CECc","WeightedClust","WeightedSim",
 "SNFa","SNFb","SNFc"),fusionsLog=TRUE,WeightClust=TRUE,PlotCompare=TRUE,

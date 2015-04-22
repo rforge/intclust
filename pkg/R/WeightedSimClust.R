@@ -1,4 +1,4 @@
-WeightedSimClust<-function(List,type=c("data","clusters"),weight=seq(0,1,0.01),clust="agnes",linkage="ward",distmeasure=c("euclidean","tanimoto"),gap=FALSE,maxK=50,nrclusters=NULL,names=c("B","FP"),AllClusters=FALSE){
+WeightedSimClust<-function(List,type=c("data","dist","clusters"),weight=seq(0,1,0.01),clust="agnes",linkage="ward",distmeasure=c("euclidean","tanimoto"),normalize=FALSE,method=NULL,gap=FALSE,maxK=50,nrclusters=NULL,names=c("B","FP"),AllClusters=FALSE,StopRange=FALSE,plottype="new",location=NULL){
 	if(clust != "agnes" | linkage != "ward"){
 		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
 						fused matrix.")
@@ -6,28 +6,47 @@ WeightedSimClust<-function(List,type=c("data","clusters"),weight=seq(0,1,0.01),c
 		linkage="ward"
 	}
 	
-	if(length(weight)==1){
+	type<-match.arg(type)
+	
+	CheckDist<-function(Dist,StopRange){
+		if(StopRange==FALSE & !(0<=min(Dist) & max(Dist)<=1)){
+			message("It was detected that a distance matrix had values not between zero and one. Range Normalization was performed to secure this. Put StopRange=TRUE if this was not necessary")
+			Dist=Normalization(Dist,method="Range")
+		}
+		else{
+			Dist=Dist
+		}
+	}
+	
+	if(class(weight)=="numeric" & length(weight)==length(List)){
 		if(type=="data"){
+			
+			OrderNames=rownames(List[[1]])
+			for(i in 1:length(List)){
+				List[[i]]=List[[i]][OrderNames,]
+			}
 			#If given data matrices.
 			##1: clustering on separate sources.
 			##2: extract distance matrices.
 			##3: determine nrclusters if not given.
-			for(a in 1:length(distmeasure)){
-				if(distmeasure[[a]]=='euclidean'){
-					stand<-function(c){
-						minc=min(c)
-						maxc=max(c)
-						c1=(c-minc)/(maxc-minc)
-						return(c1)				
-					}
-					List[[a]]=apply(List[[a]],2,stand)			
-				}
-				
-			}
+			#for(a in 1:length(distmeasure)){
+			#	if(distmeasure[[a]]=='euclidean'){
+			#		stand<-function(c){
+			#			minc=min(c)
+			#			maxc=max(c)
+			#			c1=(c-minc)/(maxc-minc)
+			#			return(c1)				
+			#		}
+			#		List[[a]]=apply(List[[a]],2,stand)			
+			#	}
+			#	
+			#}
 			
 			
-			Clusterings=lapply(seq(length(List)),function(i) Cluster(List[[i]],distmeasure[i],clust,linkage,gap,maxK))		
+			Clusterings=lapply(seq(length(List)),function(i) Cluster(List[[i]],type=type,distmeasure[i],normalize=normalize,method=method,clust=clust,linkage=linkage,gap=gap,maxK=maxK,StopRange=StopRange))		
+			
 			Dist=lapply(seq(length(List)),function(i) Clusterings[[i]]$DistM)
+			Dist=lapply(seq(length(Dist)),function(i) CheckDist(Dist[[i]],StopRange))
 			
 			if(is.null(nrclusters)){
 				if(gap==FALSE){
@@ -40,20 +59,43 @@ WeightedSimClust<-function(List,type=c("data","clusters"),weight=seq(0,1,0.01),c
 			}
 	
 		}
-		else{
+		else if(type=="dist"){
 			
-			Dist=lapply(seq(length(List)),function(i) Clusterings[[i]]$DistM)
+			OrderNames=rownames(List[[1]])
+			for(i in 1:length(List)){
+				List[[i]]=List[[i]][OrderNames,OrderNames]
+			}
+			
+			Clusterings=lapply(seq(length(List)),function(i) Cluster(List[[i]],type,distmeasure[i],normalize,method,clust,linkage,gap,maxK,StopRange))
+			
+			Dist=List
+			Dist=lapply(seq(length(Dist)),function(i) CheckDist(Dist[[i]],StopRange))		
 			message("Warning: Are the distace matrices of the same range? If not, standardization is recommended.")	
 		
-		}	
+		}
+		else{
+			Clusterings=List
+			Dist=lapply(seq(length(List)),function(i) return(List[[i]]$DistM))
+			Dist=lapply(seq(length(Dist)),function(i) CheckDist(Dist[[i]],StopRange))
+			
+			OrderNames=rownames(Dist[[1]])
+			for(i in 1:length(Dist)){
+				Dist[[i]]=Dist[[i]][OrderNames,OrderNames]
+			}
+		}
 		Weight=weight
 		
 	}
 	else{
-		
-		temp=DetermineWeight(List,type,weight,nrclusters,distmeasure,clust,linkage,gap,maxK,names)
-		
+	
+		temp=DetermineWeight_SimClust(List,type,weight,nrclusters,distmeasure,normalize,method,clust,linkage,gap,maxK,names,StopRange,plottype,location)
+
 		Dist=lapply(seq(length(List)),function(i) temp[[1]][[i]]$DistM)
+		
+		OrderNames=rownames(Dist[[1]])
+		for(i in 1:length(Dist)){
+			Dist[[i]]=Dist[[i]][OrderNames,OrderNames]
+		}
 			
 		Weight=temp$Weight		
 	}
@@ -72,7 +114,7 @@ WeightedSimClust<-function(List,type=c("data","clusters"),weight=seq(0,1,0.01),c
 	WeightedSimCluster=agnes(DistW,diss=TRUE,method=linkage)
 
 	out=list(Dist,Weight,DistW,Clust=WeightedSimCluster)	
-	names(out)=c("Dist","Weight","DistW","Clust")
+	names(out)=c("Single_Distances","Weight","DistM","Clust")
 	
 	AllCluster=list()
 	if(AllClusters==TRUE){
@@ -84,6 +126,15 @@ WeightedSimClust<-function(List,type=c("data","clusters"),weight=seq(0,1,0.01),c
 					return(l)
 				}
 				else(return(0))
+			}
+			
+			if(all(seq(1,0,-0.1)!=weight)){
+				for(i in 1:length(weight)){
+					rest=1-weight[i]
+					if(!(rest%in%weight)){
+						weight=c(weight,rest)
+					}
+				}
 			}
 			
 			t1=permutations(n=length(weight),r=length(List),v=as.character(weight),repeats.allowed = TRUE)
@@ -133,9 +184,16 @@ WeightedSimClust<-function(List,type=c("data","clusters"),weight=seq(0,1,0.01),c
 		DistM=lapply(weight,weightedcomb,Dist)
 		
 		hclustW=lapply(seq(length(weight)),function(i) agnes(DistM[[i]],diss=TRUE,method=linkage))
+		
+		namesweights=c()
+		for(i in 1:length(weight)){
+			namesweights=c(namesweights,paste("Weight",weight[i],sep=" "))
+		}
+		Results=lapply(seq(1,length(hclustW)),function(i) return(c("DistM"=DistM[i],"Clust"=hclustW[i])))
+		names(Results)=namesweights
 				
-		out=list(Dist, Weight,DistW,AllCluster=hclustW,Clust=WeightedSimCluster)	
-		names(out)=c("Dist","Weight","DistW","Results","Clust")
+		out=list(Dist, Weight,Results=Results,Clust=c("DistM"=DistW,"Clust"=WeightedSimCluster))	
+		names(out)=c("Single Distances","Weight","Results","Clust")
 	}	
 	attr(out,'method')<-'WeightedSim'
 	return(out)

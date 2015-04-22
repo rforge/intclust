@@ -1,4 +1,4 @@
-CompareInteractive<-function(ListM,ListS,nrclusters=NULL,cols=Colors2,fusionsLogM=FALSE,fusionsLogS=FALSE,WeightClustM=FALSE,WeightClustS=FALSE,namesM=NULL,namesS=NULL,marginsM=c(2,2.5,2,2.5),marginsS=c(8,2.5,2,2.5),Interactive=TRUE,N=1,...){
+CompareInteractive<-function(ListM,ListS,nrclusters=NULL,cols=NULL,fusionsLogM=FALSE,fusionsLogS=FALSE,WeightClustM=FALSE,WeightClustS=FALSE,namesM=NULL,namesS=NULL,marginsM=c(2,2.5,2,2.5),marginsS=c(8,2.5,2,2.5),Interactive=TRUE,N=1,...){
 	
 	MatrixColorsM=ReorderToReference(ListM,nrclusters,fusionsLogM,WeightClustM,namesM)
 	
@@ -14,6 +14,8 @@ CompareInteractive<-function(ListM,ListS,nrclusters=NULL,cols=Colors2,fusionsLog
 	}
 	
 	similarM=round(SimilarityMeasure(MatrixColorsM),2)
+	nmethodsM=0
+	nmethodsS=0
 	
 	dev.new()
 	par(mar=marginsM)
@@ -62,7 +64,7 @@ CompareInteractive<-function(ListM,ListS,nrclusters=NULL,cols=Colors2,fusionsLog
 					attr(Ref,'method')<-attributes(ListM[[1]])$method
 				}
 				
-				L=c(list(Ref),ListS)
+				L=c(Ref,ListS)
 				for(i in 1:length(L)){
 					if(i==1){
 						attr(L[[1]],'method')<-"Ref"
@@ -76,10 +78,10 @@ CompareInteractive<-function(ListM,ListS,nrclusters=NULL,cols=Colors2,fusionsLog
 				NamesS=ColorsNames(MatrixColorsS,cols)
 				
 				nobs=dim(MatrixColorsS)[2]
-				nmethods=dim(MatrixColorsS)[1]
+				nmethodS=dim(MatrixColorsS)[1]
 				
 				if(is.null(namesS)){
-					for(j in 1:nmethods){
+					for(j in 1:nmethodS){
 						namesS[j]=paste("Method",j,sep=" ")	
 					}
 				}
@@ -89,8 +91,8 @@ CompareInteractive<-function(ListM,ListS,nrclusters=NULL,cols=Colors2,fusionsLog
 				par(mar=marginsS)
 				color2D.matplot(MatrixColorsS,cellcolors=NamesS,show.values=FALSE,axes=FALSE,xlab="",ylab="")	
 				axis(1,at=seq(0.5,(nobs-0.5)),labels=colnames(MatrixColorsM),las=2,cex.axis=0.70)
-				axis(2,at=c(seq(0.5,nmethods-0.5)),labels=rev(namesS),cex.axis=0.65,las=2)
-				axis(4,at=c(seq(0.5,nmethods-0.5)),labels=rev(similarS),cex.axis=0.65,las=2)			
+				axis(2,at=c(seq(0.5,nmethodS-0.5)),labels=rev(namesS),cex.axis=0.65,las=2)
+				axis(4,at=c(seq(0.5,nmethodS-0.5)),labels=rev(similarS),cex.axis=0.65,las=2)			
 			}
 			else{
 				SelCluster=t(MatrixColorsM)[id-nrow(MatrixColorsM)]
@@ -129,7 +131,7 @@ CompareInteractive<-function(ListM,ListS,nrclusters=NULL,cols=Colors2,fusionsLog
 					attr(Ref,'method')<-attributes(ListM[[1]])$method
 				}
 				
-				L=c(list(Ref),ListS)
+				L=c(Ref,ListS)
 				for(i in 1:length(L)){
 					if(i==1){
 						attr(L[[1]],'method')<-"Ref"

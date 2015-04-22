@@ -10,8 +10,8 @@ randomly set between m/2 and m-1 with m the total number of features.
 The number of features to sample can also be prespecified by the user.
 }
 \usage{
-ADECa(List, distmeasure = "tanimoto", t = 10, r = NULL, nrclusters 
-= NULL, clust = "agnes", linkage = "ward")
+ADECa(List, distmeasure = "tanimoto",normalize=FALSE,method=NULL, t = 10,
+r = NULL, nrclusters = NULL, clust = "agnes", linkage = "ward")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,7 +21,16 @@ rows are corresponding with the objects.
 }
   \item{distmeasure}{
 The distance measure to be used on the fused data matrix (character).
-Should be one of "tanimoto", "euclidean", "jaccard".
+Should be one of "tanimoto", "euclidean", "jaccard","hamming".
+}
+  \item{normalize}{
+Logical. Indicates whether to normalize the distance matrices or not.
+This is recommended if different distance types are used. More details
+on normalization in \code{Normalization}.
+}
+  \item{method}{
+A method of normalization. Should be one of "Quantile","Fisher-Yates",
+"standardize","Range" or any of the first letters of these names.
 }
   \item{t}{
 The number of iterations.
@@ -65,8 +74,8 @@ Marijke Van Moerbeke
 data(fingerprintMat)
 data(targetMat)
 L=list(fingerprintMat,targetMat)
-MCF7_ADECa=ADECa(L,distmeasure="tanimoto",t=25,r=NULL,nrclusters=7,clust="agnes",
-linkage="ward")
+MCF7_ADECa=ADECa(L,distmeasure="tanimoto",normalize=FALSE,method=NULL,t=25,r=NULL,
+nrclusters=7,clust="agnes",linkage="ward")
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 

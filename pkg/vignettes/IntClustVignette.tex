@@ -16,7 +16,7 @@
 \author{Marijke Van Moerbeke}
 
 \begin{document}
-
+% \VignetteIndexEntry{IntClustvignette}
 \maketitle
 \tableofcontents
 \pagebreak{}
@@ -54,7 +54,7 @@ the gene expression matrix.
 \end{Schunk}
 \section{Primary Analysis}
 The primary analysis consist of performing several clustering, single and
-mult-source, techniques. The single clustering resulst will reveal whether or
+mult-source, techniques. The single clustering results will reveal whether or
 not there is a high degree of resemblance between the data sources. If
 multi-source clustering are executed, the results can be compared and the
 influence of each data source can be seen. 
@@ -64,19 +64,48 @@ Cluster} function. The available distance measures are euclidean for continuous
 data and jaccard or tanimoto for binary data. The function can be easily
 extended to contain more distance metrics. The implemented method for
 clustering is agglomerative hierarchical clustering (\cite{Hastie2009}) as coded
-by the {\it agnes} of the \texttt{cluster} package with the ward link.
+by the {\it agnes} of the \texttt{cluster} package with the ward link. The
+option for normalizing the data is readly available. Normalization is performed
+with the \code{Normalization} function and can be called on separately. The
+normalzing methods are: Quantile-Normalization, Fisher-Yates Normalization,
+standardizzation and range normalization. See the helpfiles for more
+information. No normalization is necessary for the example since both data
+matrices are binary and their distances will all fall between zero and one.
 \begin{Schunk}
 \begin{Sinput}
-> MCF7_F <- Cluster(Data=fingerprintMat,distmeasure="tanimoto",clust="agnes",
-                   linkage="ward",gap=FALSE,maxK=55) 
-> MCF7_T <- Cluster(Data=targetMat,distmeasure="tanimoto",clust="agnes",
-                   linkage="ward",gap=FALSE,maxK=55)
+> MCF7_F <- Cluster(Data=fingerprintMat,type="data",distmeasure="tanimoto", 
+                   normalize=FALSE,method=NULL,clust="agnes",linkage="ward",
+                   gap=FALSE,maxK=55,StopRange=FALSE) 
+> MCF7_T <- Cluster(Data=targetMat,type="data",distmeasure="tanimoto",
+                   normalize=FALSE,method=NULL,clust="agnes",linkage="ward",
+                   gap=FALSE,maxK=55,StopRange=FALSE)
 \end{Sinput}
 \end{Schunk}
 \noindent If the number of clusters to work with is unknown, the option gap in
 the {\it Cluster} function can be put to TRUE. Relying on the gap statistic
-(\cite{Hastie2009}), an optimal number of clusters will be determined. 
-Here we will be working with $7$ clusters.\\ \\
+(\cite{Hastie2009}), an optimal number of clusters will be determined. Another
+option is to determine the number of clustes with \code{SelectnrClusters}.
+Medoid clustering is performed for a sequence of numbers of clusters for each
+provided data source. The number correspinding with maximal average silhouette
+widths over the data sources can be taken as an optimal number of clusters.
+\begin{Schunk}
+\begin{Sinput}
+> List=list(fingerprintMat,targetMat)
+> NrClusters=SelectnrClusters(List=List,type="data",distmeasure=c("tanimoto",
+                             "tanimoto"),nrclusters=seq(5,20),normalize=FALSE,
+                              method=NULL,names=c("FP","TP"),StopRange=FALSE,
+                              plottype="sweave",location=NULL)
+\end{Sinput}
+\begin{Soutput}
+silhouette-optimal number of clusters: 20 
+silhouette-optimal number of clusters: 10 
+silhouette-optimal number of clusters: 20 
+\end{Soutput}
+\end{Schunk}
+In the specific case of these data sources, the average silhouette width will
+only increase as the number of clusters increases. Therefore, we will rely on
+the gap statistic and conclude on $7$ clusters.\\
+\\
 Colors are an important aspect of the visualization tools. The function
 {\it ColorPalette} provides us with the HEX codes of shades if colors and a
 desired number of colors are given. It is necessary to provide a color for each
@@ -135,7 +164,8 @@ clustering is performed on this single matrix.
 \begin{Schunk}
 \begin{Sinput}
 > L=list(fingerprintMat,targetMat)
-> MCF7_ADC=ADC(List=L,distmeasure="tanimoto",clust="agnes",linkage="ward")
+> MCF7_ADC=ADC(List=L,distmeasure="tanimoto",normalize=FALSE,method=NULL,
+              clust="agnes", linkage="ward")
 \end{Sinput}
 \end{Schunk}
 \subsubsection{Aggregated Data Ensemble Clustering (ADEC)}
@@ -167,91 +197,20 @@ co-association matrix $S$ which yields the result of the ensemble clustering.
 \end{enumerate}
 \noindent This is the description of ADECa. In version b a random sample of
 features will not be taken but instead all features will be used in every
-iteration. Variation is ensured by cutting the resulting dendrogram multilpe
+iteration. Variation is ensured by cutting the resulting dendrogram multiple
 times for a range of values for $k$. Version c is a combination of version a and
 b. Every iteration a random sample of features will be taken and each resulting
 dendrogram will be cut into cluster several times for a range of values for $k$.
 \begin{Schunk}
 \begin{Sinput}
 > L=list(fingerprintMat,targetMat)
-> MCF7_ADECa=ADECa(List=L,distmeasure="tanimoto",t=20,r=NULL,nrclusters=7,
-                  clust="agnes",linkage="ward")
+> MCF7_ADECa=ADECa(List=L,distmeasure="tanimoto",normalize=FALSE,method=NULL,
+                  t=20,r=NULL,nrclusters=7,clust="agnes",linkage="ward")
+> MCF7_ADECb=ADECb(List=L,distmeasure="tanimoto",normalize=FALSE,method=NULL,
+                  nrclusters=seq(5,25,1),clust="agnes",linkage="ward")
+> MCF7_ADECc=ADECc(List=L,distmeasure="tanimoto",normalize=FALSE,method=NULL,
+                  t=20,r=NULL, nrclusters=seq(5,25),clust="agnes",linkage="ward")
 \end{Sinput}
-\begin{Soutput}
-[1] 1
-[1] 2
-[1] 3
-[1] 4
-[1] 5
-[1] 6
-[1] 7
-[1] 8
-[1] 9
-[1] 10
-[1] 11
-[1] 12
-[1] 13
-[1] 14
-[1] 15
-[1] 16
-[1] 17
-[1] 18
-[1] 19
-[1] 20
-\end{Soutput}
-\begin{Sinput}
-> MCF7_ADECb=ADECb(List=L,distmeasure="tanimoto",nrclusters=seq(5,25,1),
- 		         clust="agnes",linkage="ward")
-\end{Sinput}
-\begin{Soutput}
-[1] 1
-[1] 2
-[1] 3
-[1] 4
-[1] 5
-[1] 6
-[1] 7
-[1] 8
-[1] 9
-[1] 10
-[1] 11
-[1] 12
-[1] 13
-[1] 14
-[1] 15
-[1] 16
-[1] 17
-[1] 18
-[1] 19
-[1] 20
-[1] 21
-\end{Soutput}
-\begin{Sinput}
-> MCF7_ADECc=ADECc(List=L,distmeasure="tanimoto",t=20,r=NULL,nrclusters=seq(5,25),
- 		         clust="agnes",linkage="ward")
-\end{Sinput}
-\begin{Soutput}
-[1] 1
-[1] 2
-[1] 3
-[1] 4
-[1] 5
-[1] 6
-[1] 7
-[1] 8
-[1] 9
-[1] 10
-[1] 11
-[1] 12
-[1] 13
-[1] 14
-[1] 15
-[1] 16
-[1] 17
-[1] 18
-[1] 19
-[1] 20
-\end{Soutput}
 \end{Schunk}
 \subsubsection{Complementary Ensemble Clustering (CEC)}
 Complementary ensemble clustering (\cite{Fodeh2013})
@@ -265,20 +224,23 @@ ADECa, ADECb and ADECc differ.
 \begin{Schunk}
 \begin{Sinput}
 > L=list(fingerprintMat,targetMat)
-> MCF7_CECa=CECa(List=L,distmeasure=c("tanimoto","tanimoto"),t=20,r=NULL,
-                nrclusters=7,clust="agnes",linkage="ward")
-> MCF7_CECb=CECb(List=L,distmeasure=c("tanimoto","tanimoto"),
-                nrclusters=seq(5,25,1),clust="agnes",linkage="ward") 
-> MCF7_CECc=CECc(List=L,distmeasure=c("tanimoto","tanimoto"),t=20,r=NULL,
-                nrclusters=seq(5,25),clust="agnes",linkage="ward")		 
+> MCF7_CECa=CECa(List=L,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
+                method=NULL,t=20,r=NULL,nrclusters=c(7,7),clust="agnes",
+                linkage="ward",StopRange=FALSE)
+> MCF7_CECb=CECb(List=L,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
+                method=NULL,nrclusters=seq(5,25,1),clust="agnes",
+                linkage="ward",StopRange=FALSE) 
+> MCF7_CECc=CECc(List=L,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
+                method=NULL,t=20,r=NULL,nrclusters=seq(5,25),clust="agnes",
+                linkage="ward",StopRange=FALSE)		 
 \end{Sinput}
 \end{Schunk}
 \subsubsection{Similarity Network Fusion (SNF)}
-Similarity network fusion (\cite{Wang2014}) consist of two stages and results in
-a sharing of information over all available data sources.
+Similarity network fusion (\cite{Wang2014}) consists of two stages and results
+in a sharing of information over all available data sources.
 \paragraph{Stage I - The initial step}
-A similarity network is set up for each data matrix. The distance between
-the objects are calculated. These are than rescaled to similarities
+A similarity network is set up for each data matrix. First, the distances
+between the objects are calculated. These are then rescaled to similarities
 relying on the kernel of normal distribution. This results in a matrix with a
 similarity value for each pair of objects. The similar objects were
 found, the higher their similarity value. The connection to a network is made
@@ -307,15 +269,15 @@ submatrix of the global matrix.
 \begin{Schunk}
 \begin{Sinput}
 > L=list(fingerprintMat,targetMat)
-> MCF7_SNFa=SNFa(List=L,distmeasure=c("tanimoto","tanimoto"),NN=5,alpha=0.5,T=20,
-                clust="agnes",linkage="ward")
-> MCF7_SNFb=SNFb(List=L,distmeasure=c("tanimoto","tanimoto"),NN=10,alpha=0.5,T=20,
-                clust="agnes",linkage="ward")
-> MCF7_SNFc=SNFc(List=L,distmeasure=c("tanimoto","tanimoto"),NN=10,alpha=0.5,T=20,
-                clust="agnes",linkage="ward")	   
+> MCF7_SNFa=SNFa(List=L,type="data",distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
+                method=NULL,NN=5,mu=0.5,T=20,clust="agnes",linkage="ward",StopRange=FALSE)
+> MCF7_SNFb=SNFb(List=L,type="data",distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
+                method=NULL,NN=10,mu=0.5,T=20,clust="agnes",linkage="ward",StopRange=FALSE)
+> MCF7_SNFc=SNFc(List=L,type="data",distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
+                method=NULL,NN=10,mu=0.5,T=20,clust="agnes",linkage="ward",StopRange=FALSE)	   
 \end{Sinput}
 \end{Schunk}
-\subsubsection{Weighted Clustering (Weighted)}
+\subsubsection{Weighted Clustering (WeightedClust)}
 Weighted clustering is a straigtforward method. From each data matrix, a
 distance matrix ic calculated. The distance matrices are than combined via a
 weighted linear combination into one weighted distance matrix on which
@@ -323,43 +285,57 @@ clustering is performed.
 \begin{Schunk}
 \begin{Sinput}
 > L=list(fingerprintMat,targetMat)
-> MCF7_Weighted=WeightedClust(L,distmeasure=c("tanimoto","tanimoto"),weight=
-                             seq(0,1,0.1),WeightClust=0.5,clust="agnes",
-                             linkage="ward")
+> MCF7_Weighted=WeightedClust(L,type="data",distmeasure=c("tanimoto","tanimoto"),
+                             normalize=FALSE,method=NULL,weight=seq(0,1,0.1),
+                             WeightClust=0.5,clust="agnes",linkage="ward",
+                             StopRange=FALSE)
 \end{Sinput}
-\begin{Soutput}
-[1] "The weights are considered to be a sequence, each situation is investigated"
-\end{Soutput}
 \end{Schunk}
 \subsubsection{Weighted Similarity Clustering (WeightedSim)}
 Weighted similarity clustering (\cite{Perualila-Tan2015}) is practically the
-same as weighted clustering but an optimal weight is determined via the Jaccard
-index. The jaccar index is determined for every single source clustering and
-every weighted combination. A ratio of the jaccard indices for each single
-source clustering and weighted clustering is taken. The weight combinations for
-which the ratios are closests to $1$ is taken as the optimal weight.
+same as weighted clustering but an optimal weight is determined first. Each
+single source clustering is compared to every weighted clustering and the
+jaccard index is calculated as a representative of their similarity. For every
+weight combination, each pair of jaccard indices is compared to each other by
+takin their ratios. The weight combinations for which the ratios is closests to
+$1$ is taken as the optimal combination.
 \begin{Schunk}
 \begin{Sinput}
 > L=list(fingerprintMat,targetMat)
-> MCF7_Weight=DetermineWeight(List=L,type="data",weight=seq(0,1,by=0.01),nrclusters=7,
-                             distmeasure=c("tanimoto","tanimoto"),clust="agnes",
-                             linkage="ward",gap=FALSE,maxK=50,names=c("FP","TP"))
+> MCF7_Weight=DetermineWeight_SimClust(List=L,type="data",weight=seq(1,0,by=-0.01),
+                                      nrclusters=7,distmeasure=c("tanimoto","tanimoto"),
+                                      normalize=FALSE,method=NULL,clust="agnes",
+                                      linkage="ward",gap=FALSE, maxK=50,
+                                      names=c("FP","TP"),StopRange=FALSE,
+                                      plottype="sweave",location=NULL)
 > L=list(MCF7_F,MCF7_T)	
 > MCF7_WeightedSim=WeightedSimClust(List=L,type="clusters",weight=MCF7_Weight$Weight,
                                    clust="agnes",linkage="ward",distmeasure=
-                                   c("tanimoto","tanimoto"),gap=FALSE,maxK=50,
-                                   nrclusters=7,names=c("FP","TP"),AllClusters=FALSE)
+                                   c("tanimoto","tanimoto"),normalize=FALSE,
+                                   method=NULL,gap=FALSE,maxK=50,nrclusters=7,
+                                   names=c("FP","TP"),AllClusters=FALSE,StopRange=FALSE)
 \end{Sinput}
-\begin{Soutput}
-[1] "Warning: Are the distace matrices of the same range? If not, standardization is recommended."
-[1] "The weights are considered to be a sequence, each situation is investigated"
-\end{Soutput}
+\end{Schunk}
+\noindent An optimal weight can alternatively be determined by the function
+\code{DetermineWeight\_SilClust}. For each provdided weight, the distance
+matrices are combined in a weighted combination and medoid clustering with the
+\code{pam} function is performed. Based on the silhouette widths and the cluster
+membership an optimal weight is determined. See the helpfiles for more details.
+\begin{Schunk}
+\begin{Sinput}
+> L=list(fingerprintMat,targetMat)
+> MCF7_Weight=DetermineWeight_SilClust(List=L,type="data",weight=seq(0,1,by=0.01),
+                                      distmeasure=c("tanimoto","tanimoto"),
+                                      normalize=FALSE,nrclusters=7,names=c("FP","TP"),
+                                      nboot=1000,StopRange=FALSE,
+                                      plottype="sweave",location=NULL)
+\end{Sinput}
 \end{Schunk}
 \subsubsection{Weighting on Membership Clustering (WonM)}
 Weighting on membership performs hierarchical clustering on each data source
 separately. With $k$ the number of clusters, the resulting dendrograms
 are cut into clusters for a range of values for $k$. Each time, an incidence
-matrix is put up. This is a matrix with as rows and columns the objects of the
+matrix is set up. This is a matrix with as rows and columns the objects of the
 data set. Its values are $0$ and $1$ with $0$ indicating that a pair of object
 resides in the same cluster to ensure distances. The incidence matrices are
 first summed over all values of $k$ per data source and then these of the
@@ -369,8 +345,9 @@ taking into account information of all data sources.
 \begin{Schunk}
 \begin{Sinput}
 > L=list(fingerprintMat,targetMat)
-> MCF7_WonM=WonM(List=L,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25),
-                clust="agnes",linkage="ward")
+> MCF7_WonM=WonM(List=L,type="data",distmeasure=c("tanimoto","tanimoto"),
+                normalize=FALSE,method=NULL,nrclusters=seq(5,25),clust="agnes",
+                linkage="ward",StopRange=FALSE)
 \end{Sinput}
 \end{Schunk}
 
@@ -390,7 +367,7 @@ the cluster numbers of the other results to this reference. The re-appointing of
 the cluster numbers is based on finding the cluster that relatively has the most
 in common with one of the reference clusters and taking over this number. The
 function {\it MatrixFunction} was written for this purpose and its algorithm is
-partly based on the Gale- Shapley algorithm ({\bf ref:Computational Biology}).
+partly based on the Gale- Shapley algorithm (\cite{Kleinberg2005})..
 It creates a matrix of which the columns are the compounds in the order of
 clustering by reference method. The rows are the different methods and the
 values of the cells are the rearranged cluster numbers. If each value is
@@ -418,25 +395,8 @@ the {\it ComparePlot} function.
 \begin{Schunk}
 \begin{Sinput}
 > ComparePlot(List=L,nrclusters=7,cols=Colors,fusionsLog=TRUE,WeightClust=TRUE,
-             names=names,margins=c(9.1,4.1,4.1,4.1))
+             names=names,margins=c(9.1,4.1,4.1,4.1),plottype="sweave",location=NULL)
 \end{Sinput}
-\begin{Soutput}
-[1] 1
-[1] 2
-[1] 3
-[1] 4
-[1] 5
-[1] 6
-[1] 7
-[1] 8
-[1] 9
-[1] 10
-[1] 11
-[1] 12
-[1] 13
-[1] 14
-[1] 15
-\end{Soutput}
 \end{Schunk}
 \includegraphics{IntClustVignette-ComparePlot1}
 \caption{{\it Comparison of the results for the CMAP MCF7 data}\label{MCF7_All}}
@@ -462,23 +422,8 @@ procedures as presented below.
 \begin{Schunk}
 \begin{Sinput}
 > ComparePlot(List=L,nrclusters=7,cols=Colors,fusionsLog=TRUE,WeightClust=FALSE,
-             names=names,margins=c(9.1,4.1,4.1,4.1))
+             names=names,margins=c(9.1,4.1,4.1,4.1),plottype="sweave",location=NULL)
 \end{Sinput}
-\begin{Soutput}
-[1] 1
-[1] 2
-[1] 3
-[1] 4
-[1] 5
-[1] 6
-[1] 7
-[1] 8
-[1] 9
-[1] 10
-[1] 11
-[1] 12
-[1] 13
-\end{Soutput}
 \end{Schunk}
 \includegraphics{IntClustVignette-ComparePlot2}
 \caption{{\it Comparison of the weights in the weighted clustering for the CMAP
@@ -503,8 +448,9 @@ namely the first element of ListM.
 > nM=c("ADC","ADECa","ADECb","ADECc","CECa","CECb","CECc","SNFa","SNFb",
        "SNFc","WonM","Weighted","WeightedSim")
 > CompareSvsM(ListS=LS,ListM=LM,nrclusters=7,cols=Colors,fusionsLogS=TRUE,
- 		fusionsLogM=TRUE,WeightClustS=TRUE,WeightClustM=TRUE,
- 		namesS=nS,namesM=nM,margins=c(8.1,3.1,3.1,4.1))
+             fusionsLogM=TRUE,WeightClustS=TRUE,WeightClustM=TRUE,
+             namesS=nS,namesM=nM,margins=c(8.1,3.1,3.1,4.1),plottype="new",
+             location=NULL)
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[H]  
@@ -555,6 +501,26 @@ reference has been used, namely the first element of ListM.
 \caption{{\it Interactive Plot - Example}\label{MCF7_Inter}}
 \end{figure}
 \newpage
+\noindent Two clustering results X and Y can be compared with the help of a test
+statistic calculated by the \code{CompareSilCluster} function. Single data
+sources can be provided in their data format. A distance matrix is necessary for
+all multiple source clusterings. A medoid clustering is performed of which the
+silhouette widths and cluster memberships are retrieved. The silhouette widths
+of data X are regressed against the corresponding memberships but also against
+the memberships determined by data Y. The $R^{2}$ values are obtained and the
+statistic is calculated as:
+%$$ S=|\sum{R^2_{XX}}-\sum{R^2_{XY}}|.$$
+A p-value is obtained by bootstrapping the distance matrices.
+\begin{Schunk}
+\begin{Sinput}
+> List=list(fingerprintMat,targetMat)
+> Comparison=CompareSilCluster(List=List,type="data",distmeasure=c("tanimoto",
+                              "tanimoto"),normalize=FALSE,method=NULL,
+ 		                      nrclusters=7,names=c("FP","TP"),nboot=1000,
+                               StopRange=FALSE,plottype="sweave",location=NULL)
+> Comparison
+\end{Sinput}
+\end{Schunk}
 \subsection{Selection of a Specific Cluster}
 As mentioned above, interest lies in stable clusters. We can now select one
 specific cluster and perform further analysis. We investigate of which compounds
@@ -571,25 +537,6 @@ returned. We will focus on the green cluster of the target predictions.
         MCF7_CECc,MCF7_SNFa,MCF7_SNFb,MCF7_SNFc,MCF7_WonM,MCF7_Weighted,
         MCF7_WeightedSim,MCF7_T)
 > Comps=FindCluster(List=L,nrclusters=7,select=c(15,4))
-\end{Sinput}
-\begin{Soutput}
-[1] 1
-[1] 2
-[1] 3
-[1] 4
-[1] 5
-[1] 6
-[1] 7
-[1] 8
-[1] 9
-[1] 10
-[1] 11
-[1] 12
-[1] 13
-[1] 14
-[1] 15
-\end{Soutput}
-\begin{Sinput}
 > Comps
 \end{Sinput}
 \begin{Soutput}
@@ -601,21 +548,22 @@ returned. We will focus on the green cluster of the target predictions.
 \end{Soutput}
 \end{Schunk}
 Further, we can track how this cluster was formed with the help of the {\it
-ClusterDistribution} function. We will indicate to follow the cluster
+TrackCluster} function. We will indicate to follow the cluster
 specifically (followClust=TRUE) and not the largest group of compounds of the
 orginally indicated cluster that remain together (followMaxComps=FALSE). This
 might involve a change of cluster.
 \begin{Schunk}
 \begin{Sinput}
 > L=list(MCF7_F,MCF7_ADC,MCF7_ADECa,MCF7_ADECb,MCF7_ADECc,MCF7_CECa,MCF7_CECb,
- 		MCF7_CECc,MCF7_SNFa,MCF7_SNFb,MCF7_SNFc,MCF7_WonM,MCF7_Weighted,
- 		MCF7_WeightedSim,MCF7_T)
+        MCF7_CECc,MCF7_SNFa,MCF7_SNFb,MCF7_SNFc,MCF7_WonM,MCF7_Weighted,
+        MCF7_WeightedSim,MCF7_T)
 > names=c("FP","ADC","ADECa","ADECb","ADECc","CECa","CECb","CECc","SNFa","SNFb",
  		"SNFc","WonM","Weighted","WeightedSim","TP")
 > Tracking=TrackCluster(List=L,Selection=Comps,nrclusters=7,followMaxComps=FALSE,
- 		followClust=TRUE,fusionsLog=TRUE,WeightClust=TRUE,
- 		names=names,Plot=FALSE,Table=FALSE,CompletePlot=TRUE,
- 		cols=Colors)
+                       followClust=TRUE,fusionsLog=TRUE,WeightClust=TRUE,
+                       names=names,SelectionPlot=FALSE,Table=FALSE,
+                       CompleteSelectionPlot=TRUE,cols=Colors,plottype="new",
+                       location=NULL)
 \end{Sinput}
 \end{Schunk}
 \vspace{-1.0cm}
@@ -641,28 +589,28 @@ variance will be considered significant by the procedure. The denominator is
 estimated with an empirical bayesian approach.\\ \\
 We could test all clusters with the {\it DiffGenes} functions but will foucus
 only on our compounds of interest. These will be tested against all other
-compounds combined with the help of the {\it DiffGenesSelection} function and we
-ask to collect the top $10$ genes. Since we focus on our selection of compounds,
-there is no need to specify clustering results as the result will be independent
-from the grouping of the compounds.
+compounds combined and we ask to collect the top $10$ genes. Since we focus on
+our selection of compounds, there is no need to specify clustering results as
+the result will be independent from the grouping of the compounds.
 \begin{Schunk}
 \begin{Sinput}
 > MCF7_Genes=DiffGenes(List=NULL,Selection=Comps,GeneExpr=geneMat,
  		             nrclusters=7,method="limma",sign=0.05,
-                      top=10,fusionsLog=TRUE,WeightClust=TRUE,names=NULL)
+                      topG=10,fusionsLog=TRUE,WeightClust=TRUE,names=NULL)
 > Genes=MCF7_Genes$Selection$Genes$TopDE$ID				  
 \end{Sinput}
 \end{Schunk}
-Genes of interest can be plotted with the {\it ProfileAllPlot}.
+Genes of interest can be plotted with the {\it ProfilePlot}.
 \vspace{-0.3cm}
 \begin{figure}[H] 
 \centering
 \begin{Schunk}
 \begin{Sinput}
-> ProfilePlotAll(Genes=Genes[1:5],Comps=Comps,GeneExpr=geneMat,
-                Raw=FALSE,Order=MCF7_F,Color=MCF7_F,nrclusters=7,
-                Clusters=NULL,cols=Colors,AddLegend=TRUE,
-                usedgenes=Genes,margins=c(8.1,4.1,1.1,6.5),cex=0.75)
+> ProfilePlot(Genes=Genes[1:5],Comps=Comps,GeneExpr=geneMat,
+             Raw=FALSE,Order=MCF7_F,Color=MCF7_F,nrclusters=7,
+             Clusters=NULL,cols=Colors,AddLegend=TRUE,
+             margins=c(8.1,4.1,1.1,6.5),cex=0.75,plottype="sweave",
+             location=NULL)
 > 
 \end{Sinput}
 \end{Schunk}
@@ -700,17 +648,17 @@ iterations with the {\it Genseset.intersectSelection} function.
 \begin{Schunk}
 \begin{Sinput}
 > data(GeneInfo)
-> data(ListGO)
+> data(GS)
 > L=list(MCF7_Genes)
 > MCF7_Paths=PathwaysIter(List=L,Selection=Comps,names=NULL,
                          GeneExpr=geneMat,nrclusters=7,method=
                          c("limma", "MLP"),ENTREZID=GeneInfo[,1],
-                         geneSetSource = "GOBP",top=NULL,topG=NULL,
-                         GENESET=ListGO,sign=0.05,niter=2,
+                         geneSetSource = "GOBP",topP=NULL,topG=NULL,
+                         GENESET=GS,sign=0.05,niter=2,
                          fusionsLog=TRUE,WeightClust=TRUE)
-> MCF7_Paths_Inter=Geneset.intersectn(MCF7_Paths,sign=0.05,
-                                     names=NULL,seperatetables=FALSE,
-                                     separatepvals=FALSE)
+> MCF7_Paths_Inter=Geneset.intersect(MCF7_Paths,Selection=TRUE,sign=0.05,
+                                    names=NULL,seperatetables=FALSE,
+                                    separatepvals=FALSE)
 > 
 \end{Sinput}
 \end{Schunk}
@@ -727,7 +675,7 @@ manually as we will do now.
 \begin{Schunk}
 \begin{Sinput}
 > MCF7_Feat=ChooseCluster(Interactive=FALSE,LeadCpds=Comps,ClusterResult=MCF7_F,
-                         ClusterColors=MCF7_F,BinData=list(fingerprintMat,
+                         ColorLab=MCF7_F,BinData=list(fingerprintMat,
                          targetMat),Datanames=c("FP","TP"),geneMat,topChar = 20,
                          topG = 20,nrclusters=7,N=1)
 \end{Sinput}
@@ -735,16 +683,18 @@ manually as we will do now.
 \noindent We plot the top identified features with the {\it FeaturesPlot}.
 \begin{Schunk}
 \begin{Sinput}
-> FeaturesPlot(LeadCpds=Comps,OrderedCpds=colnames(geneMat),Features=
-              MCF7_Feat$Characteristics$FP,Data=fingerprintMat,
-              Color=MCF7_F,nrclusters=7,cols=Colors,name=c("FP"))
+> BinFeaturesPlot(LeadCpds=Comps,OrderedCpds=colnames(geneMat),Features=
+                 MCF7_Feat$Characteristics$FP,Data=fingerprintMat,
+                 Color=MCF7_F,nrclusters=7,cols=Colors,name=c("FP"),plottype="new",
+                 location=NULL)
 \end{Sinput}
 \end{Schunk}
 \begin{Schunk}
 \begin{Sinput}
-> FeaturesPlot(LeadCpds=Comps,OrderedCpds=colnames(geneMat),Features=
-              MCF7_Feat$Characteristics$TP,Data=targetMat,
-              Color=MCF7_F,nrclusters=7,cols=Colors,name=c("TP"))
+> BinFeaturesPlot(LeadCpds=Comps,OrderedCpds=colnames(geneMat),Features=
+                 MCF7_Feat$Characteristics$TP,Data=targetMat,Color=MCF7_F,
+                 nrclusters=7,cols=Colors,name=c("TP"),plottype="new",
+                 location=NULL)
 \end{Sinput}
 \end{Schunk}
 \begin{figure}[H]
@@ -762,38 +712,38 @@ manually as we will do now.
 \newpage
 \bibliographystyle{asa}
 \bibliography{BVSPermbib}
-
 \newpage
 \section{Software used}
 \begin{itemize}\raggedright
-  \item R version 3.1.1 (2014-07-10), \verb|x86_64-w64-mingw32|
+  \item R version 3.1.3 (2015-03-09), \verb|x86_64-w64-mingw32|
   \item Locale: \verb|LC_COLLATE=Dutch_Belgium.1252|, \verb|LC_CTYPE=Dutch_Belgium.1252|, \verb|LC_MONETARY=Dutch_Belgium.1252|, \verb|LC_NUMERIC=C|, \verb|LC_TIME=Dutch_Belgium.1252|
   \item Base packages: base, datasets,
-    graphics, grDevices, methods, stats,
-    tools, utils
-  \item Other packages: biomaRt~2.22.0,
-    cluster~1.15.3, ggplot2~1.0.0,
+    graphics, grDevices, methods, parallel,
+    stats, stats4, tools, utils
+  \item Other packages:
+    AnnotationDbi~1.28.2, Biobase~2.26.0,
+    BiocGenerics~0.12.1, biomaRt~2.22.0,
+    cluster~2.0.1, DBI~0.3.1,
+    GenomeInfoDb~1.2.4, ggplot2~1.0.1,
     gtools~3.4.1, IntClust~0.0.1,
-    limma~3.22.1, plotrix~3.5-10,
-    prodlim~1.4.5, rj~2.0.2-2, SNFtool~2.2
+    IRanges~2.0.1, org.Hs.eg.db~3.0.0,
+    plotrix~3.5-11, pls~2.4-3, rj~2.0.3-1,
+    RSQLite~1.0.0, S4Vectors~0.4.0,
+    SNFtool~2.2
   \item Loaded via a namespace (and not
     attached): a4Base~1.14.0, a4Core~1.14.0,
-    ade4~1.6-2, AnnotationDbi~1.28.1,
-    Biobase~2.26.0, BiocGenerics~0.12.0,
-    bitops~1.0-6, caTools~1.17.1,
-    colorspace~1.2-4, DBI~0.3.1,
-    digest~0.6.4, gdata~2.13.3,
-    GenomeInfoDb~1.2.2, gplots~2.14.2,
-    grid~3.1.1, gridExtra~0.9.1,
-    gtable~0.1.2, heatmap.plus~1.3,
-    IRanges~2.0.0, KernSmooth~2.23-13,
-    lava~1.3, MASS~7.3-35, MLP~1.14.0,
-    munsell~0.4.2, parallel~3.1.1,
-    plyr~1.8.1, proto~0.3-10, Rcpp~0.11.3,
-    RCurl~1.95-4.3, reshape2~1.4,
-    rj.gd~2.0.0-1, RSQLite~1.0.0,
-    S4Vectors~0.4.0, scales~0.2.4,
-    splines~3.1.1, stats4~3.1.1,
-    stringr~0.6.2, survival~2.37-7,
+    ade4~1.7-0, bitops~1.0-6,
+    caTools~1.17.1, colorspace~1.2-6,
+    digest~0.6.8, gdata~2.13.3,
+    gplots~2.16.0, grid~3.1.3,
+    gridExtra~0.9.1, gtable~0.1.2,
+    heatmap.plus~1.3, KernSmooth~2.23-14,
+    lava~1.4.0, limma~3.22.7, MASS~7.3-40,
+    MLP~1.14.0, munsell~0.4.2, plyr~1.8.1,
+    prodlim~1.5.4, proto~0.3-10,
+    Rcpp~0.11.5, RCurl~1.95-4.5,
+    reshape2~1.4.1, rj.gd~2.0.0-1,
+    scales~0.2.4, splines~3.1.3,
+    stringr~0.6.2, survival~2.38-1,
     XML~3.98-1.1
 \end{itemize}\end{document}

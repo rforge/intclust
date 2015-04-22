@@ -1,4 +1,4 @@
-SimilarityMeasure<-function(List,nrclusters=7,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+SimilarityMeasure<-function(List,nrclusters=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	
 	if(class(List)!="list"){
 		MatrixColors=List
@@ -12,7 +12,6 @@ SimilarityMeasure<-function(List,nrclusters=7,fusionsLog=TRUE,WeightClust=TRUE,n
 	for(i in 1:dim(MatrixColors)[1]){
 		Shared=0
 		for(j in 1:dim(MatrixColors)[2])
-			
 			if(MatrixColors[i,j]==MatrixColors[1,j]){
 				Shared=Shared+1
 			}

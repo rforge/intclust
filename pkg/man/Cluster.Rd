@@ -1,7 +1,7 @@
 \name{Cluster}
 \alias{Cluster}
 \title{
-Perforn clustering on a single data source
+Perform clustering on a single data source
 }
 \description{
 The function \code{Cluster} was written to perform clustering on
@@ -10,17 +10,32 @@ available to compute the gap statistic to determine the optimal
 number of clusters. 
 }
 \usage{
-Cluster(Data, distmeasure = "tanimoto", clust = "agnes", linkage =
- "ward", gap = TRUE, maxK = 50)
+Cluster(Data,type=c("data","dist"), distmeasure = "tanimoto",
+normalize=FALSE,method=NULL, clust = "agnes", linkage ="ward", gap = TRUE,
+maxK = 50,StopRange=FALSE)
 }
 \arguments{
   \item{Data}{
  A matrix containing the data. It is assumed the rows are corresponding
- zith the objects.
+ with the objects.
+}
+	\item{type}{
+Type indicates whether the provided matrix in "Data" is either a data or a distance
+matrix obtained from the data. If type="dist" the calculation of the distance
+matrix is skipped. Type should be one of "data" or "dist".	
 }
   \item{distmeasure}{
 Choice of metric for the dissimilarity matrix (character).
-Should be one of "tanimoto", "euclidean", "jaccard".
+Should be one of "tanimoto", "euclidean", "jaccard","hamming".
+}
+  \item{normalize}{
+Logical. Indicates whether to normalize the distance matrices or not.
+This is recommended if different distance types are used. More details
+on normalization in \code{Normalization}.
+}
+  \item{method}{
+A method of normalization. Should be one of "Quantile","Fisher-Yates",
+"standardize","Range" or any of the first letters of these names.
 }
   \item{clust}{
 Choice of clustering function (character). Defaults to "agnes".
@@ -34,6 +49,11 @@ Setting to $FALSE$ will greatly reduce the computation time.
 }
   \item{maxK}{
 The maximum number of clusters to be considered during the gap. 
+}
+  \item{StopRange}{
+Logical. Indicates whether the distance matrices with values not between zero and one should be standardized to have so.
+If FALSE the range normalization is performed. See \code{Normalization}. If TRUE, the distance matrices are not changed.
+This is recommended if different types of data are used such that these are comparable.
 }
 }
 \details{
@@ -62,16 +82,15 @@ Marijke Van Moerbeke
 data(fingerprintMat)
 data(targetMat)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 }
 \note{
-For now, the
-only option is to carry out agglomerative hierarchical clustering 
-with the ward link as it was implemented in the \code{agnes}
-function in the cluster package.
+For now, the only option is to carry out agglomerative
+hierarchical clustering with the ward link as it was implemented
+in the \code{agnes} function in the cluster package.
 }
 \keyword{ Clustering }

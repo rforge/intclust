@@ -11,7 +11,7 @@ clicking and is plotted separately against the single source or other specified 
 }
 \usage{
 
-CompareInteractive(ListM,ListS,nrclusters=NULL,cols=Colors2,fusionsLogM
+CompareInteractive(ListM,ListS,nrclusters=NULL,cols=NULL,fusionsLogM
 =FALSE,fusionsLogS=FALSE,WeightClustM=FALSE,WeightClustS=FALSE,
 namesM=NULL,namesS=NULL,marginsM=c(2,2.5,2,2.5),marginsS=c(8,2.5,2,2.5)
 ,Interactive=TRUE,N=1,...)
@@ -19,12 +19,14 @@ namesM=NULL,namesS=NULL,marginsM=c(2,2.5,2,2.5),marginsS=c(8,2.5,2,2.5)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{ListM}{
-A list of the multiple source clusterings or other methods to be compared and from which a cluster or 
-method will be identified. The first element of the list will be used as the reference.
+A list of the multiple source clustering or other methods to be compared and from which a cluster or 
+method will be identified. The first element of the list will be used as the reference in
+\code{ReorderToReference}.
 }
   \item{ListS}{
-A list of the single source clusterings or other methods the identified result will be
-compared to. The first element of the list will be used as the reference. 
+A list of the single source clustering or other methods the identified result will be
+compared to. The first element of the list will be used as the reference in
+\code{ReorderToReference}.
 }
   \item{nrclusters}{
 The number of clusters to cut the dendrogram in.
@@ -84,15 +86,15 @@ data(fingerprintMat)
 data(targetMat)
 data(Colors2)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 L=list(fingerprintMat,targetMat)
 
-MCF7_W=WeightedClust(L, distmeasure=c("tanimoto","tanimoto"),
-weight=seq(1,0,-0.1),WeightClust=0.5,clust="agnes",linkage="ward")
+MCF7_W=WeightedClust(L,type="data",distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
+method=NULL,weight=seq(1,0,-0.1),WeightClust=0.5,clust="agnes",linkage="ward",StopRange=FALSE)
 
 ListM=list(MCF7_W)
 namesM=c(seq(1.0,0.0,-0.1))

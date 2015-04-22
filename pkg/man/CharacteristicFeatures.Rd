@@ -1,7 +1,7 @@
 \name{CharacteristicFeatures}
 \alias{CharacteristicFeatures}
 \title{
-Characterization of features for a cluster
+Determining the characteristic features of a cluster
 }
 \description{
 The function \code{CharacteristicFeatures} requires as input a list of one or multiple clustering results.
@@ -9,13 +9,13 @@ It is capable of selecting the binary features which identify a cluster with the
 }
 \usage{
 CharacteristicFeatures(List,Selection=NULL,BinData,Datanames=NULL,nrclusters=NULL,
-sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL)
+sign=0.05,topC=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-A list of the outputs from the methods to be compared. The first element
-of the list will be used as the reference.
+A list of the clustering outputs to be compared. The first element
+of the list will be used as the reference in \code{ReorderToReference}.
 }
  \item{Selection}{
 If differential gene expression should be investigated for a specific selection of compounds, this selection can be provided here.
@@ -33,8 +33,9 @@ The number of clusters to cut the dendrogram in.
   \item{sign}{
 The significance level to be handled.
 }
-  \item{top}{
-Overrules sign. The number of top genes to be shown.
+  \item{topC}{
+Overrules sign. The number of features to display for each cluster. 
+If not specified, only the significant genes are shown.
 }
   \item{fusionsLog}{
 To be handed to \code{ReorderToReference}.
@@ -70,15 +71,15 @@ data(fingerprintMat)
 data(targetMat)
 data(geneMat)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 L=list(MCF7_T ,MCF7_F)
 
 MCF7_Char=CharacteristicFeatures(List=L,Selection=NULL,BinData=list(fingerprintMat,
-targetMat),Datanames=c("F","T"),nrclusters=7,top=NULL,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,
+targetMat),Datanames=c("F","T"),nrclusters=7,topC=NULL,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,
 names=c("F","T"))
 }
 }

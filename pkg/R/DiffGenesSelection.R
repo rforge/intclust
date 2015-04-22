@@ -1,9 +1,9 @@
-DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,method="limma",sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+DiffGenesSelection=function(List,Selection,GeneExpr=NULL,nrclusters=NULL,method="limma",sign=0.05,topG=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	if(method != "limma"){
 		stop("Only the limma method is implemented to find differentially expressed genes")
 	} 
 	
-	if(is.null(top)){
+	if(is.null(topG)){
 		top1=FALSE
 	}
 	else{
@@ -16,7 +16,7 @@ DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,meth
 		temp=list()
 		
 		LeadCpds=Selection #names of the compounds
-		OrderedCpds=colnames(geneMat)
+		OrderedCpds=colnames(GeneExpr)
 		temp[[1]]=list(LeadCpds,OrderedCpds)
 		names(temp[[1]])=c("LeadCpds","OrderedCpds")
 		
@@ -29,7 +29,7 @@ DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,meth
 			GeneExpr$LeadCmpds<-label.factor 
 			DElead <- limmaTwoLevels(GeneExpr,"LeadCpds")
 			
-			allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
+			allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL),sort.by="p")
 			if(is.null(allDE$ID)){
 				allDE$ID <- rownames(allDE)
 			}
@@ -38,13 +38,13 @@ DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,meth
 				allDE$ID=allDE$ID
 			}
 			if(top1==TRUE){
-				result = list(allDE[1:top,],allDE)
+				result = list(allDE[1:topG,],allDE)
 				names(result)=c("TopDE","AllDE")
 				
 			}
 			else if(top1==FALSE){
-				top=length(which(allDE$adj.P.Val<=sign))
-				result = list(allDE[1:top,],allDE)
+				topG=length(which(allDE$adj.P.Val<=sign))
+				result = list(allDE[0:topG,],allDE)
 				names(result)=c("TopDE","AllDE")
 				
 			}
@@ -56,7 +56,7 @@ DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,meth
 			fit = lmFit(GeneExpr,design=design)
 			fit = eBayes(fit)
 			
-			allDE=limma::topTable(fit,coef=2,n=dim(GeneExpr)[1],adjust="fdr",resort.by = "logFC",sort.by="p")
+			allDE=limma::topTable(fit,coef=2,n=dim(GeneExpr)[1],adjust="fdr",sort.by="P")
 			if(is.null(allDE$ID)){
 				allDE$ID <- rownames(allDE)
 			}
@@ -65,13 +65,13 @@ DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,meth
 				allDE$ID=allDE$ID
 			}
 			if(top1==TRUE){
-				result = list(allDE[1:top,],allDE)
+				result = list(allDE[0:topG,],allDE)
 				names(result)=c("TopDE","AllDE")
 				
 			}
 			else if(top1==FALSE){
-				top=length(which(allDE$adj.P.Val<=sign))
-				result = list(allDE[1:top,],allDE)
+				topG=length(which(allDE$adj.P.Val<=sign))
+				result = list(allDE[0:topG,],allDE)
 				names(result)=c("TopDE","AllDE")
 				
 			}	
@@ -86,49 +86,69 @@ DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,meth
 	}
 	else if(class(Selection)=="numeric" & !(is.null(List))){
 	
-	ListNew=list()
-	element=0
-	for(i in 1:length(List)){
-		if(class(List[[i]]) != "CEC" & class(List[[i]]) != "Weighted"){
-			element=element+1
-			ListNew[[element]]=List[[i]]
-		}
-		else if(class(List[[i]])=="CEC" | class(List[[i]])=="Weighted"){
-			ResultsClust=list()
-			if(WeightClust==TRUE){
+		ListNew=list()
+		element=0
+		
+		ListNew=list()
+		element=0
+		for(i in 1:length(List)){
+			if(attributes(List[[i]])$method != "CEC" & attributes(List[[i]])$method != "Weighted" & attributes(List[[i]])$method!= "WeightedSim"){
+				ResultsClust=list()
 				ResultsClust[[1]]=list()
-				ResultsClust[[1]][[1]]=List[[i]]$Clust
+				ResultsClust[[1]][[1]]=List[[i]]
 				names(ResultsClust[[1]])[1]="Clust"
 				element=element+1					
 				ListNew[[element]]=ResultsClust[[1]]
-			}			
-			else{
-				for (j in 1:length(List[[i]]$Results)){
-					ResultsClust[[j]]=list()
-					ResultsClust[[j]][[1]]=List[[i]]$Results[[j]]
-					names(ResultsClust[[j]])[1]="Clust"
-					element=element+1					
-					ListNew[[element]]=ResultsClust[[j]]
+				#attr(ListNew[element],"method")="Weights"
+			}
+			else if(attributes(List[[i]])$method=="CEC" | attributes(List[[i]])$method=="Weighted" | attributes(List[[i]])$method == "WeightedSim"){
+				ResultsClust=list()
+				if(WeightClust==TRUE){
+					ResultsClust[[1]]=list()
+					if(attributes(List[[i]])$method != "WeightedSim"){
+						ResultsClust[[1]][[1]]=List[[i]]$Clust
+						names(ResultsClust[[1]])[1]="Clust"
+						element=element+1					
+						ListNew[[element]]=ResultsClust[[1]]
+						attr(ListNew[element],"method")="Weights"
+					}
+					else{
+						ResultsClust[[1]]=list()
+						ResultsClust[[1]][[1]]=List[[i]]
+						names(ResultsClust[[1]])[1]="Clust"
+						element=element+1					
+						ListNew[[element]]=ResultsClust[[1]]
+					}
+				}
+				else{
+					for (j in 1:length(List[[i]]$Results)){
+						ResultsClust[[j]]=list()
+						ResultsClust[[j]][[1]]=List[[i]]$Results[[j]]
+						names(ResultsClust[[j]])[1]="Clust"
+						element=element+1					
+						ListNew[[element]]=ResultsClust[[j]]
+						attr(ListNew[element],"method")="Weights"
+					}		
 				}		
-			}		
-		}	
-	}
-	List=ListNew
-	
-	if(is.null(names)){
-		for(j in 1:length(List)){
-			names[j]=paste("Method",j,sep=" ")	
+			}	
 		}
-	}
-	
-	
-		Matrix=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
 		
+		if(is.null(names)){
+			names=seq(1,length(ListNew),1)
+			for(i in 1:length(ListNew)){
+				names[i]=paste("Method",i,sep=" ")
+			}
+		}
+		names(ListNew)=names
+		
+		Matrix=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
+
+		List=ListNew
 		ResultLimma=list()
 		for(k in 1:dim(Matrix)[1]){	
 			cluster=Selection
 			
-			hc<-as.hclust(List[[k]]$Clust)
+			hc<-as.hclust(List[[k]]$Clust$Clust)
 			OrderedCpds <- hc$labels[hc$order]
 			
 			Genes=list()
@@ -147,7 +167,7 @@ DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,meth
 				GeneExpr.2$LeadCmpds<-label.factor 
 				DElead <- limmaTwoLevels(GeneExpr.2,"LeadCpds")
 				
-				allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
+				allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL),sort.by="p")
 				if(is.null(allDE$ID)){
 					allDE$ID <- rownames(allDE)
 				}
@@ -156,13 +176,13 @@ DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,meth
 					allDE$ID=allDE$ID
 				}
 				if(top1==TRUE){
-					result = list(allDE[1:top,],allDE)
+					result = list(allDE[0:topG,],allDE)
 					names(result)=c("TopDE","AllDE")
 					
 				}
 				else if(top1==FALSE){
-					top=length(which(allDE$adj.P.Val<=sign))
-					result = list(allDE[1:top,],allDE)
+					topG=length(which(allDE$adj.P.Val<=sign))
+					result = list(allDE[0:topG,],allDE)
 					names(result)=c("TopDE","AllDE")
 					
 				}
@@ -175,7 +195,7 @@ DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,meth
 				fit = lmFit(GeneExpr.2,design=design)
 				fit = eBayes(fit)
 				
-				allDE=limma::topTable(fit,coef=2,n=dim(GeneExpr)[1],adjust="fdr",resort.by = "logFC",sort.by="p")
+				allDE=limma::topTable(fit,coef=2,n=dim(GeneExpr)[1],adjust="fdr",sort.by="P")
 				if(is.null(allDE$ID)){
 					allDE$ID <- rownames(allDE)
 				}
@@ -184,13 +204,14 @@ DiffGenesSelection=function(List,Selection,GeneExpr=geneMat,nrclusters=NULL,meth
 					allDE$ID=allDE$ID
 				}
 				if(top1==TRUE){
-					result = list(allDE[1:top,],allDE)
+					result = list(allDE[1:topG,],allDE)
 					names(result)=c("TopDE","AllDE")
 					
 				}
 				else if(top1==FALSE){
-					top=length(which(allDE$adj.P.Val<=sign))
-					result = list(allDE[1:top,],allDE)
+					topG=length(which(allDE$adj.P.Val<=sign))
+
+					result = list(allDE[0:topG,],allDE)
 					names(result)=c("TopDE","AllDE")
 					
 				}	

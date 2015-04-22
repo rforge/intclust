@@ -41,8 +41,8 @@ Marijke Van Moerbeke
 }
 \examples{
 data(fingerprintMat)
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 ClustF_6=cutree(MCF7_F$Clust,6)
 

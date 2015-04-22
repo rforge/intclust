@@ -1,18 +1,30 @@
 \name{SharedComps}
 \alias{SharedComps}
 \title{
-Intersection of compounds over multiple methods
+Intersection of clusters over multiple methods
 }
 \description{
 The \code{SharedComps} function is an easy way to select the compounds that are shared over clusters of different methods.
-To be used on cluster elements of the \code{DiffGenes} elements.
 }
 \usage{
-SharedComps(List)
+SharedComps(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=FALSE,names=NULL)
 }
 \arguments{
   \item{List}{
-A list of the outputs of clusters for different methods.
+A list of clustering outputs or the output of the \code{DiffGenes} function. The first element of the list
+will be used as a reference in \code{ReorderToReference}.
+}
+\item{nrclusters}{
+If List is the output several clustering methods, it has to be provided in how many clusters to cut the dendrograms in.
+}
+  \item{fusionsLog}{
+To be handed to \code{ReorderToReference}.
+}
+  \item{WeightClust}{
+To be handed to \code{ReorderToReference}.
+}
+\item{names}{
+Names of the methods or clusters.
 }
 }
 \value{
@@ -28,19 +40,14 @@ data(geneMat)
 data(GeneInfo)
 data(ListGO)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 L=list(MCF7_F,MCF7_T)
 names=c('FP','TP')
 
-MCF7_DiffGenes_FandT10=DiffGenes(list(MCF7_F,MCF7_T),Selection=NULL,GeneExpr=geneMat,
-nrclusters=7,method="limma",sign=0.05,top=10,fusionsLog = TRUE, WeightClust = TRUE, 
-names = NULL)
-
-Comps=SharedComps(list(MCF7_DiffGenes_FandT10$`Method 1`$"Cluster 1",
-MCF7_DiffGenes_FandT10$`Method 2`$"Cluster 1"))
+Comps=SharedComps(List=L,nrclusters=7,fusionsLog=FALSE,WeightClust=FALSE,names=names)
 
 }

@@ -8,14 +8,14 @@ Find a selection of compounds in the output of \code{ReorderToReference}
 after the results of the methods have been rearranged by the \code{ReorderToReference}.
 }
 \usage{
-FindCluster(List, nrclusters=NULL, select = c(1, 4), fusionsLog = TRUE, 
+FindCluster(List, nrclusters=NULL, select = c(1, 1), fusionsLog = TRUE, 
 WeightClust = TRUE, names = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-A list of the outputs from the methods to be compared. The first element of the
-list will be used as the reference.
+A list of the clustering outputs to be compared. The first element of the
+list will be used as the reference in \code{ReorderToReference}.
 }
   \item{nrclusters}{
 The number of clusters to cut the dendrogram in.
@@ -45,10 +45,10 @@ Marijke Van Moerbeke
 data(fingerprintMat)
 data(targetMat)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 L=list(MCF7_F,MCF7_T)
 names=c("FP","TP")

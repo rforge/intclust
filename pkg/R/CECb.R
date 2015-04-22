@@ -1,4 +1,4 @@
-CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25,1),weight=NULL,clust="agnes",linkage="ward",WeightClust=0.5){
+CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,nrclusters=seq(5,25,1),weight=NULL,clust="agnes",linkage="ward",WeightClust=0.5,StopRange=FALSE){
 	
 	if(class(List) != "list"){
 		stop("Data must be of type list")
@@ -19,6 +19,11 @@ CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25,1),
 	#Step 1: Take all features from A1 and A2
 	#Notation facility:
 
+	#Put all data in the same order
+	OrderNames=rownames(List[[1]])
+	for(i in 1:length(List)){
+		List[[i]]=List[[i]][OrderNames,]
+	}
 	
 	#Put up Incidence matrix for each data modality
 	Incidence=list()
@@ -33,7 +38,18 @@ CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25,1),
 	
 	#Step 2: apply hierarchical clustering on A1_prime and A2_prime + cut tree into nrclusters
 	
-	DistM=lapply(seq(length(List)),function(i) Distance(List[[i]],distmeasure=distmeasure[i]))
+	DistM=lapply(seq(length(List)),function(i) Distance(List[[i]],distmeasure=distmeasure[i],normalize,method))
+	CheckDist<-function(Dist,StopRange){
+		if(StopRange==FALSE & !(0<=min(Dist) & max(Dist)<=1)){
+			message("It was detected that a distance matrix had values not between zero and one. Range Normalization was performed to secure this. Put StopRange=TRUE if this was not necessary")
+			Dist=Normalization(Dist,method="Range")
+		}
+		else{
+			Dist=Dist
+		}
+	}
+	
+	DistM=lapply(seq(length(DistM)),function(i) CheckDist(DistM[[i]],StopRange))
 	
 	HClust_A=lapply(seq(length(DistM)),function(i) agnes(DistM[[i]],diss=TRUE,method=linkage))
 	
@@ -72,6 +88,15 @@ CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25,1),
 				return(l)
 			}
 			else(return(0))
+		}
+		
+		if(all(seq(1,0,-0.1)!=weight)){
+			for(i in 1:length(weight)){
+				rest=1-weight[i]
+				if(!(rest%in%weight)){
+					weight=c(weight,rest)
+				}
+			}
 		}
 		
 		t1=permutations(n=length(weight),r=length(List),v=as.character(weight),repeats.allowed = TRUE)
@@ -119,17 +144,21 @@ CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25,1),
 	}
 	IncidenceComb=lapply(weight,weightedcomb,Incidence)
 	
-	
+	namesweights=c()	
 	CEC=list()
 	for (i in 1:length(IncidenceComb)){
 		CEC[[i]]=agnes(IncidenceComb[[i]],diss=TRUE,method=linkage)
-		names(CEC)[i]=paste("Weight",weight[i],sep="")
+		namesweights=c(namesweights,paste("Weight",weight[i],sep=" "))
 		if(all(weight[[i]]==WeightClust)){
-			Clust=CEC[[i]]
+			Clust=CEC[i]
+			DistClust=IncidenceComb[i]
 		}
 	}
 	
-	out=list(Incidence=Incidence,IncidenceComb=IncidenceComb,Results=CEC,Clust=Clust)
+	Results=lapply(seq(1,length(CEC)),function(i) return(c("DistM"=IncidenceComb[i],"Clust"=CEC[i])))
+	names(Results)=namesweights
+	
+	out=list(Incidence=Incidence,Results=Results,Clust=c("DistM"=DistClust,"Clust"=Clust))
 	attr(out,'method')<-'CEC'
 	return(out)	
 	

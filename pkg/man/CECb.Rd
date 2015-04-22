@@ -10,9 +10,9 @@ procedure. However, the function is capable of cutting the resulting
 dendrogram several times, each time into a different number of cluster.
 }
 \usage{
-CECb(List, distmeasure = c("tanimoto", "tanimoto"), nrclusters = 
-seq(5, 25, 1), weight = NULL, clust = "agnes", linkage = "ward", 
-WeightClust = 0.5)
+CECb(List, distmeasure = c("tanimoto", "tanimoto"),normalize=FALSE,method=NULL,
+nrclusters = seq(5, 25, 1), weight = NULL, clust = "agnes", linkage = "ward", 
+WeightClust = 0.5,StopRange=FALSE)
 }
 \arguments{
   \item{List}{
@@ -21,7 +21,16 @@ A list of data matrices. It is assumed the  rows are corresponding
 }
   \item{distmeasure}{
 A character vector with the distance measure for each data matrix.
-Should be one of "tanimoto", "euclidean", "jaccard".
+Should be one of "tanimoto", "euclidean", "jaccard","hamming".
+}
+  \item{normalize}{
+Logical. Indicates whether to normalize the distance matrices or not.
+This is recommended if different distance types are used. More details
+on normalization in \code{Normalization}.
+}
+  \item{method}{
+A method of normalization. Should be one of "Quantile","Fisher-Yates",
+"standardize","Range" or any of the first letters of these names.
 }
   \item{nrclusters}{
 A sequence of numbers of clusters to cut the dendrogram in.
@@ -41,6 +50,11 @@ Choice of inter group dissimilarity (character). Defaults to "ward".
   \item{WeightClust}{
 A weight for which the result will be put aside of the other results.
 This was done for comparative reason and easy access.
+}
+  \item{StopRange}{
+Logical. Indicates whether the distance matrices with values not between zero and one should be standardized to have so.
+If FALSE the range normalization is performed. See \code{Normalization}. If TRUE, the distance matrices are not changed.
+This is recommended if different types of data are used such that these are comparable.
 }
 }
 \details{
@@ -82,8 +96,8 @@ Marijke Van Moerbeke
 data(fingerprintMat)
 data(targetMat)
 L=list(fingerprintMat,targetMat)
-MCF7_CECb=CECb(L,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25,1),
-clust="agnes",linkage="ward")
+MCF7_CECb=CECb(L,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,
+nrclusters=seq(5,25,1),clust="agnes",linkage="ward",StopRange=FALSE)
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 

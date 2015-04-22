@@ -12,13 +12,13 @@ investigates which objects have the same cluster number in reference and said me
 This number is divided by the total number of objects and used as a similarity measure.
 }
 \usage{
-SimilarityMeasure(List, nrclusters = 7, fusionsLog = TRUE, 
+SimilarityMeasure(List, nrclusters = NULL, fusionsLog = TRUE, 
 WeightClust = TRUE, names = NULL)
 }
 \arguments{
   \item{List}{
-A list of the outputs from the methods to be compared. The first element of the
-list will be used as the reference.
+A list of clustering outputs to be compared. The first element of the
+list will be used as the reference in \code{ReorderToReference}.
 }
   \item{nrclusters}{
 The number of clusters to cut the dendrogram in.~~
@@ -43,10 +43,10 @@ Marijke Van Moerbeke
 data(fingerprintMat)
 data(targetMat)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 L=list(MCF7_F,MCF7_T)
 names=c("FP","TP")

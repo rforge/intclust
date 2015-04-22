@@ -7,46 +7,60 @@ ReorderToReference<-function(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=F
 	element=0
 	for(i in 1:length(List)){
 		if(attributes(List[[i]])$method != "CEC" & attributes(List[[i]])$method != "Weighted" & attributes(List[[i]])$method!= "WeightedSim"){
-			element=element+1
-			ListNew[[element]]=List[[i]]
-		}else if(attributes(List[[i]])$method=="CEC" | attributes(List[[i]])$method=="Weighted" | attributes(List[[i]])$method == "WeightedSim"){
+			ResultsClust=list()
+			ResultsClust[[1]]=list()
+			ResultsClust[[1]][[1]]=List[[i]]
+			names(ResultsClust[[1]])[1]="Clust"
+			element=element+1					
+			ListNew[[element]]=ResultsClust[[1]]
+			#attr(ListNew[element],"method")="Weights"
+		}
+		else if(attributes(List[[i]])$method=="CEC" | attributes(List[[i]])$method=="Weighted" | attributes(List[[i]])$method == "WeightedSim"){
 			ResultsClust=list()
 			if(WeightClust==TRUE){
 				ResultsClust[[1]]=list()
+				if(attributes(List[[i]])$method != "WeightedSim"){
 				ResultsClust[[1]][[1]]=List[[i]]$Clust
 				names(ResultsClust[[1]])[1]="Clust"
 				element=element+1					
 				ListNew[[element]]=ResultsClust[[1]]
-			}else{
+				attr(ListNew[element],"method")="Weights"
+				}
+				else{
+					ResultsClust[[1]]=list()
+					ResultsClust[[1]][[1]]=List[[i]]
+					names(ResultsClust[[1]])[1]="Clust"
+					element=element+1					
+					ListNew[[element]]=ResultsClust[[1]]
+				}
+			}
+			else{
 				for (j in 1:length(List[[i]]$Results)){
 					ResultsClust[[j]]=list()
 					ResultsClust[[j]][[1]]=List[[i]]$Results[[j]]
 					names(ResultsClust[[j]])[1]="Clust"
 					element=element+1					
 					ListNew[[element]]=ResultsClust[[j]]
+					attr(ListNew[element],"method")="Weights"
 				}		
 			}		
 		}	
 	}
-	List=ListNew
 	
 	if(is.null(names)){
-		names=seq(1,length(List),1)
-		for(i in 1:length(List)){
+		names=seq(1,length(ListNew),1)
+		for(i in 1:length(ListNew)){
 			names[i]=paste("Method",i,sep=" ")
 		}
 	}
-	
-	ListClust=list()
-	for(i in 1:length(List)){
-		ListClust[[i]]=List[[i]]$Clust
-	}
-	
-	
+	names(ListNew)=names
+	List=ListNew
+		
 	Clusters=list()
-	Clusters=lapply(ListClust,cutree,nrclusters)
+	Clusters=lapply(seq(1,length(List)),function(i) cutree(List[[i]]$Clust$Clust,k=nrclusters))
 	
-	xaxis=ListClust[[1]]$order #order of the compounds as for method 1.
+	xaxis=List[[1]]$Clust$Clust$order #order of the compounds as for method 1.
+	xaxis.names=List[[1]]$Clust$Clust$order.lab #might be that names of methods are not in the same order...
 	
 	ordercolors=Clusters[[1]][xaxis]
 	order=seq(1,nrclusters)
@@ -75,22 +89,24 @@ ReorderToReference<-function(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=F
 	#	Ordered[[j]]=clusternumbers
 	#}
 	
-	for (j in 1:length(ListClust)){
+	for (j in 1:length(List)){
 		message(j)
-		ordercolorsj=Clusters[[j]][xaxis]
+		#ordercolorsj=Clusters[[j]][xaxis]
+		ordercolorsj=Clusters[[j]][match(xaxis.names,rownames(List[[j]]$Clust$DistM))]
 		order=seq(1,nrclusters)
 		
-		for (k in 1:length(unique(Clusters[[j]][xaxis]))){
-			select=which(Clusters[[j]][xaxis]==unique(Clusters[[j]][xaxis])[k])
+		for (k in 1:length(unique(Clusters[[j]][match(xaxis.names,rownames(List[[j]]$Clust$DistM))]))){
+			select=which(Clusters[[j]][match(xaxis.names,rownames(List[[j]]$Clust$DistM))]==unique(Clusters[[j]][match(xaxis.names,rownames(List[[j]]$Clust$DistM))])[k])
 			ordercolorsj[select]=order[k]
 		}
 		
 		
 		temp2=ordercolorsj
-		temp3=xaxis
+		#temp3=xaxis
+		temp3=match(xaxis.names,rownames(List[[j]]$Clust$DistM))
 		fan=list()
 		for(i in cols){
-			fan[[i]]=xaxis[which(temp2==i)]	
+			fan[[i]]=match(xaxis.names,rownames(List[[j]]$Clust$DistM))[which(temp2==i)]	
 		}
 		
 		favors=matrix(0,length(autograph),length(fan))
@@ -99,7 +115,7 @@ ReorderToReference<-function(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=F
 		
 		for(a in 1:length(autograph)){
 			for (b in 1:length(fan)){
-				favorab=length(which(fan[[b]] %in% autograph[[a]]))/length(autograph[[a]])	
+				favorab=length(which(rownames(List[[j]]$Clust$DistM)[fan[[b]]] %in% rownames(List[[1]]$Clust$DistM)[autograph[[a]]]))/length(autograph[[a]])	
 				favors[a,b]=favorab	
 			}
 		}
@@ -123,7 +139,7 @@ ReorderToReference<-function(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=F
 					proposals[a,b]=1
 					col=a
 					
-					change=which(xaxis %in% fan[[b]])
+					change=which(xaxis.names %in% rownames(List[[j]]$Clust$DistM)[fan[[b]]])
 					temp3[change]=col
 					
 					tempfavors[,b]=0
@@ -148,7 +164,7 @@ ReorderToReference<-function(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=F
 					proposals[match,b]=1
 					col=match
 					
-					change=which(xaxis %in% fan[[b]])
+					change=which(xaxis.names %in% rownames(List[[j]]$Clust$DistM)[fan[[b]]])
 					temp3[change]=col
 					
 					tempfavors[,b]=0
@@ -182,17 +198,18 @@ ReorderToReference<-function(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=F
 				propose=which(tempfavors[a,]!=0)
 				test=which(tempfavors[,propose]==max(tempfavors[,propose]))[1]
 				if(length(which(tempfavors[test,]!=0))!=1 | a %in% which(tempfavors[,propose]==max(tempfavors[,propose]))){
+					
 					matched[a]=propose
 					proposed[propose]="Yes"
 					proposals[a,propose]=1
 					col=a
 					
-					change=which(xaxis %in% fan[[propose]])
+					change=which(xaxis.names %in% rownames(List[[j]]$Clust$DistM)[fan[[propose]]])
 					temp3[change]=col
 					
 					tempfavors[a,]=0
 					tempfavors[,propose]=0
-					
+										
 					Switches[a]="Closed"
 				}
 			}
@@ -252,7 +269,7 @@ ReorderToReference<-function(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=F
 					proposals[a,propose]=1
 					col=a
 					
-					change=which(xaxis %in% fan[[propose]])
+					change=which(xaxis.names %in% rownames(List[[j]]$Clust$DistM)[fan[[propose]]])
 					temp3[change]=col
 					
 					tempfavors[a,propose]=0
@@ -286,29 +303,29 @@ ReorderToReference<-function(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=F
 						#first undo then replace
 						#tempfavors[which(matched==propose),propose]=favors[which(matched==propose),propose]
 						
-						changeback=which(xaxis %in% fan[[propose]])
-						temp3[changeback]=xaxis[changeback]
+						changeback=which(xaxis.names %in%  rownames(List[[j]]$Clust$DistM)[fan[[propose]]])
+						temp3[changeback]=match(xaxis.names,rownames(List[[j]]$Clust$DistM))[changeback]
 						matched[which(matched==propose)]="Free"
 						
 						matched[a]=propose
 						proposals[a,propose]=1
 						col=a
-						change=which(xaxis %in% fan[[propose]])
+						change=which(xaxis.names %in% rownames(List[[j]]$Clust$DistM)[fan[[propose]]])
 						temp3[change]=col
 						
 						tempfavors[a,propose]=0
 					}
 					else if(length(which(tempfavors[a,]!=0))==1){
 						#if only 1 remains, these MUST BE matched
-						changeback=which(xaxis %in% fan[[propose]])
-						temp3[changeback]=xaxis[changeback]
+						changeback=which(xaxis.names %in% rownames(List[[j]]$Clust$DistM)[fan[[propose]]])
+						temp3[changeback]=match(xaxis.names,rownames(List[[j]]$Clust$DistM))[changeback]
 						matched[which(matched==propose)]="Free"
 						
 						matched[a]=propose
 						proposals[a,propose]=1
 						col=a
 						
-						change=which(xaxis %in% fan[[propose]])
+						change=which(xaxis.names %in% rownames(List[[j]]$Clust$DistM)[fan[[propose]]])
 						temp3[change]=col
 						
 						tempfavors[a,propose]=0	
@@ -350,7 +367,7 @@ ReorderToReference<-function(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=F
 					proposals[maxLeft,Left]=1
 					col=premiumcol[i]
 					
-					change=which(xaxis %in% fan[[Left]])
+					change=which(xaxis.names %in% rownames(List[[j]]$Clust$DistM)[fan[[Left]]])
 					temp3[change]=col
 					
 					tempfavors[,Left]=0
@@ -374,7 +391,7 @@ ReorderToReference<-function(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=F
 	for(j in 1:length(Ordered)){
 		Matrix=rbind(Matrix,Ordered[[j]])		
 	}
-	colnames(Matrix)=ListClust[[1]]$order.lab
+	colnames(Matrix)=List[[1]]$Clust$Clust$order.lab
 	rownames(Matrix)=names
 	return(Matrix)
 	

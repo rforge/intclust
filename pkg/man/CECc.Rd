@@ -7,14 +7,14 @@ Complementary Ensemble Clustering - version c
 Function \code{CECc} performs complementary ensemble clustering in which
 in every iteration the number of random samples taken is randomly set
 between m/2 and m-1 with m the total number of features. The number of
-features to sample can also be prespecified by the user. Further, each
+features to sample can also be specified by the user. Further, each
 resulting dendrogram can be cut numerous times into a different specific
 number of clusters.
 }
 \usage{
-CECc(List, distmeasure = c("tanimoto", "tanimoto"), t = 10, r = NULL, 
-nrclusters = NULL, weight = NULL, clust = "agnes", linkage = "ward", 
-WeightClust = 0.5)
+CECc(List, distmeasure = c("tanimoto", "tanimoto"),normalize=FALSE,method=NULL,
+t = 10, r = NULL,nrclusters = NULL, weight = NULL, clust = "agnes", linkage = "ward", 
+WeightClust = 0.5,StopRange=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,7 +24,16 @@ A list of data matrices. It is assumed the  rows are corresponding
 }
   \item{distmeasure}{
 A character vector with the distance measure for each data matrix.
-Should be one of "tanimoto", "euclidean", "jaccard".
+Should be one of "tanimoto", "euclidean", "jaccard","hamming".
+}
+  \item{normalize}{
+Logical. Indicates whether to normalize the distance matrices or not.
+This is recommended if different distance types are used. More details
+on normalization in \code{Normalization}.
+}
+  \item{method}{
+A method of normalization. Should be one of "Quantile","Fisher-Yates",
+"standardize","Range" or any of the first letters of these names.
 }
   \item{t}{
 The number of iterations.
@@ -50,6 +59,11 @@ Choice of inter group dissimilarity (character). Defaults to "ward".
   \item{WeightClust}{
 A weight for which the result will be put aside of the other results.
 This was done for comparative reason and easy access.
+}
+  \item{StopRange}{
+Logical. Indicates whether the distance matrices with values not between zero and one should be standardized to have so.
+If FALSE the range normalization is performed. See \code{Normalization}. If TRUE, the distance matrices are not changed.
+This is recommended if different types of data are used such that these are comparable.
 }
 }
 \details{
@@ -91,8 +105,8 @@ Marijke Van Moerbeke
 data(fingerprintMat)
 data(targetMat)
 L=list(fingerprintMat,targetMat)
-MCF7_CECc=CECc(L,distmeasure=c("tanimoto","tanimoto"),t=10,r=NULL,
-nrclusters=seq(5,25,1),clust="agnes",linkage="ward")
+MCF7_CECc=CECc(L,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,
+t=10,r=NULL,nrclusters=seq(5,25,1),clust="agnes",linkage="ward",StopRange=FALSE)
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 

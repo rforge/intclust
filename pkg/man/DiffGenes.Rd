@@ -12,22 +12,22 @@ methods is provided, DiffGenes will perform the limma function
 for each method. 
 }
 \usage{
-DiffGenes(List,Selection=NULL, GeneExpr = geneMat, nrclusters = NULL, method = "limma", 
-sign = 0.05, top = NULL, fusionsLog = TRUE, WeightClust = TRUE, 
+DiffGenes(List,Selection=NULL, GeneExpr = NULL, nrclusters = NULL, method = "limma", 
+sign = 0.05, topG = NULL, fusionsLog = TRUE, WeightClust = TRUE, 
 names = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
-A list of the outputs from the methods to be compared. The first element
-of the list will be used as the reference.
+A list of the clustering outputs to be compared. The first element
+of the list will be used as the reference in \code{ReorderToReference}.
 }
  \item{Selection}{
 If differential gene expression should be investigated for a specific selection of compounds, this selection can be provided here.
 Selection can be of the type "character" (names of the compounds) or "numeric" (the number of specific cluster).
  }
   \item{GeneExpr}{
-The gene expression matrix or ExpressionSet of the objects.
+The gene expression matrix or ExpressionSet of the objects. The rows should correspond with the genes.
 }
   \item{nrclusters}{
 The number of clusters to cut the dendrogram in.
@@ -40,7 +40,7 @@ is available
   \item{sign}{
 The significance level to be handled.
 }
-  \item{top}{
+  \item{topG}{
 Overrules sign. The number of top genes to be shown.
 }
   \item{fusionsLog}{
@@ -81,15 +81,15 @@ data(fingerprintMat)
 data(targetMat)
 data(geneMat)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 L=list(MCF7_T ,MCF7_F)
 
 MCF7_FT_DE = DiffGenes(L,GeneExpr=geneMat,nrclusters=7,method="limma",
-sign=0.05,top=10,fusionsLog=TRUE,WeightClust=TRUE)
+sign=0.05,topG=10,fusionsLog=TRUE,WeightClust=TRUE)
 
 }
 \keyword{Differential Gene Expression }

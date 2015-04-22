@@ -1,4 +1,4 @@
-Cluster<-function(Data,distmeasure="tanimoto",clust="agnes",linkage="ward",gap=TRUE,maxK=50){	
+Cluster<-function(Data,type=c("data","dist"),distmeasure="tanimoto",normalize=FALSE,method=NULL,clust="agnes",linkage="ward",gap=TRUE,maxK=50,StopRange=FALSE){	
 	if(clust != "agnes" | linkage != "ward"){
 		message("Only hierarchical clustering with WARD link is implemented for now. Method continues with these options")
 		clust="agnes"
@@ -6,10 +6,21 @@ Cluster<-function(Data,distmeasure="tanimoto",clust="agnes",linkage="ward",gap=T
 	}
 		
 	#STEP 1: Distance Matrices
-
-	DistM=Distance(Data,distmeasure)
-	rownames(DistM)=rownames(Data)
-	colnames(DistM)=rownames(Data)	
+	type<-match.arg(type)
+	if(type=="data"){
+		DistM=Distance(Data,distmeasure,normalize,method)
+		if(StopRange==FALSE & !(0<=min(DistM) & max(DistM)<=1)){
+			message("It was detected that a distance matrix had values not between zero and one. Range Normalization was performed to secure this. Put StopRange=TRUE if this was not necessary")
+			DistM=Normalization(DistM,method="Range")
+		}
+	}
+	else{
+		DistM=Data
+		if(StopRange==FALSE  & !(0<=min(DistM) & max(DistM)<=1)){
+			message("It was detected that a distance matrix had values not between zero and one. Range Normalization was performed to secure this. Put StopRange=TRUE if this was not necessary")
+			DistM=Normalization(DistM,method="Range")
+		}
+	}
 	
 	#STEP 2: Hierarchical Clustering with Ward Link
 	

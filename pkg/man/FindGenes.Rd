@@ -1,7 +1,7 @@
 \name{FindGenes}
 \alias{FindGenes}
 \title{
-Find genes over multiple clusters and methods
+Investigates whether genes are differential expressed in multiple clusters
 }
 \description{
 Due to the shifting of compounds over the clusters for the different methods,
@@ -15,7 +15,7 @@ FindGenes(DataLimma, names = NULL)
 }
 \arguments{
   \item{DataLimma}{
-Preferably an output of one of the \code{DiffGenes} functions. If not, an ID element of the
+Preferably an output of the \code{DiffGenes} function. If not, an ID element of the
 top genes must be present for each cluster of each method specified in the data structure.
 }
   \item{names}{
@@ -36,10 +36,10 @@ data(fingerprintMat)
 data(targetMat)
 data(geneMat)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 MCF7_DiffGenes_FandT10=DiffGenes(list(MCF7_F,MCF7_T),Selection=NULL,GeneExpr=geneMat,
 nrclusters=7,method="limma",sign=0.05,top=10,fusionsLog = TRUE, WeightClust = TRUE, 

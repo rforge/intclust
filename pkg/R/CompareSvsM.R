@@ -1,4 +1,22 @@
-CompareSvsM<-function(ListS,ListM,nrclusters=NULL,cols=Colors2,fusionsLogS=FALSE,fusionsLogM=FALSE,WeightClustS=FALSE,WeightClustM=FALSE,namesS=NULL,namesM=NULL,margins=c(8.1,3.1,3.1,4.1),...){
+CompareSvsM<-function(ListS,ListM,nrclusters=NULL,cols=NULL,fusionsLogS=FALSE,fusionsLogM=FALSE,WeightClustS=FALSE,WeightClustM=FALSE,namesS=NULL,namesM=NULL,margins=c(8.1,3.1,3.1,4.1),plottype="new",location=NULL,...){
+	plottypein<-function(plottype,location){
+		if(plottype=="pdf" & !(is.null(location))){
+			pdf(paste(location,".pdf",sep=""))
+		}
+		if(plottype=="new"){
+			dev.new(wdith=14,height=7)
+		}
+		if(plottype=="sweave"){
+			
+		}
+	}
+	plottypeout<-function(plottype){
+		if(plottype=="pdf"){
+			dev.off()
+		}
+	}
+	nmethodsS=0
+	nmethodsM=0
 	
 	MatrixColorsS=ReorderToReference(ListS,nrclusters,fusionsLogS,WeightClustS,namesS)
 	MatrixColorsM=ReorderToReference(c(ListS[1],ListM),nrclusters,fusionsLogM,WeightClustM,c("ref",namesM))
@@ -29,7 +47,8 @@ CompareSvsM<-function(ListS,ListM,nrclusters=NULL,cols=Colors2,fusionsLogS=FALSE
 		}
 	}
 		
-	dev.new(width=14,height=7)
+
+	plottypein(plottype,location)
 	par(mfrow=c(1,2),mar=margins)
 	color2D.matplot(MatrixColorsS,cellcolors=NamesS,show.values=FALSE,axes=FALSE,xlab="",ylab="",...)
 	axis(1,at=seq(0.5,(nobsS-0.5)),labels=colnames(MatrixColorsS),las=2,cex.axis=0.70)
@@ -40,6 +59,7 @@ CompareSvsM<-function(ListS,ListM,nrclusters=NULL,cols=Colors2,fusionsLogS=FALSE
 	axis(1,at=seq(0.5,(nobsM-0.5)),labels=colnames(MatrixColorsM),las=2,cex.axis=0.70)
 	axis(2,at=seq(0.5,(nmethodsM-0.5)),labels=rev(namesM),cex.axis=0.65,las=2)
 	axis(4,at=seq(0.5,(nmethodsM-0.5)),labels=rev(similarM[-1]),cex.axis=0.65,las=2)
+	plottypeout(plottype)
 	dev.new()
 	dev.off()
 }
