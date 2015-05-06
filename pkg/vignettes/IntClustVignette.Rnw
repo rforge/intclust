@@ -69,7 +69,7 @@ extended to contain more distance metrics. The implemented method for
 clustering is agglomerative hierarchical clustering (\cite{Hastie2009}) as coded
 by the {\it agnes} of the \texttt{cluster} package with the ward link. The
 option for normalizing the data is readly available. Normalization is performed
-with the \code{Normalization} function and can be called on separately. The
+with the \texttt{Normalization} function and can be called on separately. The
 normalzing methods are: Quantile-Normalization, Fisher-Yates Normalization,
 standardizzation and range normalization. See the helpfiles for more
 information. No normalization is necessary for the example since both data
@@ -86,7 +86,7 @@ MCF7_T <- Cluster(Data=targetMat,type="data",distmeasure="tanimoto",
 \noindent If the number of clusters to work with is unknown, the option gap in
 the {\it Cluster} function can be put to TRUE. Relying on the gap statistic
 (\cite{Hastie2009}), an optimal number of clusters will be determined. Another
-option is to determine the number of clustes with \code{SelectnrClusters}.
+option is to determine the number of clustes with \texttt{SelectnrClusters}.
 Medoid clustering is performed for a sequence of numbers of clusters for each
 provided data source. The number correspinding with maximal average silhouette
 widths over the data sources can be taken as an optimal number of clusters.
