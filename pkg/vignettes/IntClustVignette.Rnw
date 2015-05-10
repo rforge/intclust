@@ -135,7 +135,7 @@ Fingerprints: Dendrogram",ylim=c(-0.1,1.8),plottype="sweave",location=NULL)
      \centering
 <<ClusterPlotT,fig=TRUE,echo=FALSE,width=10,height=10>>=
 ClusterPlot(MCF7_T,MCF7_F,nrcluster=7,cols=Colors,main="Clustering on 
-Targets: Dendrogram",ylim=c(-0.1,2.5),,plottype="sweave",location=NULL) 
+Targets: Dendrogram",ylim=c(-0.1,2.5),plottype="sweave",location=NULL) 
 @
 \caption{{\it TP - MCF7}\label{MCF7_T}}
  \end{minipage}
@@ -439,7 +439,7 @@ nM=c("ADC","ADECa","ADECb","ADECc","CECa","CECb","CECc","SNFa","SNFb",
       "SNFc","WonM","Weighted","WeightedSim")
 CompareSvsM(ListS=LS,ListM=LM,nrclusters=7,cols=Colors,fusionsLogS=TRUE,
             fusionsLogM=TRUE,WeightClustS=TRUE,WeightClustM=TRUE,
-            namesS=nS,namesM=nM,margins=c(8.1,3.1,3.1,4.1),plottype="new",
+            namesS=nS,namesM=nM,margins=c(8.1,3.1,3.1,4.1),plottype="sweave",
             location=NULL)
 @
 \begin{figure}[H]  
@@ -543,7 +543,7 @@ names=c("FP","ADC","ADECa","ADECb","ADECc","CECa","CECb","CECc","SNFa","SNFb",
 Tracking=TrackCluster(List=L,Selection=Comps,nrclusters=7,followMaxComps=FALSE,
                       followClust=TRUE,fusionsLog=TRUE,WeightClust=TRUE,
                       names=names,SelectionPlot=FALSE,Table=FALSE,
-                      CompleteSelectionPlot=TRUE,cols=Colors,plottype="new",
+                      CompleteSelectionPlot=TRUE,cols=Colors,plottype="sweave",
                       location=NULL)
 @
 \vspace{-1.0cm}
@@ -656,13 +656,13 @@ MCF7_Feat=ChooseCluster(Interactive=FALSE,LeadCpds=Comps,ClusterResult=MCF7_F,
 <<FeaturesPlotF,eval=FALSE>>=
 BinFeaturesPlot(LeadCpds=Comps,OrderedCpds=colnames(geneMat),Features=
                 MCF7_Feat$Characteristics$FP,Data=fingerprintMat,
-                Color=MCF7_F,nrclusters=7,cols=Colors,name=c("FP"),plottype="new",
+                Color=MCF7_F,nrclusters=7,cols=Colors,name=c("FP"),plottype="sweave",
                 location=NULL)
 @
 <<FeaturesPlotT,eval=FALSE>>=
 BinFeaturesPlot(LeadCpds=Comps,OrderedCpds=colnames(geneMat),Features=
                 MCF7_Feat$Characteristics$TP,Data=targetMat,Color=MCF7_F,
-                nrclusters=7,cols=Colors,name=c("TP"),plottype="new",
+                nrclusters=7,cols=Colors,name=c("TP"),plottype="sweave",
                 location=NULL)
 @
 \begin{figure}[H]
