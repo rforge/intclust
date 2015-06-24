@@ -32,6 +32,9 @@ ProfilePlot<-function(Genes,Comps,GeneExpr=NULL,Raw=FALSE,OrderLab=NULL,ColorLab
 			GeneExpr=GeneExpr[,match(orderlabs,colnames(GeneExpr))]
 		}
 	}
+	else{
+		orderlabs=colnames(GeneExpr)
+	}
 	
 	if(!is.null(ColorLab)){
 		Data1 <- ColorLab$Clust
@@ -64,7 +67,11 @@ ProfilePlot<-function(Genes,Comps,GeneExpr=NULL,Raw=FALSE,OrderLab=NULL,ColorLab
 		
 	}
 	else{
-		colors<-rep(1,ncol(GeneExpr))
+		colors1<-rep("green",length(Comps))
+		colors2<-rep("black",length(orderlabs[which(!(orderlabs%in%Comps))]))
+		colors=c(colors1,colors2)
+		AllCpds=c(Comps,orderlabs[which(!(orderlabs%in%Comps))])
+		names(colors)=AllCpds
 	}
 	
 	#yvalues=c()
@@ -132,7 +139,7 @@ ProfilePlot<-function(Genes,Comps,GeneExpr=NULL,Raw=FALSE,OrderLab=NULL,ColorLab
 		axis(1, labels=FALSE)
 		#box("outer")
 		mtext(substr(Indices,1,15), side = 1,  at=seq(0.5,(ncol(GeneExpr)-0.5)), line=0.2, las=2, cex=0.70,col=colors[Indices])
-		
+		#mtext(substr(Indices,1,15), side = 1,  at=seq(0.5,(ncol(GeneExpr)-0.5)), line=0.2, las=2, cex=0.70,col=c(rep("blue",7),rep("black",(56-7))))
 	}
 	else{
 		axis(1,at=seq(0.5,(ncol(GeneExpr)-0.5)),labels=Indices,las=2,cex.axis=0.70,xlab=" ")

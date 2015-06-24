@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2014.10.20)  12 MAY 2015 09:16
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2014.10.20)  22 JUN 2015 10:23
 entering extended mode
 **C:/Users/lucp8409/Documents/Doctorate/Integrated*Clustering/R*Package*IntClus
 t/Package/IntClust/vignettes/IntClustVignette.tex
@@ -46,9 +46,7 @@ Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibsep=\skip44
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count88
-)
-("C:/Program Files/Architect/plugins/eu.openanalytics.architect.r.server.win32.
-win32_0.9.4.201408202157/R/share/texmf/tex/latex\Sweave.sty"
+) ("C:/Program Files/R/R-3.1.3/share/texmf/tex/latex\Sweave.sty"
 Package: Sweave 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\ifthen.sty"
 Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
@@ -329,7 +327,7 @@ Package: alltt 1997/06/16 v2.0g defines alltt environment
 ("C:\Users\lucp8409\Documents\Doctorate\Integrated Clustering\R Package IntClus
 t\Package\IntClust\vignettes\IntClustVignette.aux"
 
-LaTeX Warning: Label `MCF7_Weights' multiply defined.
+LaTeX Warning: Label `SimMap' multiply defined.
 
 
 LaTeX Warning: Label `MCF7_Weights' multiply defined.
@@ -449,47 +447,23 @@ LaTeX Font Info:    Try loading font information for OT1+aett on input line 29.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\ae\ot1aett.fd"
 File: ot1aett.fd 1997/11/16 Font definitions for OT1/aett.
-)
-C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntClust/
-Package/IntClust/vignettes/IntClustVignette.tex:69: Undefined control sequence
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-
-C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntClust/
-Package/IntClust/vignettes/IntClustVignette.tex:87: Undefined control sequence
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-
-[2]
+) [2]
 Underfull \hbox (badness 10000) in paragraph at lines 105--114
 
  []
 
-
 <IntClustVignette-ClusterPlotF.pdf, id=121, 722.7pt x 722.7pt>
 File: IntClustVignette-ClusterPlotF.pdf Graphic file (type pdf)
-
 <use IntClustVignette-ClusterPlotF.pdf>
 Package pdftex.def Info: IntClustVignette-ClusterPlotF.pdf used on input line 1
 35.
 (pdftex.def)             Requested size: 170.71718pt x 170.71672pt.
-
 <IntClustVignette-ClusterPlotT.pdf, id=122, 722.7pt x 722.7pt>
 File: IntClustVignette-ClusterPlotT.pdf Graphic file (type pdf)
-
 <use IntClustVignette-ClusterPlotT.pdf>
 Package pdftex.def Info: IntClustVignette-ClusterPlotT.pdf used on input line 1
 40.
 (pdftex.def)             Requested size: 170.71718pt x 170.71672pt.
-
 [3 <C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntCl
 ust/Package/IntClust/vignettes/IntClustVignette-ClusterPlotF.pdf> <C:/Users/luc
 p8409/Documents/Doctorate/Integrated Clustering/R Package IntClust/Package/IntC
@@ -498,30 +472,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 172--180
 
  []
 
-
 [4]
 Underfull \hbox (badness 10000) in paragraph at lines 250--270
 
  []
 
-
 [5]
-C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntClust/
-Package/IntClust/vignettes/IntClustVignette.tex:320: Undefined control sequence
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntClust/
-Package/IntClust/vignettes/IntClustVignette.tex:322: Undefined control sequence
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
 
 Package natbib Warning: Citation `Kleinberg2005' on page 6 undefined on input l
 ine 370.
@@ -594,15 +550,6 @@ lust/Package/IntClust/vignettes/Interactive.png> <C:/Users/lucp8409/Documents/D
 octorate/Integrated Clustering/R Package IntClust/Package/IntClust/vignettes/In
 teractiveMethod.pdf> <C:/Users/lucp8409/Documents/Doctorate/Integrated Clusteri
 ng/R Package IntClust/Package/IntClust/vignettes/InteractiveCluster.pdf>]
-C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntClust/
-Package/IntClust/vignettes/IntClustVignette.tex:505: Undefined control sequence
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 525--535
 
  []
@@ -612,75 +559,87 @@ File: Tracking.pdf Graphic file (type pdf)
 <use Tracking.pdf>
 Package pdftex.def Info: Tracking.pdf used on input line 572.
 (pdftex.def)             Requested size: 256.08139pt x 256.08139pt.
-[12] [13 <C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package
- IntClust/Package/IntClust/vignettes/Tracking.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 580--596
+[12] <SimilarityHeatmap_MCF7W.pdf, id=246, 700.6175pt x 700.6175pt>
+File: SimilarityHeatmap_MCF7W.pdf Graphic file (type pdf)
+<use SimilarityHeatmap_MCF7W.pdf>
+Package pdftex.def Info: SimilarityHeatmap_MCF7W.pdf used on input line 595.
+(pdftex.def)             Requested size: 256.08139pt x 256.08139pt.
+[13 <C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntC
+lust/Package/IntClust/vignettes/Tracking.pdf> <C:/Users/lucp8409/Documents/Doct
+orate/Integrated Clustering/R Package IntClust/Package/IntClust/vignettes/Simil
+arityHeatmap_MCF7W.pdf>] <HeatmapSelection_MCF7W.pdf, id=266, 700.6175pt x 700.
+6175pt>
+File: HeatmapSelection_MCF7W.pdf Graphic file (type pdf)
+<use HeatmapSelection_MCF7W.pdf>
+Package pdftex.def Info: HeatmapSelection_MCF7W.pdf used on input line 624.
+(pdftex.def)             Requested size: 256.08139pt x 256.08139pt.
+[14 <C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntC
+lust/Package/IntClust/vignettes/HeatmapSelection_MCF7W.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 632--648
 
  []
 
-<IntClustVignette-ProfilePlot.pdf, id=261, 578.16pt x 578.16pt>
+<IntClustVignette-ProfilePlot.pdf, id=279, 578.16pt x 578.16pt>
 File: IntClustVignette-ProfilePlot.pdf Graphic file (type pdf)
 <use IntClustVignette-ProfilePlot.pdf>
-Package pdftex.def Info: IntClustVignette-ProfilePlot.pdf used on input line 61
-7.
+Package pdftex.def Info: IntClustVignette-ProfilePlot.pdf used on input line 66
+9.
 (pdftex.def)             Requested size: 341.43437pt x 341.42903pt.
-[14 <C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntC
+[15 <C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntC
 lust/Package/IntClust/vignettes/IntClustVignette-ProfilePlot.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 623--649
+Underfull \hbox (badness 10000) in paragraph at lines 675--701
 
  []
 
-[15] <IntClustVignette-FeaturesPlotF.pdf, id=278, 1011.78pt x 1011.78pt>
-File: IntClustVignette-FeaturesPlotF.pdf Graphic file (type pdf)
-<use IntClustVignette-FeaturesPlotF.pdf>
-Package pdftex.def Info: IntClustVignette-FeaturesPlotF.pdf used on input line 
-703.
+[16] <IntClustVignette-FeaturesPlotFP.pdf, id=296, 1011.78pt x 1011.78pt>
+File: IntClustVignette-FeaturesPlotFP.pdf Graphic file (type pdf)
+<use IntClustVignette-FeaturesPlotFP.pdf>
+Package pdftex.def Info: IntClustVignette-FeaturesPlotFP.pdf used on input line
+ 755.
 (pdftex.def)             Requested size: 170.71718pt x 170.71892pt.
-<IntClustVignette-FeaturesPlotT.pdf, id=279, 1011.78pt x 1011.78pt>
+<IntClustVignette-FeaturesPlotT.pdf, id=297, 1011.78pt x 1011.78pt>
 File: IntClustVignette-FeaturesPlotT.pdf Graphic file (type pdf)
 <use IntClustVignette-FeaturesPlotT.pdf>
 Package pdftex.def Info: IntClustVignette-FeaturesPlotT.pdf used on input line 
-708.
+760.
 (pdftex.def)             Requested size: 170.71718pt x 170.71892pt.
-[16 <C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntC
-lust/Package/IntClust/vignettes/IntClustVignette-FeaturesPlotF.pdf> <C:/Users/l
-ucp8409/Documents/Doctorate/Integrated Clustering/R Package IntClust/Package/In
-tClust/vignettes/IntClustVignette-FeaturesPlotT.pdf>]
+[17 <C:/Users/lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntC
+lust/Package/IntClust/vignettes/IntClustVignette-FeaturesPlotFP.pdf> <C:/Users/
+lucp8409/Documents/Doctorate/Integrated Clustering/R Package IntClust/Package/I
+ntClust/vignettes/IntClustVignette-FeaturesPlotT.pdf>]
 ("C:\Users\lucp8409\Documents\Doctorate\Integrated Clustering\R Package IntClus
-t\Package\IntClust\vignettes\IntClustVignette.bbl") [17]
-LaTeX Font Info:    Try loading font information for TS1+aer on input line 718.
+t\Package\IntClust\vignettes\IntClustVignette.bbl") [18]
+LaTeX Font Info:    Try loading font information for TS1+aer on input line 770.
 
-
-("C:/Program Files/Architect/plugins/eu.openanalytics.architect.r.server.win32.
-win32_0.9.4.201408202157/R/share/texmf/tex/latex\ts1aer.fd"
+("C:/Program Files/R/R-3.1.3/share/texmf/tex/latex\ts1aer.fd"
 File: ts1aer.fd 
 )
-LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <10> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 718.
+LaTeX Font Info:    Font shape `TS1/aer/m/it' in size <10> not available
+(Font)              Font shape `TS1/cmr/m/it' tried instead on input line 770.
 
 Package natbib Warning: There were undefined citations.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 749.
-[18]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 749.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 802.
+[19]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 802.
 
 ("C:\Users\lucp8409\Documents\Doctorate\Integrated Clustering\R Package IntClus
 t\Package\IntClust\vignettes\IntClustVignette.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 749.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 749.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 802.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 802.
 Package rerunfilecheck Info: File `IntClustVignette.out' has not changed.
 (rerunfilecheck)             Checksum: 9B38B30F026991050589784142299F9D;1471.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 749.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 802.
  ) 
 Here is how much of TeX's memory you used:
- 7540 strings out of 493705
- 112313 string characters out of 3144560
- 205445 words of memory out of 3000000
- 10688 multiletter control sequences out of 15000+200000
- 11171 words of font info for 34 fonts, out of 3000000 for 9000
+ 7557 strings out of 493705
+ 112306 string characters out of 3144560
+ 205590 words of memory out of 3000000
+ 10699 multiletter control sequences out of 15000+200000
+ 11381 words of font info for 35 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  35i,7n,28p,364b,478s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<C:/Pr
@@ -695,10 +654,10 @@ fb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsltt10.pfb><C:
 /Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program
  Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/M
 iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files/MiKTeX 2.
-9/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on IntClustVignette.pdf (18 pages, 341301 bytes).
+9/fonts/type1/public/cm-super/sfti1000.pfb>
+Output written on IntClustVignette.pdf (19 pages, 382662 bytes).
 PDF statistics:
- 363 PDF objects out of 1000 (max. 8388607)
- 63 named destinations out of 1000 (max. 500000)
- 213 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 382 PDF objects out of 1000 (max. 8388607)
+ 66 named destinations out of 1000 (max. 500000)
+ 223 words of extra memory for PDF output out of 10000 (max. 10000000)
 

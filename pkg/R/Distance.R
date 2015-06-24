@@ -8,23 +8,29 @@ Distance=function(Data,distmeasure=c("tanimoto","jaccard","euclidean","hamming")
 	tanimoto = function(m){
 		S = matrix(0,nrow=dim(m)[1],ncol=dim(m)[1])
 		
-		for(i in 1:dim(m)[1]){
-			for(j in 1:i){
-				N.A = sum(m[i,])
-				N.B = sum(m[j,])
-				N.C = sum(m[i,(m[i,]==m[j,])])
-				
-				if(N.A==0&N.B==0){
-					coef = 1				
-				}
-				else{
-					coef = N.C / (N.A+N.B-N.C)
-				}
-				S[i,j] = coef
-				S[j,i] = coef
-			}
-			
-		}
+#		for(i in 1:dim(m)[1]){
+#			for(j in 1:i){
+#				N.A = sum(m[i,])
+#				N.B = sum(m[j,])
+#				N.C = sum(m[i,(m[i,]==m[j,])])
+#				
+#				if(N.A==0&N.B==0){
+#					coef = 1				
+#				}
+#				else{
+#					coef = N.C / (N.A+N.B-N.C)
+#				}
+#				S[i,j] = coef
+#				S[j,i] = coef
+#			}
+#			
+#		}
+		#via matrix multiplication
+		m=as.matrix(m)
+		N.C=m %*% t(m)
+		N.A=m %*% (1-t(m))
+		N.B=(1-m) %*% t(m)
+		S=N.C/(N.A+N.B+N.C)
 		D = 1 - S
 		return(D)
 	}

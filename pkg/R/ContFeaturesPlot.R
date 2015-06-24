@@ -1,6 +1,23 @@
-ContFeaturesPlot<-function(LeadCpds,OrderedCpds,Data,nrclusters,Color=NULL,cols=NULL,ylab="bio-assays",AddLegend=TRUE,margins=c(5.5,3.5,0.5,8.7),plottype="new",location=NULL){
+ContFeaturesPlot<-function(LeadCpds,Data,nrclusters=NULL,OrderLab=NULL,ColorLab=NULL,cols=NULL,ylab="bio-assays",AddLegend=TRUE,margins=c(5.5,3.5,0.5,8.7),plottype="new",location=NULL){
 	
-	temp=OrderedCpds[which(!(OrderedCpds%in%LeadCpds))]
+	if(all(LeadCpds%in%rownames(Data))){
+		Data=t(Data)
+	}
+	
+	if(!is.null(OrderLab)){
+		if(class(OrderLab)=="character"){
+			orderlabs=OrderLab
+		}
+		else{
+			orderlabs=OrderLab$Clust$order.lab
+			Data=Data[,match(orderlabs,colnames(Data))]
+		}
+	}
+	else{
+		orderlabs=colnames(Data)
+	}
+	
+	temp=orderlabs[which(!(orderlabs%in%LeadCpds))]
 	AllCpds=c(LeadCpds,temp)
 	
 	plottypein<-function(plottype,location){
@@ -20,23 +37,21 @@ ContFeaturesPlot<-function(LeadCpds,OrderedCpds,Data,nrclusters,Color=NULL,cols=
 		}
 	}
 	
-	if(!(all(AllCpds%in%rownames(Data)))){
-		Data=t(Data)
-	}
+
 	plottypein(plottype,location)
 	par(mar=margins)
-	plot(x=0,y=0,xlim=c(0,(nrow(Data)+3)),ylim=c(min(Data)-0.5,max(Data)+0.5),type="n",ylab=ylab,xlab='',xaxt='n')
-	for(i in c(1:ncol(Data))){	
-		lines(x=seq(1,length(LeadCpds)),y=Data[which(rownames(Data)%in%LeadCpds),i],col=i)
+	plot(x=0,y=0,xlim=c(0,(ncol(Data)+3)),ylim=c(min(Data)-0.5,max(Data)+0.5),type="n",ylab=ylab,xlab='',xaxt='n')
+	for(i in c(1:nrow(Data))){	
+		lines(x=seq(1,length(LeadCpds)),y=Data[i,which(colnames(Data)%in%LeadCpds)],col=i)
 	}
-	for(i in c(1:ncol(Data))){	
-		lines(x=seq(length(LeadCpds)+4,(nrow(Data)+3)),y=Data[which(!(rownames(Data)%in%LeadCpds)),i],col=i)
+	for(i in c(1:nrow(Data))){	
+		lines(x=seq(length(LeadCpds)+4,(ncol(Data)+3)),y=Data[i,which(!(colnames(Data)%in%LeadCpds))],col=i)
 	}
 
 	
 
-	if(!(is.null(Color))){
-		Data1 <- Color$Clust
+	if(!(is.null(ColorLab)) | is.null(nrclusters)){
+		Data1 <- ColorLab$Clust
 		ClustData1=cutree(Data1,nrclusters) 
 	
 		ordercolors=ClustData1[Data1$order]
@@ -56,19 +71,21 @@ ContFeaturesPlot<-function(LeadCpds,OrderedCpds,Data,nrclusters,Color=NULL,cols=
 		names(colors) <-names(ordercolors)	
 	}
 	else{
-		colors<-rep("black",length(AllCpds))
-		names(colors)<-AllCpds
+		colors1<-rep("green",length(LeadCpds))
+		colors2<-rep("black",length(temp))
+		colors=c(colors1,colors2)
+		names(colors)=AllCpds
 	}
 	
 	mtext(LeadCpds,side=1,at=seq(1,length(LeadCpds)),line=0,las=2,cex=0.70,col=colors[LeadCpds])
-	mtext(temp, side = 1, at=c(seq(length(LeadCpds)+4,(nrow(Data)+3))), line=0, las=2, cex=0.70,col=colors[temp])
+	mtext(temp, side = 1, at=c(seq(length(LeadCpds)+4,(ncol(Data)+3))), line=0, las=2, cex=0.70,col=colors[temp])
 	if(AddLegend==TRUE){
 		
-		labels=colnames(Data)
-		colslegend=seq(1,length(colnames(Data)))
+		labels=rownames(Data)
+		colslegend=seq(1,length(rownames(Data)))
 		
 		par(xpd=T,mar=margins)
-		legend(nrow(Data)+5,mean(c(min(c(min(Data)-0.5,max(Data)+0.5)),max(c(min(Data)-0.5,max(Data)+0.5)))),legend=c(labels),col=c(colslegend),lty=1,lwd=3,cex=0.8)
+		legend(ncol(Data)+5,mean(c(min(c(min(Data)-0.5,max(Data)+0.5)),max(c(min(Data)-0.5,max(Data)+0.5)))),legend=c(labels),col=c(colslegend),lty=1,lwd=3,cex=0.8)
 		
 	}
 	plottypeout(plottype)

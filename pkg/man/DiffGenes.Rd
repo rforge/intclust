@@ -30,7 +30,9 @@ Selection can be of the type "character" (names of the compounds) or "numeric" (
 The gene expression matrix or ExpressionSet of the objects. The rows should correspond with the genes.
 }
   \item{nrclusters}{
-The number of clusters to cut the dendrogram in.
+Optional. The number of clusters to cut the dendrogram in. The number of clusters should not be
+specified if the interest lies only in a specific selection of compounds which is known by name. 
+Otherwise, it is required.
 }
   \item{method}{
 The method to applied to look for DE genes. For now, only the limma

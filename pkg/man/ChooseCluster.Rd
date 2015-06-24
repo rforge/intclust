@@ -12,7 +12,7 @@ compounds of interest without producing the plot.
 \usage{
 ChooseCluster(Interactive = TRUE, LeadCpds=NULL, ClusterResult, ColorLab 
 = NULL, BinData, Datanames = c("FP"), GeneExpr, topChar = 20, topG = 20, 
-sign = 0.05, nrclusters = 7, cols = NULL, N = 1)
+sign = 0.05, nrclusters = NULL, cols = NULL, N = 1)
 
 }
 \arguments{
@@ -53,7 +53,8 @@ genes are saved.
 The significance level.
 }
   \item{nrclusters}{
-The number of clusters to cut the dendrogram in.
+Optional. The number of clusters to cut the dendrogram in. If NULL, the dendrogram
+will be plotted without colors to discern the different clusters.
 }
   \item{cols}{
 The colors to use in the dendrogram.

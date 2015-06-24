@@ -93,7 +93,7 @@ with the same distance measure, they are normalized to be in the same range.
 For each weight, a weighted linear combination of the distance matrices is
 taken and hierarchical clustering is performed once again. The resulting
 clustering is compared to each of the separate clustering results and a 
-Jaccard coefficient is computed.The ratio of the Jaccard coefficients
+Jaccard coefficient is computed. The ratio of the Jaccard coefficients
 closets to one, indicates an optimal weight. A plot of all the ratios is
 produced with an extra indication for the optimal weight. 
 

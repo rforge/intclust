@@ -10,7 +10,7 @@ compounds. This is a visualization to see how bio-assays differ from cluster
 to cluster. 
 }
 \usage{
-ContFeaturesPlot(LeadCpds,OrderedCpds,Data,nrclusters,Color=NULL,cols=NULL,
+ContFeaturesPlot(LeadCpds,Data,nrclusters,OrderLab,ColorLab=NULL,cols=NULL,
 ylab="bio-assays",AddLegend=TRUE,margins=c(5.5,3.5,0.5,8.7),plottype="new",location=NULL)
 }
 \arguments{
@@ -18,17 +18,16 @@ ylab="bio-assays",AddLegend=TRUE,margins=c(5.5,3.5,0.5,8.7),plottype="new",locat
 A character vector containing the compounds one wants to separate 
 from the others.
 }
-  \item{OrderedCpds}{
-A character vector containing all compounds and in which order thet should
-be plotted after putting the LeadCpds aside. 
-}
   \item{Data}{
 The bio-assay data matrix.
 }
   \item{nrclusters}{
-The number of clusters to consider.
+Optional. The number of clusters to consider if ColorLab is specified.
 }
-  \item{Color}{
+  \item{OrderLab}{
+Optional. If the compounds are to set in a specific order of a specific method.
+}
+  \item{ColorLab}{
 The clustering result that determines the color of the labels of the
 objects in the plot. If NULL, the labels are black.
 }
@@ -73,7 +72,7 @@ for(i in 1:50){
 	rownames(Data)[i]=paste("Cpd",i,sep="")
 }
 
-ContFeaturesPlot(LeadCpds=Comps,OrderedCpds=rownames(Data),Color=NULL,Data=Data,
+ContFeaturesPlot(LeadCpds=Comps,OrderLab=rownames(Data),ColorLab=NULL,Data=Data,
 nrclusters=7,cols=Colors2,ylab="bio-assays",AddLegend=TRUE,margins=c(5.5,3.5,0.5,8.7),
 plottype="new",location=NULL)
 

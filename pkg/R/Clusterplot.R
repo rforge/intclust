@@ -1,4 +1,4 @@
-ClusterPlot<-function(Data1,Data2,nrclusters=NULL,cols=NULL,plottype="new",location=NULL,...){
+ClusterPlot<-function(Data1,Data2=NULL,nrclusters=NULL,cols=NULL,plottype="new",location=NULL,...){
 	plottypein<-function(plottype,location){
 		if(plottype=="pdf" & !(is.null(location))){
 			pdf(paste(location,".pdf",sep=""))
@@ -17,12 +17,11 @@ ClusterPlot<-function(Data1,Data2,nrclusters=NULL,cols=NULL,plottype="new",locat
 	}
 	
 	x=Data1$Clust
-	Data=Data2$Clust
-	if(is.null(x)){
-		x=Data1
+	if(is.null(Data2)){
+		Data=Data1$Clust
 	}
-	if(is.null(Data)){
-		Data=Data2
+	else{
+		Data=Data2$Clust
 	}
 	
 	d_temp<- dendrapply(as.dendrogram(x,hang=0.02),ClusterCols,Data,nrclusters,cols)
