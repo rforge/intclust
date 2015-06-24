@@ -28,7 +28,7 @@ PreparePathway<-function(Object,GeneExpr,topG,sign){
 				GeneExpr$LeadCmpds<-group		
 				DElead <- limmaTwoLevels(GeneExpr,"LeadCmpds")
 				
-				allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
+				allDE <- a4Core::topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL),sort.by="p")
 				
 				if(is.null(allDE$ID)){
 					allDE$Genes <- rownames(allDE)
@@ -51,14 +51,10 @@ PreparePathway<-function(Object,GeneExpr,topG,sign){
 				design = model.matrix(~label.factor)
 				fit = lmFit(GeneExpr,design=design)
 				fit = eBayes(fit)
-				allDE = limma::topTable(fit,coef=2,adjust="fdr",n=dim(GeneExpr)[1],resort.by = "logFC", sort.by="p")
+				allDE = limma::topTable(fit,coef=2,adjust="fdr",n=dim(GeneExpr)[1], sort.by="p")
 				
 				if(is.null(allDE$ID)){
-					allDE$Genes <- rownames(allDE)
-				}
-				else
-				{
-					allDE$Genes=allDE$ID
+					allDE$ID <- rownames(allDE)
 				}
 				
 				if(is.null(topG)){
@@ -77,6 +73,7 @@ PreparePathway<-function(Object,GeneExpr,topG,sign){
 			names(TopDEP)[i]=paste("genes_",i,sep="")
 			names(FoundGenes)=paste("Genes_",i,sep="")	
 			pvalsgenes[[i]]=Genes$AllDE$P.Value
+			names(pvalsgenes[[i]])=Genes$AllDE$ID
 			names(pvalsgenes)[i]=paste("pvals_",i,sep="")
 		}
 	}	
@@ -89,6 +86,7 @@ PreparePathway<-function(Object,GeneExpr,topG,sign){
 			TopDEP[[i]]=FoundGenes[[i]]
 			names(TopDEP)[i]=paste("genes_",i,sep="")
 			pvalsgenes[[i]]=FoundGenes[[i]]$AllDE$P.Value
+			names(pvalsgenes[[i]])=FoundGenes[[i]]$AllDE$ID
 			names(pvalsgenes)[i]=paste("pvals_",i,sep="")
 		}
 		

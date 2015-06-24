@@ -13,16 +13,33 @@ the sums of the incidence matrices are joined together as well, resulting in one
 Hierarchical clustering is performed on the consensus matrix to obtain the final clustering result.
 }
 \usage{
-WonM(List, distmeasure = c("tanimoto", "tanimoto"), nrclusters = 
-seq(5, 25, 1), clust = "agnes", linkage = "ward")
+WonM(List,type=c("data","dist","clusters"), distmeasure = c("tanimoto",
+"tanimoto"),normalize=FALSE,method=NULL,nrclusters = seq(5, 25, 1), clust =
+"agnes", linkage = "ward",StopRange=FALSE)
 }
 \arguments{
   \item{List}{
-A list of data matrices of the same type. It is assumed the rows are corresponding
+A list of matrices of the same type. It is assumed the rows are corresponding
 with the objects.
+}
+  \item{type}{
+Type indicates whether the provided matrices in "List" are either data matrices, distance
+matrices or clustering results obtained from the data. If type="dist" the calculation of the distance
+matrices is skipped and if type="clusters" the single source clustering is skipped.
+Type should be one of "data", "dist" or"clusters".			
 }
   \item{distmeasure}{
 A vector of the distance measures to be used on each data matrix.
+Should be of "tanimoto", "euclidean", "jaccard","hamming"..
+}
+  \item{normalize}{
+Logical. Indicates whether to normalize the distance matrices or not.
+This is recommended if different distance types are used. More details
+on standardization in \code{Normalization}.
+}
+  \item{method}{
+A method of normalization. Should be one of "Quantile","Fisher-Yates",
+"standardize","Range" or any of the first letters of these names.
 }
   \item{nrclusters}{
 A sequence of the number of clusters to cut the dendrogram in.
@@ -32,6 +49,11 @@ Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
 Choice of inter group dissimilarity (character). Defaults to "ward".
+}
+  \item{StopRange}{
+Logical. Indicates whether the distance matrices with values not between zero and one should be standardized to have so.
+If FALSE the range normalization is performed. See \code{Normalization}. If TRUE, the distance matrices are not changed.
+This is recommended if different types of data are used such that these are comparable.
 }
 }
 \value{
@@ -52,8 +74,8 @@ data(fingerprintMat)
 data(targetMat)
 L=list(fingerprintMat,targetMat)
 
-MCF7_WonM=WonM(L,distmeasure=c("tanimoto","tanimoto"),nrclusters=seq(5,25),
-clust="agnes",linkage="ward")
+MCF7_WonM=WonM(L,type="data",distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
+method=NULL,nrclusters=seq(5,25),clust="agnes",linkage="ward",StopRange=FALSE)
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 

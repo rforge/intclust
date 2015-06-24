@@ -1,4 +1,4 @@
-ADC<-function(List,distmeasure="tanimoto",clust="agnes",linkage="ward"){
+ADC<-function(List,distmeasure="tanimoto",normalize=FALSE,method=NULL,clust="agnes",linkage="ward"){
 	
 	#Checking required data types and methods:
 	if(class(List) != "list"){
@@ -14,6 +14,11 @@ ADC<-function(List,distmeasure="tanimoto",clust="agnes",linkage="ward"){
 	
 	#Fuse variables into 1 data Matrix
 	
+	OrderNames=rownames(List[[1]])
+	for(i in 1:length(List)){
+		List[[i]]=List[[i]][OrderNames,]
+	}
+	
 	AllData<-NULL
 	for (i in 1:length(List)){
 		if(i==1){
@@ -26,14 +31,14 @@ ADC<-function(List,distmeasure="tanimoto",clust="agnes",linkage="ward"){
 	
 	#Compute Distance Matrix on AllData
 	
-	AllDataDist=Distance(AllData,distmeasure)
+	AllDataDist=Distance(AllData,distmeasure,normalize,method)
 	
 	#Perform hierarchical clustering with ward link on distance matrix
 	
 	HClust = agnes(AllDataDist,diss=TRUE,method=linkage)		
 	
 	
-	out=list(AllData=AllData,Dist=AllDataDist,Clust=HClust)
+	out=list(AllData=AllData,DistM=AllDataDist,Clust=HClust)
 	attr(out,'method')<-'ADC'	
 	return(out)
 	

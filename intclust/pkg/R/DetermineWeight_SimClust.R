@@ -1,27 +1,44 @@
-DetermineWeight<-function(List,type=c("data","clusters"),weight=seq(0,1,by=0.01),nrclusters=NULL,distmeasure=c("tanimoto","tanimoto"),clust="agnes",linkage="ward",gap=FALSE,maxK=50,names=c("B","FP")){
+DetermineWeight_SimClust<-function(List,type=c("data","dist","clusters"),weight=seq(0,1,by=0.01),nrclusters=NULL,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=50,names=c("B","FP"),StopRange=FALSE,plottype="new",location=NULL){
 	if(clust != "agnes" | linkage != "ward"){
 		message("Only hierarchical clustering with WARD link is implemented for now. Method continues with these options")
 		clust="agnes"
 		linkage="ward"
 	}
 	
-	
-	if(type=="data"){
-		for(a in 1:length(distmeasure)){
-			if(distmeasure[[a]]=='euclidean'){
-				stand<-function(c){
-					minc=min(c)
-					maxc=max(c)
-					c1=(c-minc)/(maxc-minc)
-					return(c1)				
-				}
-				List[[a]]=apply(List[[a]],2,stand)			
-			}
-			
+	CheckDist<-function(Dist,StopRange){
+		if(StopRange==FALSE & !(0<=min(Dist) & max(Dist)<=1)){
+			message("It was detected that a distance matrix had values not between zero and one. Range Normalization was performed to secure this. Put StopRange=TRUE if this was not necessary")
+			Dist=Normalization(Dist,method="Range")
 		}
-		Clusterings=lapply(seq(length(List)),function(i) Cluster(List[[i]],distmeasure[i],clust,linkage,gap,maxK))
+		else{
+			Dist=Dist
+		}
+	}
+	
+	
+	type<-match.arg(type)
+	if(type=="data"){
+		#for(a in 1:length(distmeasure)){
+		#	if(distmeasure[[a]]=='euclidean'){
+		#		stand<-function(c){
+		#			minc=min(c)
+		#			maxc=max(c)
+		#			c1=(c-minc)/(maxc-minc)
+		#			return(c1)				
+		#		}
+		#		List[[a]]=apply(List[[a]],2,stand)			
+		#	}
+		#	
+		#}
+		OrderNames=rownames(List[[1]])
+		for(i in 1:length(List)){
+			List[[i]]=List[[i]][OrderNames,]
+		}
+		
+		Clusterings=lapply(seq(length(List)),function(i) Cluster(List[[i]],type,distmeasure[i],normalize,method,clust,linkage,gap,maxK,StopRange))
 		
 		Dist=lapply(seq(length(List)),function(i) Clusterings[[i]]$DistM)
+		Dist=lapply(seq(length(Dist)),function(i) CheckDist(Dist[[i]],StopRange))
 		
 		if(is.null(nrclusters)){
 			if(gap==FALSE){
@@ -40,18 +57,54 @@ DetermineWeight<-function(List,type=c("data","clusters"),weight=seq(0,1,by=0.01)
 		names(out)="ClusterSep"		
 	}
 	
-	else{
-		Clusterings=List
-		Dist=lapply(seq(length(List)),function(i) Clusterings[[i]]$DistM)
-		message("Warning: Are the distace matrices of the same range? If not, standardization is recommended.")	
-		for(i in 1:length(Clusterings)){
-			names(Clusterings)[i]=paste("Clust",i,sep=' ')
-			
+	else if(type=="dist"){
+		OrderNames=rownames(List[[1]])
+		for(i in 1:length(List)){
+			List[[i]]=List[[i]][OrderNames,OrderNames]
 		}
-		out<-list(Clusterings=List)
-		names(out)="ClusterSep"
 		
-	}	
+		Clusterings=lapply(seq(length(List)),function(i) Cluster(List[[i]],type,distmeasure[i],normalize,method,clust,linkage,gap,maxK,StopRange))
+		
+		Dist=List
+		Dist=lapply(seq(length(Dist)),function(i) CheckDist(Dist[[i]],StopRange))
+		
+		if(is.null(nrclusters)){
+			if(gap==FALSE){
+				stop("Specify a number of clusters of put gap to TRUE")
+			}
+			else{
+				clusters=sapply(seq(length(List)),function(i) Clusterings[[i]]$k$Tibs2001SEmax)
+				nrclusters=ceiling(mean(clusters))
+			}
+		}
+		
+		for(i in 1:length(Clusterings)){
+			names(Clusterings)[i]=paste("Clust",i,sep=' ')			
+		}
+		out<-list(Clusterings)
+		names(out)="ClusterSep"		
+		
+	}
+	else{
+		
+		Dist=lapply(seq(length(List)),function(i) return(List[[i]]$DistM))
+		Dist=lapply(seq(length(Dist)),function(i) CheckDist(Dist[[i]],StopRange))
+		
+		OrderNames=rownames(Dist[[1]])
+		for(i in 1:length(Dist)){
+			Dist[[i]]=Dist[[i]][OrderNames,OrderNames]
+		}
+		
+		Clusterings=List
+		
+		for(i in 1:length(Clusterings)){
+			names(Clusterings)[i]=paste("Clust",i,sep=' ')			
+		}
+		out<-list(Clusterings)
+		names(out)="ClusterSep"		
+		
+	}
+	
 	
 	namesw=c()
 	for(i in 1:length(names)){
@@ -92,7 +145,6 @@ DetermineWeight<-function(List,type=c("data","clusters"),weight=seq(0,1,by=0.01)
 			}
 			else(return(0))
 		}
-		
 		t1=permutations(n=length(weight),r=length(List),v=as.character(weight),repeats.allowed = TRUE)
 		t2=lapply(seq_len(nrow(t1)), function(i) if(sum(as.numeric(t1[i,]))==1) return(as.numeric(t1[i,])) else return(0)) #make this faster: lapply on a list or adapt permutations function itself: first perform combinations under restriction then perform permutations
 		t3=sapply(seq(length(t2)),function(i) if(!all(t2[[i]]==0)) return (i) else return(0))
@@ -198,8 +250,24 @@ DetermineWeight<-function(List,type=c("data","clusters"),weight=seq(0,1,by=0.01)
 	colnames(ResultsWeight)[ncol(ResultsWeight)]="trick"
 	Weight=ResultsWeight[which.min(rowSums(abs(ResultsWeight[,c(namesR,"trick")]-1))),c(1:length(List))]
 	
+	plottypein<-function(plottype,location){
+		if(plottype=="pdf" & !(is.null(location))){
+			pdf(paste(location,".pdf",sep=""))
+		}
+		if(plottype=="new"){
+			dev.new()
+		}
+		if(plottype=="sweave"){
+			
+		}
+	}
+	plottypeout<-function(plottype){
+		if(plottype=="pdf"){
+			dev.off()
+		}
+	}
 	
-	
+	plottypein(plottype,location)
 	plot(x=0,y=0,type="n",xlim=c(0,dim(ResultsWeight)[1]),ylim=c(min(ResultsWeight[,namesR]),max(ResultsWeight[,namesR])),xlab="",ylab="Ratios")
 	if(is.null(ncol(ResultsWeight[,namesR]))){
 		L=1
@@ -213,6 +281,7 @@ DetermineWeight<-function(List,type=c("data","clusters"),weight=seq(0,1,by=0.01)
 	abline(h=0,v=which.min(rowSums(abs(ResultsWeight[,c(namesR,"trick")]-1))),col="black",lwd=2)
 	mtext("Weight Combinations", side=1, line=3)
 	axis(1,labels=paste("Optimal weights:", paste(Weight,collapse=", "),sep=" "), at=which.min(rowSums(abs(ResultsWeight[,c(namesR,"trick")]-1))),line=1,tck=1,lwd=2)
+	plottypeout(plottype)
 	
 	ResultsWeight=ResultsWeight[,-ncol(ResultsWeight)]
 	out[[2]]=ResultsWeight

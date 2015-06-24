@@ -1,7 +1,7 @@
 \name{ReorderToReference}
 \alias{ReorderToReference}
 \title{
-Function to order the outputs of many methods against a reference
+Order the outputs of the clustering methods against a reference
 }
 \description{
 When multiple methods are performed on a data set, it is interesting to compare
@@ -15,7 +15,7 @@ FALSE, names = NULL)
 }
 \arguments{
   \item{List}{
-A list of the outputs from the methods to be compared. The first element of the
+A list of clustering outputs to be compared. The first element of the
 list will be used as the reference.
 }
   \item{nrclusters}{
@@ -68,17 +68,17 @@ in a infinite loop.
 data(fingerprintMat)
 data(targetMat)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_ADC=ADC(list(fingerprintMat,targetMat),distmeasure="tanimoto",clust="agnes",
-linkage="ward")
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_ADC=ADC(list(fingerprintMat,targetMat),distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward")
 
 L=list(MCF7_F,MCF7_ADC,MCF7_T)
 names=c("FP","ADC","TP")
 
-MCF7_Matrix=ReorderToReference(L, nrclusters = 7, fusionsLog = FALSE, WeightClust = 
+MCF7_Matrix=ReorderToReference(L,nrclusters = 7, fusionsLog = FALSE, WeightClust = 
 FALSE, names = names)
 
 }

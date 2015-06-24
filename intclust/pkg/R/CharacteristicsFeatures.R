@@ -1,4 +1,4 @@
-CharacteristicFeatures<-function(List,Selection=NULL,BinData,Datanames=NULL,nrclusters=NULL,sign=0.05,top=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+CharacteristicFeatures<-function(List,Selection=NULL,BinData,Datanames=NULL,nrclusters=NULL,sign=0.05,topC=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	if(is.null(Datanames)){
 		for(j in 1:length(BinData)){
 			names[j]=paste("Data",j,sep=" ")	
@@ -6,25 +6,40 @@ CharacteristicFeatures<-function(List,Selection=NULL,BinData,Datanames=NULL,nrcl
 	}
 	
 	if(!(is.null(Selection))){
-		ResultFeat=FeatSelection(List,Selection,BinData,Datanames,nrclusters,top,sign,fusionsLog,WeightClust,names)
+		ResultFeat=FeatSelection(List,Selection,BinData,Datanames,nrclusters,topC,sign,fusionsLog,WeightClust,names)
 	}
 	else{
 		ListNew=list()
 		element=0
 		for(i in 1:length(List)){
-			if(class(List[[i]]) != "CEC" & class(List[[i]]) != "Weighted"){
-				element=element+1
-				ListNew[[element]]=List[[i]]
+			if(attributes(List[[i]])$method != "CEC" & attributes(List[[i]])$method != "Weighted" & attributes(List[[i]])$method!= "WeightedSim"){
+				ResultsClust=list()
+				ResultsClust[[1]]=list()
+				ResultsClust[[1]][[1]]=List[[i]]
+				names(ResultsClust[[1]])[1]="Clust"
+				element=element+1					
+				ListNew[[element]]=ResultsClust[[1]]
+				#attr(ListNew[element],"method")="Weights"
 			}
-			else if(class(List[[i]])=="CEC" | class(List[[i]])=="Weighted"){
+			else if(attributes(List[[i]])$method=="CEC" | attributes(List[[i]])$method=="Weighted" | attributes(List[[i]])$method == "WeightedSim"){
 				ResultsClust=list()
 				if(WeightClust==TRUE){
 					ResultsClust[[1]]=list()
-					ResultsClust[[1]][[1]]=List[[i]]$Clust
-					names(ResultsClust[[1]])[1]="Clust"
-					element=element+1					
-					ListNew[[element]]=ResultsClust[[1]]
-				}			
+					if(attributes(List[[i]])$method != "WeightedSim"){
+						ResultsClust[[1]][[1]]=List[[i]]$Clust
+						names(ResultsClust[[1]])[1]="Clust"
+						element=element+1					
+						ListNew[[element]]=ResultsClust[[1]]
+						attr(ListNew[element],"method")="Weights"
+					}
+					else{
+						ResultsClust[[1]]=list()
+						ResultsClust[[1]][[1]]=List[[i]]
+						names(ResultsClust[[1]])[1]="Clust"
+						element=element+1					
+						ListNew[[element]]=ResultsClust[[1]]
+					}
+				}
 				else{
 					for (j in 1:length(List[[i]]$Results)){
 						ResultsClust[[j]]=list()
@@ -32,20 +47,22 @@ CharacteristicFeatures<-function(List,Selection=NULL,BinData,Datanames=NULL,nrcl
 						names(ResultsClust[[j]])[1]="Clust"
 						element=element+1					
 						ListNew[[element]]=ResultsClust[[j]]
+						attr(ListNew[element],"method")="Weights"
 					}		
 				}		
 			}	
 		}
-		List=ListNew
 		
 		if(is.null(names)){
-			for(j in 1:length(List)){
-				names[j]=paste("Method",j,sep=" ")	
+			names=seq(1,length(ListNew),1)
+			for(i in 1:length(ListNew)){
+				names[i]=paste("Method",i,sep=" ")
 			}
 		}
-			
+		names(ListNew)=names
 		MatrixClusters=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
 		
+		List=ListNew
 		for(i in 1:length(BinData)){
 			BinData[[i]]=BinData[[i]]+0
 			BinData[[i]]<-BinData[[i]][,which(colSums(BinData[[i]]) != 0 & colSums(BinData[[i]]) != nrow(BinData[[i]]))]
@@ -56,13 +73,14 @@ CharacteristicFeatures<-function(List,Selection=NULL,BinData,Datanames=NULL,nrcl
 		ResultFeat=list()
 		maxclus=0
 		for (k in 1:dim(MatrixClusters)[1]){
+
 			clusters=MatrixClusters[k,]
 			if(max(clusters)>maxclus){
 				maxclus=max(clusters)
 			}
 			Characteristics=list()
 			clust=sort(unique(clusters)) #does not matter: Genes[i] puts right elements on right places
-			hc<-as.hclust(List[[k]]$Clust)
+			hc<-as.hclust(List[[k]]$Clust$Clust)
 			OrderedCpds <- hc$labels[hc$order]
 			for (i in clust){		
 				temp=list()
@@ -84,11 +102,12 @@ CharacteristicFeatures<-function(List,Selection=NULL,BinData,Datanames=NULL,nrcl
 					AllFeat=data.frame(Names=names(pFish),P.Value=pFish,adj.P.Val=adjpFish)
 					AllFeat$Names=as.character(AllFeat$Names)
 					
-					if(is.null(top)){
-						topChar=length(which(pFish<0.05))
+					if(is.null(topC)){
+						topC=length(which(pFish<sign))
 					}
 					
-					TopFeat=AllFeat[0:topChar,]
+					TopFeat=AllFeat[0:topC,]
+					TopFeat$Names=as.character(TopFeat$Names)
 					temp1=list(TopFeat=TopFeat,AllFeat=AllFeat)
 					result[[j]]<-temp1
 					names(result)[j]=Datanames[j]

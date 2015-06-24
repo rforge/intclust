@@ -9,16 +9,26 @@ function was written. The data matrices are aggregated into one
 and hierarchical clustering is performed.
 }
 \usage{
-ADC(List, distmeasure = "tanimoto", clust = "agnes", linkage = "ward")
+ADC(List, distmeasure = "tanimoto",normalize=FALSE,method=NULL,clust = "agnes",
+linkage = "ward")
 }
 \arguments{
   \item{List}{
-A list of data matrices containing the data. It is assumed the 
+A list of data matrices of the same type. It is assumed the 
 rows are corresponding with the objects.
 }
   \item{distmeasure}{
 Choice of metric for the dissimilarity matrix (character).
-Should be one of "tanimoto", "euclidean", "jaccard".
+Should be one of "tanimoto", "euclidean", "jaccard", "hamming".
+}
+  \item{normalize}{
+Logical. Indicates whether to normalize the distance matrices or not.
+This is recommended if different distance types are used. More details
+on normalization in  \code{Normalization}.
+}
+  \item{method}{
+A method of normalization. Should be one of "Quantile","Fisher-Yates",
+"standardize","Range" or any of the first letters of these names.
 }
   \item{clust}{
 Choice of clustering function (character). Defaults to "agnes". 
@@ -28,8 +38,8 @@ Choice of inter group dissimilarity (character). Defaults to "ward".
 }
 }
 \details{
-In order to perform aggregated data clustering, the \code{ADClust}
-function was written.A list of data matrices of the same type 
+In order to perform aggregated data clustering, the \code{ADC}
+function was written. A list of data matrices of the same type 
 (continuous or binary) is required as input which are combined 
 into a single (larger) matrix. Hierarchical clustering is performed
 with the \code{agnes} function and the ward link on the resulting
@@ -56,7 +66,7 @@ Marijke Van Moerbeke
 data(fingerprintMat)
 data(targetMat)
 L=list(fingerprintMat,targetMat)
-MCF7_ADC=ADC(L,distmeasure="tanimoto",clust="agnes",linkage="ward")
+MCF7_ADC=ADC(L,distmeasure="tanimoto",normalize=FALSE,method=NULL,clust="agnes",linkage="ward")
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 

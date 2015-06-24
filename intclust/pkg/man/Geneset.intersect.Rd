@@ -54,10 +54,10 @@ data(geneMat)
 data(GeneInfo)
 data(ListGO)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 L=list(MCF7_F,MCF7_T)
 

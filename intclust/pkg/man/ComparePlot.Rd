@@ -9,14 +9,15 @@ cluster together independent of the applied methods. To this aid the function
 \code{ComparePlot} has been written.
 }
 \usage{
-ComparePlot(List, nrclusters = NULL, cols = Colors2, fusionsLog = FALSE, 
-WeightClust = FALSE, names = NULL,margins = c(8.1, 3.1, 3.1, 4.1), ...)
+ComparePlot(List, nrclusters = NULL, cols = NULL, fusionsLog = FALSE, 
+WeightClust = FALSE, names = NULL,margins = c(8.1, 3.1, 3.1, 4.1),
+plottype="new",location=NULL, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
 A list of the outputs from the methods to be compared. The first element of the
-list will be used as the reference.
+list will be used as the reference in \code{ReorderToReference}.
 }
   \item{nrclusters}{
 The number of clusters to cut the dendrogram in.
@@ -35,6 +36,15 @@ Optional. Names of the methods to be used as labels for the columns.
 }
   \item{margins}{
 Optional. Margins to be used for the plot.
+}
+  \item{plottype}{
+Should be one of "pdf","new" or "sweave". If "pdf", a location should be provided in
+"location" and the figure is saved there. If "new" a new graphic device is opened and if "sweave",
+the figure is made compatible to appear in a sweave or knitr document, i.e. no new device is
+opened and the plot appears in the current device or document.
+}
+  \item{location}{
+If plottype is "pdf", a location should be provided in "location" and the figure is saved there. 
 }
   \item{\dots}{
 Other options which can be given to the \code{color2D.matplot} function.
@@ -71,16 +81,16 @@ data(fingerprintMat)
 data(targetMat)
 data(Colors2)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 L=list(MCF7_F,MCF7_T)
 names=c("FP","TP")
 
 ComparePlot(L,nrclusters=7,cols=Colors2,fusionsLog=TRUE,WeightClust=TRUE,names=names,
-margins=c(9.1,4.1,4.1,4.1))
+margins=c(9.1,4.1,4.1,4.1),plottype="new",location=NULL)
 }
 \seealso{
 \code{\link{ReorderToReference}},\code{\link{ColorsNames}}

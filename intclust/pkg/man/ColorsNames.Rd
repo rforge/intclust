@@ -10,11 +10,11 @@ This is necessary to produce the plot of the \code{ComparePlot} function and is
 therefore an internal function of this function but can also be applied separately.
 }
 \usage{
-ColorsNames(MatrixColors, cols = Colors2)
+ColorsNames(MatrixColors, cols = NULL)
 }
 \arguments{
   \item{MatrixColors}{
-A matrix which is the output of the ReorderToReference function.
+The output of the ReorderToReference function.
 }
   \item{cols}{
 The hex codes of the colors to be used.
@@ -32,10 +32,10 @@ data(fingerprintMat)
 data(targetMat)
 data(Colors2)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 L=list(MCF7_F,MCF7_T)
 names=c("FP","TP")

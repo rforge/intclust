@@ -1,4 +1,4 @@
-ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ColorLab=NULL,BinData=NULL,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=7,cols=NULL,N=1){
+ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ColorLab=NULL,BinData=NULL,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=NULL,cols=NULL,N=1){
 	
 	OrInteractive=Interactive
 	

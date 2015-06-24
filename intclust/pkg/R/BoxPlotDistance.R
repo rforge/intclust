@@ -1,39 +1,56 @@
-BoxPlotDistance<-function(Data1,Data2,type=c('data','cluster','distance'),distmeasure=NULL,lab1,lab2,limits1=NULL,limits2=NULL,plot=1){
-
+BoxPlotDistance<-function(Data1,Data2,type=c('data','dist','clusters'),distmeasure="tanimoto",normalize=FALSE,method=NULL,lab1,lab2,limits1=NULL,limits2=NULL,plot=1,StopRange=FALSE,plottype="new",location=NULL){
+	type<-match.arg(type)
+	plottypein<-function(plottype,location){
+		if(plottype=="pdf" & !(is.null(location))){
+			pdf(paste(location,".pdf",sep=""))
+		}
+		if(plottype=="new"){
+			dev.new()
+		}
+		if(plottype=="sweave"){
+			
+		}
+	}
+	plottypeout<-function(plottype){
+		if(plottype=="pdf"){
+			dev.off()
+		}
+	}
+	
 	C1=D1=C2=D2=NULL
-	if(type=='cluster'){
+	if(type=='clusters'){
 	
-		if(class(Data1)=="CEC"){
-			Dist1<-Data1$IncidenceComb
-		}
-		else if(class(Data1)=="ADEC"){
-			Dist1<-Data1$Incidence
-		}
-		else{
-			Dist1<-Data1$DistM
-		}
+		Dist1<-Data1$DistM
+		Dist2<-Data2$DistM
 	
-	
-		if(class(Data2)=="CEC"){
-			Dist2<-Data2$IncidenceComb
-		}
-		else if(class(Data2)=="ADEC"){
-			Dist2<-Data2$Incidence
-		}
-		else{
-			Dist2<-Data2$DistM
-		}
 
 	}
 	else if(type=='data'){
-		Dist1<-Distance(Data1,distmeasure[1])
-		Dist2<-Distance(Data2,distmeasure[2])
+		Dist1<-Distance(Data1,distmeasure[1],normalize,method)
+		Dist2<-Distance(Data2,distmeasure[2],normalize,method)
+		DistL=list(Dist1,Dist2)
+		for(i in 1:2){
+			if(StopRange==FALSE & !(0<=min(DistL[[i]]) & max(DistL[[i]])<=1)){
+				message("It was detected that a distance matrix had values not between zero and one. Range Normalization was performed to secure this. Put StopRange=TRUE if this was not necessary")
+				DistL[[i]]=Normalization(DistL[[i]],method="Range")
+			}
+		}
 		
 	}
-	else if(type=='distance'){
+	else if(type=='dist'){
 		Dist1=Data1
-		Dist2=Data2		
+		Dist2=Data2	
+		DistL=list(Dist1,Dist2)
+		for(i in 1:2){
+			if(StopRange==FALSE &  !(0<=min(DistL[[i]]) & max(DistL[[i]])<=1)){
+				message("It was detected that a distance matrix had values not between zero and one. Range Normalization was performed to secure this. Put StopRange=TRUE if this was not necessary")
+				DistL[[i]]=Normalization(DistL[[i]],method="Range")
+			}
+		}
 	}
+	
+	OrderNames=rownames(Dist1)
+	Dist2=Dist2[OrderNames,OrderNames]
 	
 	Dist1lower <- Dist1[lower.tri(Dist1)]
 	Dist2lower <- Dist2[lower.tri(Dist2)]
@@ -75,17 +92,26 @@ BoxPlotDistance<-function(Data1,Data2,type=c('data','cluster','distance'),distme
 		
 	}	
 	if(type==3){
-		dev.new(width=14,height=7)
+		if(plottype=="pdf"){
+			location=paste(location,'_type3.pdf',sep="")
+		}
+		plottypein(plottype,location)
 		grid.arrange(p1, p2, ncol=2,nrow=1)		
 
 	}
 	else if(type==1){
-		dev.new()
+		if(plottype=="pdf"){
+			location=paste(location,'_type1.pdf',sep="")
+		}
+		plottypein(plottype,location)
 		print(p1)
 		
 	}
 	else if(type==2){
-		dev.new()
+		if(plottype=="pdf"){
+			location=paste(location,'_type2.pdf',sep="")
+		}
+		plottypein(plottype,location)
 		print(p2)		
 	}
 	

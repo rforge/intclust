@@ -21,7 +21,7 @@ SharedSelectionMLP<-function(DataMLP=NULL,names=NULL){  #Input=result of DiffGen
 	for (i in 1:nmethods){			
 		
 		temp1g=c(temp1g,length(DataMLP[[i]]$Genes$TopDE$Genes))
-		temp1p=c(temp1p,length(DataMLP[[i]][[3]]$descriptions))
+		temp1p=c(temp1p,length(DataMLP[[i]][[3]]$geneSetDescription))
 		comps=c(comps,length(DataMLP[[i]]$Compounds$LeadCpds))
 		
 		
@@ -34,14 +34,14 @@ SharedSelectionMLP<-function(DataMLP=NULL,names=NULL){  #Input=result of DiffGen
 			if(!(is.na(DataMLP[[i]])[1]) | !(is.na(DataMLP[[i]])[1])){
 				sharedcomps=DataMLP[[i]]$Compounds$LeadCpds
 				sharedgenes=DataMLP[[i]]$Genes$TopDE$Genes
-				sharedpaths=DataMLP[[i]][[3]]$descriptions
+				sharedpaths=DataMLP[[i]][[3]]$geneSetDescription
 				
 				pvalsg=c(pvalsg,DataMLP[[i]]$Genes$TopDE$adj.P.Val)
-				pvalsp=c(pvalsp,DataMLP[[i]]$mean_p.value)
+				pvalsp=c(pvalsp,DataMLP[[i]]$mean_geneSetPValue)
 				
 				nsharedcomps=length(DataMLP[[i]]$Compounds$LeadCpds)
 				nsharedgenes=length(DataMLP[[i]]$Genes$TopDE$Genes)
-				nsharedpaths=length(DataMLP[[i]][[3]]$descriptions)
+				nsharedpaths=length(DataMLP[[i]][[3]]$geneSetDescription)
 				names(nsharedgenes)="nshared"
 				names(nsharedpaths)="nshared"
 				names(nsharedcomps)="nsharedcomps"
@@ -51,11 +51,11 @@ SharedSelectionMLP<-function(DataMLP=NULL,names=NULL){  #Input=result of DiffGen
 		else{			
 			sharedcomps=intersect(sharedcomps,DataMLP[[i]]$Compounds$LeadCpds)
 			sharedgenes=intersect(sharedgenes,DataMLP[[i]]$Genes$TopDE$Genes)
-			sharedpaths=intersect(sharedpaths,DataMLP[[i]][[3]]$descriptions)
+			sharedpaths=intersect(sharedpaths,DataMLP[[i]][[3]]$geneSetDescription)
 			
 			nsharedcomps=length(intersect(sharedcomps,DataMLP[[i]]$Compounds$LeadCpds))
 			nsharedgenes=length(intersect(sharedgenes,DataMLP[[i]]$Genes$TopDE$Genes))
-			nsharedpaths=length(intersect(sharedpaths,DataMLP[[i]][[3]]$descriptions))
+			nsharedpaths=length(intersect(sharedpaths,DataMLP[[i]][[3]]$geneSetDescription))
 			names(nsharedgenes)="nshared"
 			names(nsharedpaths)="nshared"
 			names(nsharedcomps)="nsharedcomps"
@@ -99,7 +99,7 @@ SharedSelectionMLP<-function(DataMLP=NULL,names=NULL){  #Input=result of DiffGen
 			pvalsp=c()
 			if(!(is.na(DataMLP[[c]])[1])){
 				for(p in sharedpaths){
-					pvalsp=c(pvalsp,DataMLP[[c]][[3]][DataMLP[[c]][[3]]$descriptions==p,3])
+					pvalsp=c(pvalsp,DataMLP[[c]][[3]][DataMLP[[c]][[3]]$geneSetDescription==p,5])
 				}
 			}
 			

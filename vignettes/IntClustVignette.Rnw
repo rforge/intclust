@@ -69,9 +69,9 @@ extended to contain more distance metrics. The implemented method for
 clustering is agglomerative hierarchical clustering (\cite{Hastie2009}) as coded
 by the {\it agnes} of the \texttt{cluster} package with the ward link. The
 option for normalizing the data is readly available. Normalization is performed
-with the \code{Normalization} function and can be called on separately. The
+with the {\it Normalization} function and can be called on separately. The
 normalzing methods are: Quantile-Normalization, Fisher-Yates Normalization,
-standardizzation and range normalization. See the helpfiles for more
+standardization and range normalization. See the helpfiles for more
 information. No normalization is necessary for the example since both data
 matrices are binary and their distances will all fall between zero and one.
 <<SingleClust,message=FALSE>>=
@@ -86,7 +86,7 @@ MCF7_T <- Cluster(Data=targetMat,type="data",distmeasure="tanimoto",
 \noindent If the number of clusters to work with is unknown, the option gap in
 the {\it Cluster} function can be put to TRUE. Relying on the gap statistic
 (\cite{Hastie2009}), an optimal number of clusters will be determined. Another
-option is to determine the number of clustes with \code{SelectnrClusters}.
+option is to determine the number of clustes with {\it SelectnrClusters}.
 Medoid clustering is performed for a sequence of numbers of clusters for each
 provided data source. The number correspinding with maximal average silhouette
 widths over the data sources can be taken as an optimal number of clusters.
@@ -127,7 +127,7 @@ ClusterPlot(Data1=MCF7_T,Data2=MCF7_F,nrcluster=7,cols=Colors,main="Clustering o
      \centering
 <<ClusterPlotF,fig=TRUE,echo=FALSE,width=10,height=10>>=
 ClusterPlot(MCF7_F,MCF7_F,nrcluster=7,cols=Colors,main="Clustering on 
-Fingerprints: Dendrogram",ylim=c(-0.1,1.8))
+Fingerprints: Dendrogram",ylim=c(-0.1,1.8),plottype="sweave",location=NULL)
 @
 \caption{{\it FP - MCF7}\label{MCF7_F}}
 \end{minipage}%
@@ -135,7 +135,7 @@ Fingerprints: Dendrogram",ylim=c(-0.1,1.8))
      \centering
 <<ClusterPlotT,fig=TRUE,echo=FALSE,width=10,height=10>>=
 ClusterPlot(MCF7_T,MCF7_F,nrcluster=7,cols=Colors,main="Clustering on 
-Targets: Dendrogram",ylim=c(-0.1,2.5)) 
+Targets: Dendrogram",ylim=c(-0.1,2.5),plottype="sweave",location=NULL) 
 @
 \caption{{\it TP - MCF7}\label{MCF7_T}}
  \end{minipage}
@@ -167,8 +167,8 @@ MCF7_ADC=ADC(List=L,distmeasure="tanimoto",normalize=FALSE,method=NULL,
 @
 \subsubsection{Aggregated Data Ensemble Clustering (ADEC)}
 Aggregated data ensemble clustering starts as ADC with the
-fusion of the data matrices can thus only be performed if all data matrices are
-of the same type. Then ensemble clustering is performed on the fused data
+fusion of the data matrices and can thus only be performed if all data matrices
+are of the same type. Then ensemble clustering is performed on the fused data
 matrix. This comes down to repeatedly applying hierarchical clustering. The
 original version of the method (\cite{Fodeh2013}) is implemented as version
 ADECa and two adaptions were made as ADECb and ADECc. A more detailed
@@ -317,10 +317,10 @@ MCF7_WeightedSim=WeightedSimClust(List=L,type="clusters",weight=MCF7_Weight$Weig
                                   names=c("FP","TP"),AllClusters=FALSE,StopRange=FALSE)
 @
 \noindent An optimal weight can alternatively be determined by the function
-\code{DetermineWeight\_SilClust}. For each provdided weight, the distance
+{\it DetermineWeight\_SilClust}. For each provdided weight, the distance
 matrices are combined in a weighted combination and medoid clustering with the
-\code{pam} function is performed. Based on the silhouette widths and the cluster
-membership an optimal weight is determined. See the helpfiles for more details.
+{\it pam} function is performed. Based on the silhouette widths and the
+cluster membership an optimal weight is determined. See the helpfiles for more details.
 <<WeightedSil,message=FALSE,eval=FALSE>>=
 L=list(fingerprintMat,targetMat)
 
@@ -439,7 +439,7 @@ nM=c("ADC","ADECa","ADECb","ADECc","CECa","CECb","CECc","SNFa","SNFb",
       "SNFc","WonM","Weighted","WeightedSim")
 CompareSvsM(ListS=LS,ListM=LM,nrclusters=7,cols=Colors,fusionsLogS=TRUE,
             fusionsLogM=TRUE,WeightClustS=TRUE,WeightClustM=TRUE,
-            namesS=nS,namesM=nM,margins=c(8.1,3.1,3.1,4.1),plottype="new",
+            namesS=nS,namesM=nM,margins=c(8.1,3.1,3.1,4.1),plottype="sweave",
             location=NULL)
 @
 \begin{figure}[H]  
@@ -490,7 +490,7 @@ CompareInteractive(ListM=LM,ListS=LS,nrclusters=7,cols=Colors,fusionsLogM=TRUE,
 \end{figure}
 \newpage
 \noindent Two clustering results X and Y can be compared with the help of a test
-statistic calculated by the \code{CompareSilCluster} function. Single data
+statistic calculated by the \texttt{CompareSilCluster} function. Single data
 sources can be provided in their data format. A distance matrix is necessary for
 all multiple source clusterings. A medoid clustering is performed of which the
 silhouette widths and cluster memberships are retrieved. The silhouette widths
@@ -543,7 +543,7 @@ names=c("FP","ADC","ADECa","ADECb","ADECc","CECa","CECb","CECc","SNFa","SNFb",
 Tracking=TrackCluster(List=L,Selection=Comps,nrclusters=7,followMaxComps=FALSE,
                       followClust=TRUE,fusionsLog=TRUE,WeightClust=TRUE,
                       names=names,SelectionPlot=FALSE,Table=FALSE,
-                      CompleteSelectionPlot=TRUE,cols=Colors,plottype="new",
+                      CompleteSelectionPlot=TRUE,cols=Colors,plottype="sweave",
                       location=NULL)
 @
 \vspace{-1.0cm}
@@ -551,9 +551,59 @@ Tracking=TrackCluster(List=L,Selection=Comps,nrclusters=7,followMaxComps=FALSE,
 \centering
 \includegraphics[width=9cm,height=9cm]{Tracking.pdf}
 \caption{{\it Tracking of the green cluster over the
-methods}\label{MCF7_Weights}}
+methods}\label{MCF7_Track}}
 \end{figure}
-\noindent Next, we perform secondary analysis on the cluster of interest.
+\noindent A selection of a specific cluster can also be made by inspecting the
+heatmap of the similarity values. The function SimilarityHeatmap plots the
+similarity values among the compounds. The input can be a clustering results but
+just as well the data source itself. The option to set a cutoff value is
+provided. This way, one can but all values below a certain similarity cutoff to
+0 while keeping the other values. A more clearer heatmap will the result.
+We will draw here the similarity heatmap of the weighted clustering result for
+a weight of $0.5$.
+<<SimilarityHeatmap,eval=FALSE>>=
+SimilarityHeatmap(Data=MCF7_Weighted$Clust,type="clust",distmeasure="tanimoto",
+                  normalize=FALSE,method="Q",cutoff=0.90,percentile=TRUE
+                  ,plottype="sweave",location=NULL)
+	
+@
+\vspace{-1.0cm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=9cm,height=9cm]{SimilarityHeatmap_MCF7W.pdf}
+\caption{{\it Similarity Heatmap of the Weighted
+Clustering Result.}\label{SimMap}}
+\end{figure}
+\noindent An experimental function was written to select a group of compounds
+directly from a heatmap. The function HeatmapSelection draws the same
+heatmap as shown above but without the dendrograms at the side. The user is now
+free to select two points on the heatmap. It is advised that these two points
+are in opposite corners of a square that indicates a high similarity among the
+compounds. The points do not have to be the exact corners of the group of
+interest, a little deviation is allowed as rows and columns of the selected
+subset of the matrix with sum equal to 1 are filtered out. A sum equal to one,
+implies that the compound is only similar to itself. The function is meant to be
+explorative but is experimental. The goal was to make the selection of
+interesting compounds easier as sometimes the labels of the dendrograms are too
+distorted to be read. If the figure is exported to a pdf file with an
+appropriate width and height, the labels can be become readable again. It will
+return the names of the compounds that are in the selected square provided that
+these show similarity among each other.
+<<HeatmapSelection,eval=FALSE>>=
+CompsHeat=HeatmapSelection(Data=MCF7_Weighted$Clust$DistM,type="dist",
+                           cutoff=0.90,percentile=TRUE,dendrogram=
+                           MCF7_Weighted$Clust,width=7,height=7)
+
+CompsHeat
+@
+\vspace{-1.0cm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=9cm,height=9cm]{HeatmapSelection_MCF7W.pdf}
+\caption{{\it Selection of a cluster via the Similarity Heatmap}\label{SimMap}}
+\end{figure}
+\noindent Next, we perform secondary analysis
+on the cluster of interest.
 \newpage
 \section{Secondary Analysis}
 \subsection{Differential Gene Expression}
@@ -653,25 +703,25 @@ MCF7_Feat=ChooseCluster(Interactive=FALSE,LeadCpds=Comps,ClusterResult=MCF7_F,
                         topG = 20,nrclusters=7,N=1)
 @
 \noindent We plot the top identified features with the {\it FeaturesPlot}.
-<<FeaturesPlotF,eval=FALSE>>=
-BinFeaturesPlot(LeadCpds=Comps,OrderedCpds=colnames(geneMat),Features=
+<<FeaturesPlotFP,eval=FALSE>>=
+BinFeaturesPlot(LeadCpds=Comps,OrderLab=MCF7_F,Features=
                 MCF7_Feat$Characteristics$FP,Data=fingerprintMat,
-                Color=MCF7_F,nrclusters=7,cols=Colors,name=c("FP"),plottype="new",
+                ColorLab=MCF7_F,nrclusters=7,cols=Colors,name=c("FP"),plottype="sweave",
                 location=NULL)
 @
 <<FeaturesPlotT,eval=FALSE>>=
-BinFeaturesPlot(LeadCpds=Comps,OrderedCpds=colnames(geneMat),Features=
-                MCF7_Feat$Characteristics$TP,Data=targetMat,Color=MCF7_F,
-                nrclusters=7,cols=Colors,name=c("TP"),plottype="new",
+BinFeaturesPlot(LeadCpds=Comps,OrderLab=MCF7_F,Features=
+                MCF7_Feat$Characteristics$TP,Data=targetMat,ColorLab=MCF7_F,
+                nrclusters=7,cols=Colors,name=c("TP"),plottype="sweave",
                 location=NULL)
 @
 \begin{figure}[H]
   \begin{minipage}[b]{.5\linewidth}
      \centering
-<<FeaturesPlotF,fig=TRUE,echo=FALSE,width=14,height=14>>=
-BinFeaturesPlot(LeadCpds=Comps,OrderedCpds=colnames(geneMat),Features=
+<<FeaturesPlotFP,fig=TRUE,echo=FALSE,width=14,height=14>>=
+BinFeaturesPlot(LeadCpds=Comps,OrderLab=MCF7_F,Features=
                 MCF7_Feat$Characteristics$FP,Data=fingerprintMat,
-                Color=MCF7_F,nrclusters=7,cols=Colors,name=c("FP"),
+                ColorLab=MCF7_F,nrclusters=7,cols=Colors,name=c("FP"),
                 plottype="sweave",location=NULL)
 @
 \caption{{\it Top 20 Fingerprints - MCF7}\label{MCF7_F}}
@@ -679,9 +729,9 @@ BinFeaturesPlot(LeadCpds=Comps,OrderedCpds=colnames(geneMat),Features=
   \begin{minipage}[b]{.5\linewidth}
      \centering
 <<FeaturesPlotT,fig=TRUE,echo=FALSE,width=14,height=14>>=
-BinFeaturesPlot(LeadCpds=Comps,OrderedCpds=colnames(geneMat),Features=
+BinFeaturesPlot(LeadCpds=Comps,OrderLab=MCF7_F,Features=
                 MCF7_Feat$Characteristics$TP,Data=targetMat,
-                Color=MCF7_F,nrclusters=7,cols=Colors,name=c("TP"),
+                ColorLab=MCF7_F,nrclusters=7,cols=Colors,name=c("TP"),
                 plottype="sweave",location=NULL)
 @
 \caption{{\it Top 20 target predictions - MCF7}\label{MCF7_F}}

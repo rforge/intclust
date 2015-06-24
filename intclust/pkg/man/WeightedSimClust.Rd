@@ -13,20 +13,23 @@ weight the distance matrices are linearly combined and hierarchical clustering
 is performed. 
 }
 \usage{
-WeightedSimClust(List, type = c("data", "clusters"), weight = seq(0, 1, 0.01),
+WeightedSimClust(List, type = c("data", "dist","clusters"), weight = seq(0, 1, 0.01),
  clust = "agnes", linkage = "ward", distmeasure = c("euclidean",
-  "tanimoto"), gap = FALSE, maxK = 50, nrclusters = NULL, 
-  names = c("B", "FP"), AllClusters = FALSE)
+"tanimoto"),normalize=FALSE,method=NULL, gap = FALSE, maxK = 50, nrclusters = NULL, 
+names = c("B", "FP"), AllClusters = FALSE,StopRange=FALSE,plottype="new",
+location=NULL)
 }
 
 \arguments{
  \item{List}{
-A list of data matrices of the same type. It is assumed the rows are corresponding
+A list of matrices of the same type. It is assumed the rows are corresponding
 with the objects.
 }
   \item{type}{
-Indicates whether data matrices or clustering results were given in List.
-Should be one of "data" or "clusters".
+Type indicates whether the provided matrices in "List" are either data matrices, distance
+matrices or clustering results obtained from the data. If type="dist" the calculation of the distance
+matrices is skipped and if type="clusters" the single source clustering is skipped.
+Type should be one of "data", "dist" or"clusters".			
 }
   \item{weight}{
 One specific weight to perform clustering on or a list with different weight
@@ -41,7 +44,16 @@ Choice of inter group dissimilarity (character). Defaults to "ward".
 }
   \item{distmeasure}{
 A character vector with the distance measure for each data matrix.
-Should be one of "tanimoto", "euclidean", "jaccard".
+Should be of "tanimoto", "euclidean", "jaccard", "hamming".
+}
+  \item{normalize}{
+Logical. Indicates whether to normalize the distance matrices or not.
+This is recommended if different distance types are used. More details
+on standardization in \code{Normalization}.
+}
+  \item{method}{
+A method of normalization. Should be one of "Quantile","Fisher-Yates",
+"standardize","Range" or any of the first letters of these names.
 }
   \item{gap}{
 Logical. Whether or not to calculate the gap statistic in the clustering
@@ -59,6 +71,19 @@ The labels to give to the elements in List.
 }
   \item{AllClusters}{
 Logical. Whether clustering should be performed for every weight.
+}
+  \item{StopRange}{
+Logical. Indicates whether the distance matrices with values not between zero and one should be standardized to have so.
+If FALSE the range normalization is performed. See \code{Normalization}. If TRUE, the distance matrices are not changed.
+This is recommended if different types of data are used such that these are comparable.
+}
+  \item{plottype}{
+Should be one of "pdf","new" or "sweave". If "pdf", a location should be provided in
+"location" and the figure is saved there. If "new" a new graphic device is opened and if "sweave",
+the figure is made compatible to appear in a sweave or knitr document.
+}
+\item{location}{
+If plottype is "pdf", a location should be provided in "location" and the figure is saved there. 
 }
 }
 \details{
@@ -95,19 +120,20 @@ articlelanding/2015/mb/c4mb00328d#!divAbstract>
 Marijke Van Moerbeke
 }
 \examples{
-
+\dontrun{
 data(fingerprintMat)
 data(targetMat)
 
 L=list(fingerprintMat,targetMat)
 
 MCF7_WeightSim=WeightedSimClust(L,type="data", weight=seq(0,1,0.01),clust="agnes",
-linkage="ward",distmeasure=c("tanimoto","tanimoto"), gap=FALSE,maxK=50,
-nrclusters=7,names=c("FP","B"),AllClusters=FALSE)
-
+linkage="ward",distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,
+gap=FALSE,maxK=50,nrclusters=7,names=c("FP","B"),AllClusters=FALSE,StopRange=FALSE,
+plottype="new",location=FALSE)
+}
 }
 \seealso{
-\code{\link{DetermineWeight}}
+\code{\link{DetermineWeight_SimClust}}
 }
 \keyword{ Weighted Similarity Clustering }
 \keyword{ Integrated Data Clustering }

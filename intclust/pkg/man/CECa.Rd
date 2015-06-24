@@ -7,12 +7,12 @@ Complementary Ensemble Clustering - version a
 Function \code{CECa} performs complementary ensemble clustering in
 which in every iteration the number of random samples taken is 
 randomly set between m/2 and m-1 with m the total number of features.
-The number of features to sample can also be prespecified by the user.
+The number of features to sample can also be specified by the user.
 }
 \usage{
-CECa(List, distmeasure = c("tanimoto", "tanimoto"), t = 10, r = NULL, 
-nrclusters = NULL, weight = NULL, clust = "agnes", linkage = "ward", 
-WeightClust = 0.5)
+CECa(List, distmeasure = c("tanimoto", "tanimoto"),normalize=FALSE,method=NULL,
+t = 10, r = NULL, nrclusters = NULL, weight = NULL, clust = "agnes",
+linkage = "ward", WeightClust = 0.5,StopRange=FALSE)
 }
 \arguments{
   \item{List}{
@@ -21,7 +21,16 @@ A list of data matrices. It is assumed the  rows are corresponding
 }
   \item{distmeasure}{
 A character vector with the distance measure for each data matrix.
-Should be one of "tanimoto", "euclidean", "jaccard".
+Should be one of "tanimoto", "euclidean", "jaccard","hamming".
+}
+  \item{normalize}{
+Logical. Indicates whether to normalize the distance matrices or not.
+This is recommended if different distance types are used. More details
+on normalization in \code{Normalization}.
+}
+  \item{method}{
+A method of normalization. Should be one of "Quantile","Fisher-Yates",
+"standardize","Range" or any of the first letters of these names.
 }
   \item{t}{
 The number of iterations.
@@ -30,7 +39,7 @@ The number of iterations.
 Optional. The number of features to take for the random sample.
 }
   \item{nrclusters}{
-The number of clusters to cut the dendrogram in.
+A vector of the number of clusters to cut the dendrogram of each clustering result in.
 }
   \item{weight}{
  Optional. A list of different weight combinations for the data sets in List.
@@ -47,6 +56,11 @@ Choice of inter group dissimilarity (character). Defaults to "ward".
   \item{WeightClust}{
 A weight for which the result will be put aside of the other results.
 This was done for comparative reason and easy access.
+}
+  \item{StopRange}{
+Logical. Indicates whether the distance matrices with values not between zero and one should be standardized to have so.
+If FALSE the range normalization is performed. See \code{Normalization}. If TRUE, the distance matrices are not changed.
+This is recommended if different types of data are used such that these are comparable.
 }
 }
 \details{
@@ -87,8 +101,9 @@ data(fingerprintMat)
 data(targetMat)
 L=list(fingerprintMat,targetMat)
 
-MCF7_CECa=CECa(L,distmeasure=c("tanimoto","tanimoto"),t=25,r=NULL,,nrclusters=7,
-clust="agnes",linkage="ward")
+MCF7_CECa=CECa(List=L,distmeasure=c("tanimoto","tanimoto"),
+normalize=FALSE,method=NULL,t=25,r=NULL,nrclusters=c(7,7),
+clust="agnes",linkage="ward",StopRange=FALSE)
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 

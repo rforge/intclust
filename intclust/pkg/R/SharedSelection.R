@@ -1,5 +1,4 @@
 SharedSelection<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=NULL){  #Input=result of DiffGenes.2 and Geneset.intersect
-	print(names)
 	if(is.null(DataLimma) & is.null(DataMLP) & is.null(DataFeat)){	
 		stop("At least one Data set should be specified")
 	}
@@ -17,11 +16,11 @@ SharedSelection<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=NULL){
 	else{
 		DataSets=lapply(AvailableData,function(i)  return(List[[i]]))
 		nmethods=length(DataSets[[1]])
-		nclusters=length(DataSets[[1]][[1]])
+		#nclusters=length(DataSets[[1]][[1]])
 	}
 	
 	if(is.null(names)){
-		for(j in 1:length(DataSets[[1]])){
+		for(j in 1:nmethods){
 			names[j]=paste("Method",j,sep=" ")	
 		}
 	}
@@ -60,7 +59,7 @@ SharedSelection<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=NULL){
 		
 		if(!(is.null(DataMLP))){
 			if(!(is.na(DataMLP[[i]])[1])){
-				temp1p=c(temp1p,length(DataMLP[[i]][[3]]$descriptions))
+				temp1p=c(temp1p,length(DataMLP[[i]][[3]]$geneSetDescription))
 			}
 			else{
 				temp1p=c(temp1g,"-")
@@ -115,7 +114,7 @@ SharedSelection<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=NULL){
 				
 				
 				if(!(is.null(DataMLP))){
-					sharedpaths=DataMLP[[i]][[3]]$descriptions
+					sharedpaths=DataMLP[[i]][[3]]$geneSetDescription
 					nsharedpaths=length(sharedpaths)
 					names(nsharedpaths)="Nshared"
 					
@@ -157,7 +156,7 @@ SharedSelection<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=NULL){
 				
 			}
 			if(!(is.null(DataMLP))){
-				sharedpaths=intersect(sharedpaths,DataMLP[[i]][[3]]$descriptions)
+				sharedpaths=intersect(sharedpaths,DataMLP[[i]][[3]]$geneSetDescription)
 				nsharedpaths=length(sharedpaths)
 				names(nsharedpaths)="Nshared"
 				
@@ -223,7 +222,7 @@ SharedSelection<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=NULL){
 			pvalsp=c()
 			if(!(is.na(DataMLP[[c]])[1])){
 				for(p in sharedpaths){
-					pvalsp=c(pvalsp,DataMLP[[c]][[3]][DataMLP[[c]][[3]]$descriptions==p,3][1])
+					pvalsp=c(pvalsp,DataMLP[[c]][[3]][DataMLP[[c]][[3]]$geneSetDescription==p,5][1])
 				}
 			}
 			
@@ -252,7 +251,7 @@ SharedSelection<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=NULL){
 		nsharedpaths=NULL
 	}
 	
-	if(!(is.null(sharedfeat)) & Reduce("+",nsharedfeat != 0)){
+	if(!(is.null(sharedfeat)) & !(is.null(Reduce("+",nsharedfeat)))){
 		for(f in 1:length(DataFeat[[1]]$Characteristics)){
 			pvalschar=list()
 			for(c in 1:nmethods){
@@ -310,8 +309,21 @@ SharedSelection<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=NULL){
 	}
 	part1=cbind(cbind(temp1g,temp1p),temp1f)
 	part1=as.matrix(part1)
+	if(is.null(nsharedgenes) | is.null(nsharedpaths)  | is.null(nsharedfeat)){
+		if(!(is.null(temp1g))){
+			nsharedgenes=0
+		}
+		if(!(is.null(temp1p))){
+			nsharedpaths=0
+		}
+		if(!(is.null(temp1f))){
+			nsharedfeat=rep(0,length(temp1f))
+		}
+	}
 	part2=cbind(cbind(nsharedgenes,nsharedpaths),nsharedfeat)
 	part2=as.matrix(part2)
+	rownames(part2)="NShared"
+	#print(str(part2))
 	colnames(part1)=NULL
 	colnames(part2)=NULL
 	

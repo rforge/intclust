@@ -35,7 +35,7 @@ The clustering result that determines the color of the labels of the
 objects in the plot.
 }
   \item{nrclusters}{
-The number of clusters to cut the dendrogram in.
+Optional. The number of clusters to cut the dendrogram in.
 }
   \item{cols}{
 Optional. The color to use for the objects in Clusters for each method.

@@ -1,7 +1,7 @@
-Pathways<-function(List,Selection=NULL,GeneExpr=geneMat,nrclusters=NULL,method=c("limma", "MLP"),ENTREZID=GeneInfo[,1],geneSetSource = "GOBP",top=NULL,topG=NULL,GENESET=ListGO,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+Pathways<-function(List,Selection=NULL,GeneExpr=NULL,nrclusters=NULL,method=c("limma", "MLP"),GeneInfo=NULL,geneSetSource = "GOBP",topP=NULL,topG=NULL,GENESET=NULL,sign=0.05,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	
 	if(!(is.null(Selection))){
-		ResultMLP=PathwaysSelection(List,Selection,GeneExpr,nrclusters,method,ENTREZID,geneSetSource,top,topG,GENESET,sign,fusionsLog,WeightClust,names)
+		ResultMLP=PathwaysSelection(List,Selection,GeneExpr,nrclusters,method,GeneInfo,geneSetSource,topP,topG,GENESET,sign,fusionsLog,WeightClust,names)
 			
 	}
 	else if(class(List)=="ChosenClusters"){
@@ -9,44 +9,125 @@ Pathways<-function(List,Selection=NULL,GeneExpr=geneMat,nrclusters=NULL,method=c
 		for(i in 1:length(List)){	
 			Selection=List[[i]]$Compounds$LeadCpds
 			L=List[i]
-			ResultMLP[[i]]=PathwaysSelection(List=L,Selection,GeneExpr,nrclusters,method,ENTREZID,geneSetSource,top,topG,GENESET,sign,fusionsLog,WeightClust,names)	
+			ResultMLP[[i]]=PathwaysSelection(List=L,Selection,GeneExpr,nrclusters,method,GeneInfo,geneSetSource,topP,topG,GENESET,sign,fusionsLog,WeightClust,names)	
 			names(ResultMLP)=paste("Choice",i,sep=' ')
 		}	
 	}
 	else{
 		
-	ListNew=list()
-	element=0
-	for(i in 1:length(List)){
-		if(attributes(List[[1]])$method != "CEC" & attributes(List[[1]])$method != "Weighted" & attributes(List[[1]])$method != "WeightedSim"){
-			element=element+1
-			ListNew[[element]]=List[[i]]
-		}
-		else if(attributes(List[[1]])$method=="CEC" | attributes(List[[1]])$method=="Weighted" | attributes(List[[1]])$method == "WeightedSim"){
-			ResultsClust=list()
-			if(WeightClust==TRUE){
+		#Check for gene expression data: if not, reordering to ListNew not necessary
+		DataPrepared<-try_default(PreparePathway(List[[1]],GeneExpr,topG,sign),NULL,quiet=TRUE)
+		if(is.null(DataPrepared)){
+		
+		ListNew=list()
+		element=0
+		for(i in 1:length(List)){
+			if(attributes(List[[i]])$method != "CEC" & attributes(List[[i]])$method != "Weighted" & attributes(List[[i]])$method!= "WeightedSim"){
+				ResultsClust=list()
 				ResultsClust[[1]]=list()
-				ResultsClust[[1]][[1]]=List[[i]]$Clust
+				ResultsClust[[1]][[1]]=List[[i]]
 				names(ResultsClust[[1]])[1]="Clust"
 				element=element+1					
 				ListNew[[element]]=ResultsClust[[1]]
-				names(ListNew)[length(ListNew)]=c("WeightClust")
-			}			
-			else{
-				for (j in 1:length(List[[i]]$Results)){
-					ResultsClust[[j]]=list()
-					ResultsClust[[j]][[1]]=List[[i]]$Results[[j]]
-					names(ResultsClust[[j]])[1]="Clust"
-					element=element+1					
-					ListNew[[element]]=ResultsClust[[j]]
-					names(ListNew)[length(ListNew)]=names(List[[i]]$Results)[j]
+				#attr(ListNew[element],"method")="Weights"
+			}
+			else if(attributes(List[[i]])$method=="CEC" | attributes(List[[i]])$method=="Weighted" | attributes(List[[i]])$method == "WeightedSim"){
+				ResultsClust=list()
+				if(WeightClust==TRUE){
+					ResultsClust[[1]]=list()
+					if(attributes(List[[i]])$method != "WeightedSim"){
+						ResultsClust[[1]][[1]]=List[[i]]$Clust
+						names(ResultsClust[[1]])[1]="Clust"
+						element=element+1					
+						ListNew[[element]]=ResultsClust[[1]]
+						attr(ListNew[element],"method")="Weights"
+					}
+					else{
+						ResultsClust[[1]]=list()
+						ResultsClust[[1]][[1]]=List[[i]]
+						names(ResultsClust[[1]])[1]="Clust"
+						element=element+1					
+						ListNew[[element]]=ResultsClust[[1]]
+					}
+				}
+				else{
+					for (j in 1:length(List[[i]]$Results)){
+						ResultsClust[[j]]=list()
+						ResultsClust[[j]][[1]]=List[[i]]$Results[[j]]
+						names(ResultsClust[[j]])[1]="Clust"
+						element=element+1					
+						ListNew[[element]]=ResultsClust[[j]]
+						attr(ListNew[element],"method")="Weights"
+					}		
 				}		
-			}		
-		}	
-	}
-	List=ListNew
+			}	
+		}
+		
+		if(is.null(names)){
+			names=seq(1,length(ListNew),1)
+			for(i in 1:length(ListNew)){
+				names[i]=paste("Method",i,sep=" ")
+			}
+		}
+		names(ListNew)=names
+		MatrixClusters=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
+		List=ListNew	
+		
+		maxclus=0
+		DataPrepared=list()
+		for (k in 1:dim(MatrixClusters)[1]){
+			message(k)
+			clusters=MatrixClusters[k,]
+			
+			if(max(clusters)>maxclus){
+				maxclus=max(clusters)
+			}
+			
+			check<-try_default(PreparePathway(List[[k]],GeneExpr,topG,sign),NULL,quiet=TRUE)
+			if(is.null(check)){
+				Temp=List[[k]]
+				
+				for(i in unique(clusters)){
+					Compounds=list()
+					Compounds$LeadCpds=names(clusters)[which(clusters==i)] 
+					Compounds$OrderedCpds=as.hclust(List[[k]]$Clust$Clust)$labels[as.hclust(List[[k]]$Clust$Clust)$order]
+					
+					Temp[[i+1]]=list(Compounds=Compounds)
+					names(Temp)[i+1]=paste("Cluster",i,sep=" ")
+					
+				}
+				DataPrepared[[k]]<-PreparePathway(Temp,GeneExpr,topG,sign)
+				
+			}	
+		}
+		}
+		
+		else{
+			for(k in 1:length(List)){
+				DataPrepared[[k]]<-try_default(PreparePathway(List[[k]],GeneExpr,topG,sign),NULL,quiet=TRUE)
+				if(is.null(DataPrepared[[k]])){
+					Temp=List[[k]]
+					
+					for(i in unique(clusters)){
+						Compounds=list()
+						Compounds$LeadCpds=List[[k]]$Compounds$LeadCpds
+						Compounds$OrderedCpds=List[[k]]$Compounds$OrderedCpds
+						
+						Temp[[i+1]]=list(Compounds=Compounds)
+						names(Temp)[i+1]=paste("Cluster",i,sep=" ")
+						
+					}
+					DataPrepared[[k]]<-PreparePathway(Temp,GeneExpr,topG,sign)
+					
+				}	
+			}
+			
+			
+		}
+		
+		
 
-	method.test = function(sign.method,path.method){
+		method.test = function(sign.method,path.method){
 			method.choice = FALSE
 			
 			if( sign.method=="limma"  & path.method=="MLP"  ){
@@ -59,15 +140,15 @@ Pathways<-function(List,Selection=NULL,GeneExpr=geneMat,nrclusters=NULL,method=c
 				stop("Incorrect choice of method.")
 			}
 			
-	}
+		}
 		
-	method.out = method.test(method[1],method[2])
+		method.out = method.test(method[1],method[2])
 		
-	sign.method = method.out$sign.method
-	path.method = method.out$path.method
+		sign.method = method.out$sign.method
+		path.method = method.out$path.method
 		
-		if(length(ENTREZID)==1){
-			ENTREZID = colnames(GeneExpr)
+		if(length(GeneInfo$ENTREZID)==1){
+			GeneInfo$ENTREZID = colnames(GeneExpr)
 		}
 		
 		# Determining the genesets if they were not given with the function input
@@ -75,64 +156,37 @@ Pathways<-function(List,Selection=NULL,GeneExpr=geneMat,nrclusters=NULL,method=c
 			geneSet <- GENESET
 		}
 		else{
-			geneSet <- AnnotateEntrezIDtoGO(GeneInfo[,1],database=c("ensembl","hsapiens_gene_ensembl"),attributes=c("entrezgene","go_id","description"),filters="entrezgene",species="Human")
+			geneSet <- getGeneSets(species = "Human",geneSetSource = geneSetSource,entrezIdentifiers = GeneInfo$ENTREZID)
 		}
 		
-		if(is.null(top)){
+		if(is.null(topP)){
 			top1=FALSE
 		}
 		else{
 			top1=TRUE
 		}
 		
-		if(is.null(names)){
-			for(j in 1:length(List)){
-				names[j]=paste("Method",j,sep=" ")	
-			}
-		}
-		
-		MatrixClusters=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
 		
 		ResultMLP=list()
-		maxclus=0
-		for (k in 1:dim(MatrixClusters)[1]){
+		
+		for (k in 1:length(DataPrepared)){
 			message(k)
-			clusters=MatrixClusters[k,]
-			
-			if(max(clusters)>maxclus){
-				maxclus=max(clusters)
-			}
-			
-			DataPrepared<-try_default(PreparePathway(List[[k]],GeneExpr,topG,sign),NULL,quiet=TRUE)
-			if(is.null(DataPrepared)){
-				Temp=List[[k]]
-				
-				for(i in unique(clusters)){
-					Compounds=list()
-					Compounds$LeadCpds=names(clusters)[which(clusters==i)] 
-					Compounds$OrderedCpds=as.hclust(List[[k]]$Clust)$labels[as.hclust(List[[k]]$Clust)$order]
 					
-					Temp[[i+1]]=list(Compounds=Compounds)
-					names(Temp)[i+1]=paste("Cluster",i,sep=" ")
-					
-				}
-				DataPrepared<-PreparePathway(Temp,GeneExpr,topG,sign)
-				
-			}
-			
 			PathwaysResults=list()
-			
+	
 			for (i in 1:length(DataPrepared$pvalsgenes)){
 				message(paste(k,i,sep='.'))
 				temp=list()
-				temp[[1]]=DataPrepared$Compounds[[i]] # the compounds
-				temp[[2]]=DataPrepared$Genes[[i]]		# the genes		
-				pvalscluster=DataPrepared$pvalsgenes[[i]]
+				temp[[1]]=DataPrepared[[k]]$Compounds[[i]] # the compounds
+				temp[[2]]=DataPrepared[[k]]$Genes[[i]]		# the genes		
+				pvalscluster=DataPrepared[[k]]$pvalsgenes[[i]]
+				
+				Entrezs=sapply(names(pvalscluster),function(x) return(GeneInfo$ENTREZID[which(GeneInfo$SYMBOL==x)]))
 				
 				if(path.method=="MLP"){
 					## WE WILL USE THE RAW P-VALUES TO PUT IN MLP -> LESS GRANULAR
 					
-					names(pvalscluster) = ENTREZID
+					names(pvalscluster) = Entrezs
 					
 					out.mlp <- MLP(
 							geneSet = geneSet,
@@ -142,21 +196,38 @@ Pathways<-function(List,Selection=NULL,GeneExpr=geneMat,nrclusters=NULL,method=c
 							rowPermutations = TRUE,
 							nPermutations = 100,
 							smoothPValues = TRUE,
-							probabilityVector = c(0.5, 0.9, 0.95, 0.99, 0.999, 0.9999, 0.99999),df = 9)
+							probabilityVector = c(0.5, 0.9, 0.95, 0.99, 0.999, 0.9999, 0.99999),df = 9,addGeneSetDescription=TRUE)
 					
 					output = list()
 					#output$gene.p.values = p.adjust(p.values,method="fdr")
 					
-					ranked.genesets.table = data.frame(genesets = (rownames(out.mlp)),p.values = as.numeric(out.mlp$geneSetPValue),descriptions = out.mlp$geneSetDescription)
-					ranked.genesets.table$genesets = as.character(ranked.genesets.table$genesets)
-					ranked.genesets.table$descriptions = as.character(ranked.genesets.table$descriptions)
+					#ranked.genesets.table = data.frame(genesets = (rownames(out.mlp)),p.values = as.numeric(out.mlp$geneSetPValue),descriptions = out.mlp$geneSetDescription)
+					#ranked.genesets.table$genesets = as.character(ranked.genesets.table$genesets)
+					#ranked.genesets.table$descriptions = as.character(ranked.genesets.table$descriptions)
 					
-					output$ranked.genesets.table = ranked.genesets.table[ranked.genesets.table$p.values<=0.05,]
+					#if(is.null(topP)){
+					#		topP=length(ranked.genesets.table$p.values<=sign)
+					#}
 					
-					nr.genesets = c( dim(ranked.genesets.table)[1]  ,  length(geneSet) )
-					names(nr.genesets) = c("used.nr.genesets","total.nr.genesets")
-					output$nr.genesets = nr.genesets
+					if(is.null(topP)){
+						topP=length(which(out.mlp$geneSetPValue<=sign))
+					}
 					
+					#TopPaths=ranked.genesets.table[1:topP,]
+					#AllPaths=ranked.genesets.table
+					
+					TopPaths=out.mlp[1:topP,]
+					AllPaths=out.mlp
+					
+					output$TopPaths=TopPaths
+					output$AllPaths=AllPaths
+					#output$ranked.genesets.table = ranked.genesets.table[ranked.genesets.table$p.values<=sign,]
+					
+					
+					#nr.genesets = c( dim(ranked.genesets.table)[1]  ,  length(geneSet) 	)
+					#names(nr.genesets) = c("used.nr.genesets","total.nr.genesets")
+					#output$nr.genesets = nr.genesets
+
 					#output$object = out.mlp
 					#output$method = "MLP"
 					

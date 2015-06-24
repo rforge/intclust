@@ -28,7 +28,9 @@ A list of the binary feature data matrices
 A vector with the names of the binary data matrices.
 }
   \item{nrclusters}{
-The number of clusters to cut the dendrogram in.
+Optional. The number of clusters to cut the dendrogram in. The number of clusters should not be
+specified if the interest lies only in a specific selection of compounds which is known by name. 
+Otherwise, it is required.
 }
   \item{sign}{
 The significance level to be handled.

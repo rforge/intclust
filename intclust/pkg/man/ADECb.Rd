@@ -10,8 +10,8 @@ procedure. However, the function is capable of cutting the resulting
 dendrogram several times, each time into a different number of cluster.
 }
 \usage{
-ADECb(List, distmeasure = "tanimoto", nrclusters = seq(5, 25, 1), 
-clust = "agnes", linkage = "ward")
+ADECb(List, distmeasure = "tanimoto",normalize=FALSE,method=NULL,
+nrclusters = seq(5, 25, 1),  clust = "agnes", linkage = "ward")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,7 +21,16 @@ rows are corresponding with the objects.
 }
   \item{distmeasure}{
 The distance measure to be used on the fused data matrix (character).
-Should be one of "tanimoto", "euclidean", "jaccard".
+Should be one of "tanimoto", "euclidean", "jaccard","hamming".
+}
+  \item{normalize}{
+Logical. Indicates whether to normalize the distance matrices or not.
+This is recommended if different distance types are used. More details
+on normalization in  \code{Normalization}.
+}
+  \item{method}{
+A method of normalization. Should be one of "Quantile","Fisher-Yates",
+"standardize","Range" or any of the first letters of these names.
 }
   \item{nrclusters}{
 A sequence of numbers of clusters to cut the dendrogram in.
@@ -61,7 +70,8 @@ Marijke Van Moerbeke
 data(fingerprintMat)
 data(targetMat)
 L=list(fingerprintMat,targetMat)
-MCF7_ADECb=ADECb(L,distmeasure="tanimoto",nrclusters=seq(5,25),clust="agnes",linkage="ward")
+MCF7_ADECb=ADECb(L,distmeasure="tanimoto",normalize=FALSE,method=NULL,
+nrclusters=seq(5,25),clust="agnes",linkage="ward")
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 

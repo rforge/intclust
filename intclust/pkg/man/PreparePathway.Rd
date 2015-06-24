@@ -19,10 +19,11 @@ PreparePathway(Object, GeneExpr, topG, sign)
   \item{Object}{
 A list with at least an element with the name "Compounds" such that the function knows
  which compounds to test for differential gene expression. If the elements "Genes"
- and "pvalsgenes" are present as well, these will be collected.
+ and "pvalsgenes" are present as well, these will be collected and the gene expression is
+ not analyzed.
 }
   \item{GeneExpr}{
-The gene expression matrix or ExpressionSet of the objects.
+The gene expression matrix or ExpressionSet of the objects. The rows should correspond with the genes.
 }
   \item{topG}{
 Overrules sign. The number of top genes to be returned in the result.
@@ -50,8 +51,9 @@ Marijke Van Moerbeke
 data(fingerprintMat)
 data(geneMat)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-		gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+
 
 L1=list(MCF7_F)
 
@@ -66,6 +68,6 @@ L2$'Cluster 1'$Compounds$LeadCpds=Comps1
 L2$'Cluster 2'$Compounds$LeadCpds=Comps2
 L2$'Cluster 3'$Compounds$LeadCpds=Comps2
 
-MCF7_PreparePaths=PreparePathway(L2,geneMat,NULL,0.05)
+MCF7_PreparePaths=PreparePathway(Object=L2,GeneExpr=geneMat,topG=NULL,sign=0.05)
 str(MCF7_PreparePaths)
 }

@@ -1,4 +1,4 @@
-ADECc<-function(List,distmeasure="tanimoto",t=10,r=NULL,nrclusters=seq(5,25,1),clust="agnes",linkage="ward"){
+ADECc<-function(List,distmeasure="tanimoto",normalize=FALSE,method=NULL,t=10,r=NULL,nrclusters=seq(5,25,1),clust="agnes",linkage="ward"){
 	
 	if(class(List) != "list"){
 		stop("Data must be of type lists")
@@ -17,6 +17,11 @@ ADECc<-function(List,distmeasure="tanimoto",t=10,r=NULL,nrclusters=seq(5,25,1),c
 	}
 	
 	#Fuse A1 and A2 into 1 Data Matrix
+	
+	OrderNames=rownames(List[[1]])
+	for(i in 1:length(List)){
+		List[[i]]=List[[i]][OrderNames,]
+	}
 	
 	AllData<-NULL
 	for (i in 1:length(List)){
@@ -62,7 +67,7 @@ ADECc<-function(List,distmeasure="tanimoto",t=10,r=NULL,nrclusters=seq(5,25,1),c
 		
 		#Step 2: apply hierarchical clustering on A1_prime and A2_prime + cut tree into nrclusters
 		
-		DistM=Distance(A_prime,distmeasure)
+		DistM=Distance(A_prime,distmeasure,normalize,method)
 		
 		HClust_A_prime=agnes(DistM,diss=TRUE,method=linkage)
 		
@@ -83,7 +88,7 @@ ADECc<-function(List,distmeasure="tanimoto",t=10,r=NULL,nrclusters=seq(5,25,1),c
 	
 	Clust=agnes(Incidence,diss=TRUE,method=linkage)
 	
-	out=list(AllData=AllData,S=Incidence,Clust=Clust)
+	out=list(AllData=AllData,DistM=Incidence,Clust=Clust)
 	attr(out,'method')<-'ADEC'
 	return(out)
 	

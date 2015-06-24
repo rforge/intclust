@@ -1,13 +1,13 @@
-ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ClusterColors=NULL,BinData=NULL,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=7,cols=Colors2,N=1){
+ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ColorLab=NULL,BinData=NULL,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=NULL,cols=NULL,N=1){
 	
 	OrInteractive=Interactive
 	
 	if(Interactive==TRUE){
 		#windows()
-		ClusterPlot(ClusterResult,ClusterColors,nrclusters,cols)
+		ClusterPlot(ClusterResult,ColorLab,nrclusters,cols)
 		hc1<-as.hclust(ClusterResult$Clust)
 		ClusterSpecs<-list()
-		ClusterSpecs=identify(hc1, N=N, MAXCLUSTER = nrow(BinData[[1]]), function(j) ChooseFeatures(Interactive=FALSE,LeadCpds=rownames(BinData[[1]][j,]),ClusterResult,ClusterColors=NULL,BinData,Datanames,GeneExpr,topChar,topG,sign,nrclusters,cols))		
+		ClusterSpecs=identify(hc1, N=N, MAXCLUSTER = nrow(BinData[[1]]), function(j) ChooseCluster(Interactive=FALSE,LeadCpds=rownames(BinData[[1]][j,]),ClusterResult,ColorLab=NULL,BinData,Datanames,GeneExpr,topChar,topG,sign,nrclusters,cols))		
 		
 		names(ClusterSpecs)<-sapply(seq(1,N),FUN=function(x) paste("Choice",x,sep=" "))
 		
@@ -23,10 +23,15 @@ ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ClusterColor
 			BinData[[i]]<-BinData[[i]][,which(colSums(BinData[[i]]) != 0 & colSums(BinData[[i]]) != nrow(BinData[[i]]))]
 		}
 		
-		cpdSet <- rownames(BinData[[1]])
+		cpdSetG <-colnames(GeneExpr)
 		
-		DistW<-ClusterResult$DistW
+		
+		DistM<-ClusterResult$DistM
 		Clust<-ClusterResult$Clust
+		if(is.null(Clust)){
+			ClusterResult$Clust=ClusterResult
+			Clust<-ClusterResult$Clust
+		}
 		
 		hc <- as.hclust(Clust)
 		OrderedCpds <- hc$labels[hc$order]
@@ -40,14 +45,15 @@ ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ClusterColor
 			Compounds=list(LeadCpds[[i]],OrderedCpds)
 			names(Compounds)=c("LeadCpds","OrderedCpds")
 			
-			group <- factor(ifelse(cpdSet %in% LeadCpds[[i]], 1, 0)) #identify the group of interest
-			
+
 			#Determine characteristic features for the compounds: fishers exact test
 			Characteristics=list()
 			for(j in 1: length(BinData)){
+				cpdSetB <-rownames(BinData[[j]])
+				groupB <- factor(ifelse(cpdSetB %in% LeadCpds[[i]], 1, 0))
 				binMat=BinData[[j]]
 				
-				pFish <- apply(binMat, 2, function(x) fisher.test(table(x, group))$p.value)
+				pFish <- apply(binMat, 2, function(x) fisher.test(table(x, groupB))$p.value)
 				
 				pFish <- sort(pFish)
 				
@@ -60,9 +66,10 @@ ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ClusterColor
 			}
 			
 			#Determine DE Genes with limma --> make difference between "regular" data matrix and "expression set"
-			
+			#GeneExpr.2=GeneExpr[,colnames(Matrix)]
+			groupG <- factor(ifelse(cpdSetG %in% LeadCpds[[i]], 1, 0)) #identify the group of interest
 			if(class(GeneExpr)[1]=="ExpressionSet"){
-				GeneExpr$LeadCmpds<-group		
+				GeneExpr$LeadCmpds<-groupG		
 				DElead <- limmaTwoLevels(GeneExpr,"LeadCpds")
 				
 				#allDE <- topTable(DElead, n = length(DElead@MArrayLM$genes$SYMBOL), resort.by = "logFC",sort.by="p")
@@ -92,7 +99,7 @@ ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ClusterColor
 			}
 			else{
 				
-				label.factor = factor(group)
+				label.factor = factor(groupG)
 				design = model.matrix(~label.factor)
 				fit = lmFit(GeneExpr,design=design)
 				fit = eBayes(fit)

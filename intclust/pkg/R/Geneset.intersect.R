@@ -66,32 +66,51 @@ Geneset.intersect<-function(PathwaysOutput,Selection=FALSE,sign=0.05,names=NULL,
 				for(b in 1:length(Clusters[[a]])){#per iteration
 					if(b==1){
 						Compounds=Clusters[[a]][[1]]$Compounds
-						Genes=Clusters[[a]][[1]]$Genes					
+						Genes=Clusters[[a]][[1]]$Genes	
+						Names=data.frame("description"=Clusters[[a]][[1]]$Pathways$AllPaths$geneSetDescription,"genesetcode"=rownames(Clusters[[a]][[1]]$Pathways$AllPaths))
+						Names$description=as.character(Names$description)	
+						Names$genesetcode=as.character(Names$genesetcode)	
 					}				
-					cut = Clusters[[a]][[b]]$Pathways$ranked.genesets.table[  Clusters[[a]][[b]]$Pathways$ranked.genesets.table[,2]<=sign,]
-					colnames(cut)[2] = paste("values.",b,sep="")
-					cut = cut[,c(1,3,2)]
+					cut = Clusters[[a]][[b]]$Pathways$AllPaths[  Clusters[[a]][[b]]$Pathways$AllPaths[,2]<=sign,]
+					colnames(cut)[4] = paste("pvalues.",b,sep="")
+					colnames(cut)[2] = paste("testedgenesetsize.",b,sep="")
+					colnames(cut)[3] = paste("genesetstatistic.",b,sep="")
+					cut=cut[,c(1,5,2,3,4)]
 					result.out[[b]] = cut
 					result.name = c(result.name,paste("genesettable",b,sep=""))
+
 				}
 				
 				
 				
 				names(result.out) = result.name
 				
-				genesets.table.intersect = join_all(result.out,by=c("genesets","descriptions"),type="inner")
-				genesets.table.intersect$mean_p.value=apply(genesets.table.intersect[,3:ncol(genesets.table.intersect)],1,mean)
+				genesets.table.intersect = join_all(result.out,by=c("totalGeneSetSize","geneSetDescription"),type="inner")
+				genesets.table.intersect$mean_testedGeneSetSize=round(apply(genesets.table.intersect[,which(substring(colnames(genesets.table.intersect),1,nchar(colnames(genesets.table.intersect))-nchar(".1"))=='testedgenesetsize')],1,mean),1)
+				genesets.table.intersect$mean_geneSetStatistic=apply(genesets.table.intersect[,which(substring(colnames(genesets.table.intersect),1,nchar(colnames(genesets.table.intersect))-nchar(".1"))=='genesetstatistic')],1,mean)
+				genesets.table.intersect$mean_geneSetPValue=apply(genesets.table.intersect[,which(substring(colnames(genesets.table.intersect),1,nchar(colnames(genesets.table.intersect))-nchar(".1"))=='pvalues')],1,mean)
+				
+				rownames(genesets.table.intersect)=as.character(Names[which(genesets.table.intersect$geneSetDescription%in%Names[,1]),2])
+				
+				class(genesets.table.intersect)=c("MLP","data.frame")
+				attr(genesets.table.intersect,'geneSetSource')=attributes(Clusters[[1]]$Pathways$AllPaths)$geneSetSource
+				
+				
 				result.out$genesets.table.intersect = genesets.table.intersect
 				
 				
 				
 				if(separatepvals==FALSE){
-					result.out$genesets.table.intersect=genesets.table.intersect[,c(1,2,ncol(genesets.table.intersect))]
+					result.out$genesets.table.intersect=genesets.table.intersect[,c(1,2,(ncol(genesets.table.intersect)-2):ncol(genesets.table.intersect))]
+					class(result.out$genesets.table.intersect)=c("MLP","data.frame")
+					attr(result.out$genesets.table.intersect,'geneSetSource')=attributes(Clusters[[1]]$Pathways$AllPaths)$geneSetSource
 				}
 				
 				
 				if(seperatetables==FALSE){
 					result.out=result.out$genesets.table.intersect
+					class(result.out)=c("MLP","data.frame")
+					attr(result.out)=attributes(Clusters[[1]]$Pathways$AllPaths)$geneSetSource
 				}
 				
 				newresult=list(Compounds=Compounds,Genes=Genes,Pathways=result.out)
@@ -111,6 +130,5 @@ Geneset.intersect<-function(PathwaysOutput,Selection=FALSE,sign=0.05,names=NULL,
 		}
 	}
 	names(Intersect)=names
-	
 	return(Intersect)
 }

@@ -1,7 +1,7 @@
 \name{TrackCluster}
 \alias{TrackCluster}
 \title{
-Following a cluster over multiple methods
+Follow a cluster over multiple methods
 }
 \description{
 It is often desired to track a specific selection of object over the
@@ -12,11 +12,12 @@ of the selections are situated.
 \usage{
 TrackCluster(List, Selection, nrclusters=NULL, followMaxComps = FALSE, 
 followClust = TRUE, fusionsLog = TRUE, WeightClust = TRUE, names = NULL
-, Plot = TRUE, Table = TRUE, CompletePlot = FALSE, cols)
+, SelectionPlot = TRUE, Table = TRUE, CompleteSelectionPlot = FALSE, 
+ClusterPlot=FALSE,cols=NULL,legendposx=0.5,legendposy=2.4,plottype="new",location=NULL)
 }
 \arguments{
   \item{List}{
-A list of the outputs from the methods to be compared. The first element of the
+A list of the clustering outputs.The first element of the
 list will be used as the reference in \code{ReorderToReference}.
 }
   \item{Selection}{
@@ -40,19 +41,36 @@ To be handed to \code{ReorderToReference}.
   \item{names}{
 Optional. Names of the methods.
 }
-  \item{Plot}{
+  \item{SelectionPlot}{
 Logical. Should a plot be produced. Depending on followMaxComps and followClust
-it focuses on the maximum of compounds or a cluster.
+it focuses on the maximum of compounds or a cluster. It will not be indicated to which cluster compounds moved.
 }
   \item{Table}{
 Logical. Should a table with the compounds per method and the shared compounds
 be produced?
 }
-  \item{CompletePlot}{
-Logical. Should the complete distribution of the selection be plotted?
+  \item{CompleteSelectionPlot}{
+Logical. Should the complete distribution of the selection be plotted? This implies that it will be indicated to which cluster compounds will move.
+}
+  \item{ClusterPlot}{
+Logical. Plot of specific cluster.
 }
   \item{cols}{
 The colors used for the different clusters.
+}
+  \item{legendposx}{
+The x-coordinate of the legend on all plots. 
+ }
+ \item{legendposy}{
+The y-coordinate of the legend on all plots. 
+} 
+  \item{plottype}{
+Should be one of "pdf","new" or "sweave". If "pdf", a location should be provided in
+"location" and the figure is saved there. If "new" a new graphic device is opened and if "sweave",
+the figure is made compatible to appear in a sweave or knitr document.
+}
+\item{location}{
+If plottype is "pdf", a location should be provided in "location" and the figure is saved there. 
 }
 }
 \details{
@@ -95,10 +113,10 @@ data(fingerprintMat)
 data(targetMat)
 data(Colors1)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
 
 L=list(MCF7_F,MCF7_T)
 names=c("FP","TP")
@@ -106,8 +124,8 @@ names=c("FP","TP")
 Comps=FindCluster(L,nrclusters=7,select=c(1,4))
 Comps
 
-CompsFPAll=TrackCluster(List=L,Selection=Comps,nrclusters=7,followMaxComps=TRUE,followClust=FALSE,
-fusionsLog=TRUE,WeightClust=TRUE,names=names,Plot=TRUE,Table=TRUE,CompletePlot=TRUE,
-cols=Colors1)
+CompsFPAll=TrackCluster(List=L,Selection=Comps,nrclusters=7,followMaxComps=TRUE,
+followClust=FALSE,fusionsLog=TRUE,WeightClust=TRUE,names=names,SelectionPlot=TRUE,
+Table=TRUE,CompleteSelectionPlot=TRUE,cols=Colors1,plottype="new")
 
 }

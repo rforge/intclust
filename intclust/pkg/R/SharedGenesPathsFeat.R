@@ -4,11 +4,11 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 		ResultShared=SharedSelection(DataLimma,DataMLP,DataFeat,names)
 	}	
 	
-	else{
-	if(is.null(DataLimma) & is.null(DataMLP) & is.null(DataFeat)){	
+	else if(is.null(DataLimma) & is.null(DataMLP) & is.null(DataFeat)){	
 		stop("At least one Data set should be specified")
 	}
 	
+	else{
 	
 	List=list(DataLimma,DataMLP,DataFeat)
 	AvailableData=sapply(seq(length(List)),function(i) if(!(is.null(List[[i]]))) return(i))
@@ -37,8 +37,8 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 		
 			
 	for (i in 1:nclusters){
+		
 		name=paste("Cluster",i,sep=" ")
-		message(name)
 		
 		comps=c()
 		
@@ -48,7 +48,7 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 
 		
 		for(j in 1:nmethods){
-			
+
 			if(!(is.na(DataSets[[1]][[j]][[i]])[1])){
 				comps=c(comps,length(DataSets[[1]][[j]][[i]]$Compounds$LeadCpds))
 				names(comps)[j]=paste("Ncomps", names[j],sep=" ")
@@ -72,7 +72,7 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 		
 			if(!(is.null(DataMLP))){
 				if(!(is.na(DataMLP[[j]][[i]])[1])){
-					temp1p=c(temp1p,length(DataMLP[[j]][[i]][[3]]$descriptions))
+					temp1p=c(temp1p,length(DataMLP[[j]][[i]][[3]]$geneSetDescription))
 				}
 				else{
 					temp1p=c(temp1g,"-")
@@ -131,10 +131,10 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 					
 
 				if(!(is.null(DataMLP))){
-					sharedpaths=DataMLP[[j]][[i]][[3]]$descriptions
+					sharedpaths=DataMLP[[j]][[i]][[3]]$geneSetDescription
 					nsharedpaths=length(sharedpaths)
 					names(nsharedpaths)="Nshared"
-					#pvalsp=DataMLP[[j]][[i]][[3]]$mean_p.value
+					#pvalsp=DataMLP[[j]][[i]][[3]]$mean_geneSetPValue
 					
 				}
 				else{
@@ -188,7 +188,7 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 						
 					}
 					if(!(is.null(DataMLP))){
-						sharedpaths=intersect(sharedpaths,DataMLP[[j]][[i]][[3]]$descriptions)
+						sharedpaths=intersect(sharedpaths,DataMLP[[j]][[i]][[3]]$geneSetDescription)
 						nsharedpaths=length(sharedpaths)
 						names(nsharedpaths)="Nshared"
 						
@@ -201,7 +201,6 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 							
 							nsharedfeat[[f]]=length(sharedfeat[[f]])
 							names(nsharedfeat)[f]=paste("Nshared: ",names(DataFeat[[j]][[i]]$Characteristics)[f],sep="")
-							
 							
 						}
 						
@@ -221,7 +220,7 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 		meanpvalsfeat=c()
 		
 			
-		if(!(is.null(sharedgenes))){
+		if(!(is.null(sharedgenes))&length(sharedgenes)!=0){
 			for(c in 1:nmethods){
 				pvalsg=c()
 				for(g in sharedgenes){
@@ -248,12 +247,12 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 		}
 		else{pvalsgenes=NULL}
 					
-		if(!(is.null(sharedpaths))){
+		if(!(is.null(sharedpaths))&length(sharedpaths)!=0){
 			for(c in 1:nmethods){
 				pvalsp=c()
 				if(!(is.na(DataMLP[[c]][[i]])[1])){
 					for(p in sharedpaths){
-						pvalsp=c(pvalsp,DataMLP[[c]][[i]][[3]][DataMLP[[c]][[i]][[3]]$descriptions==p,3][1])
+						pvalsp=c(pvalsp,DataMLP[[c]][[i]][[3]][DataMLP[[c]][[i]][[3]]$geneSetDescriptions==p,5][1])
 					}
 				}
 					
@@ -279,34 +278,52 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 		}
 		else{pvalpaths=NULL}
 		
+		
 		if(!(is.null(sharedfeat))){
 			for(f in 1:length(DataFeat[[j]][[i]]$Characteristics)){
-				pvalschar=list()
-				for(c in 1:nmethods){
-					pvalsf=c()
-					if(!(is.na(DataFeat[[c]][[i]])[1])){
-						for(s in sharedfeat[[f]]){
-							pvalsf=c(pvalsf,DataFeat[[c]][[i]]$Characteristics[[f]]$TopFeat$adj.P.Val[DataFeat[[c]][[i]]$Characteristics[[f]]$TopFeat$Names==s])
+
+				if(length(sharedfeat[[f]])!=0){
+					pvalschar=list()
+					for(c in 1:nmethods){
+						pvalsf=c()
+						if(!(is.na(DataFeat[[c]][[i]])[1])){
+							for(s in sharedfeat[[f]]){
+								pvalsf=c(pvalsf,DataFeat[[c]][[i]]$Characteristics[[f]]$TopFeat$adj.P.Val[DataFeat[[c]][[i]]$Characteristics[[f]]$TopFeat$Names==s])
+							}
 						}
+						pvalschar[[c]]=pvalsf
+						names(pvalschar)[c]=paste("P.Val.",names[c],sep="")
 					}
-					pvalschar[[c]]=pvalsf
-					names(pvalschar)[c]=paste("P.Val.",names[c],sep="")
+				}
+				else{
+					pvalschar=list()
+					pvalschar[1:nmethods]=0
+					for(c in 1:nmethods){
+						names(pvalschar)[c]=paste("P.Val.",names[c],sep="")
+					}
 				}
 				pvalsfeat[[f]]=pvalschar
 				names(pvalsfeat)[f]=names(DataFeat[[j]][[i]]$Characteristics)[f]
-				
+
 			}
-			
+
 			for(f in 1:length(DataFeat[[j]][[i]]$Characteristics)){
 				meanpvalsfeat=c()
-				for(f1 in 1:length(sharedfeat[[f]])){
-					pvalstemp=c()			
-					for(c in 1:nmethods){
-						if(!(is.na(DataFeat[[c]][[i]])[1])){
-							pvalstemp=c(pvalstemp,pvalsfeat[[f]][[c]][[f1]])
-						}
-					}			
-					meanpvalsfeat=c(meanpvalsfeat,mean(pvalstemp))			
+	
+				if((length(sharedfeat[[f]])!=0)){				
+					for(f1 in 1:length(sharedfeat[[f]])) {
+	
+						pvalstemp=c()			
+						for(c in 1:nmethods){
+							if(!(is.na(DataFeat[[c]][[i]])[1])){
+								pvalstemp=c(pvalstemp,pvalsfeat[[f]][[c]][[f1]])
+							}
+						}			
+						meanpvalsfeat=c(meanpvalsfeat,mean(pvalstemp))			
+					}
+				}
+				else{
+					meanpvalsfeat=0
 				}
 				
 				pvalsfeat[[f]][[nmethods+1]]=meanpvalsfeat
@@ -330,11 +347,22 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 		}
 		part1=cbind(cbind(temp1g,temp1p),temp1f)
 		part1=as.matrix(part1)
+		if(is.null(nsharedgenes) & is.null(nsharedpaths) &is.null(nsharedfeat)){
+			if(!(is.null(temp1g))){
+				nsharedgenes=0
+			}
+			if(!(is.null(temp1p))){
+				nsharedpaths=0
+			}
+			if(!(is.null(temp1f))){
+				nsharedfeat=rep(0,length(temp1f))
+			}
+		}
 		part2=cbind(cbind(nsharedgenes,nsharedpaths),nsharedfeat)
 		part2=as.matrix(part2)
 		colnames(part1)=NULL
 		colnames(part2)=NULL
-
+		rownames(part2)="NShared"
 		part3=c()
 		for(r in 1:length(comps)){
 			part3=rbind(part3,rep(comps[r],dim(part1)[2]))
@@ -365,16 +393,22 @@ SharedGenesPathsFeat<-function(DataLimma=NULL,DataMLP=NULL,DataFeat=NULL,names=N
 		if(!(is.null(pvalsfeat))){
 			SharedFeat=list()
 			for(f in 1:lenchar){
-				SharedFeat[[f]]=cbind(sharedfeat[[f]],do.call(cbind.data.frame, pvalsfeat[[f]]))
-				names(SharedFeat)[f]=names(pvalsfeat[[1]])[f]
+				if(length(sharedfeat[[f]])==0){
+					SharedFeat[[f]]=NULL
+				}
+				else{
+					SharedFeat[[f]]=cbind(sharedfeat[[f]],do.call(cbind.data.frame, pvalsfeat[[f]]))
+					names(SharedFeat)[f]=names(pvalsfeat[[1]])[f]
+				}
+				
 			}
 		}
 		else{
 			SharedFeat=NULL
 		}
-
 		which[[i]]=list(SharedComps=sharedcomps,SharedGenes=SharedGenes,SharedPaths=SharedPaths,SharedFeat=SharedFeat)
 		names(which)[i]=paste("Cluster",i,sep=" ")
+		
 	}
 	#Sep for all situations?
 	if(all(!(is.null(DataLimma)),!(is.null(DataMLP)),!(is.null(DataFeat)))){

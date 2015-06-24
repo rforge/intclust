@@ -1,0 +1,19 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Data}{}% 2
+\BOOKMARK [1][-]{section.3}{Primary Analysis}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Single Source Clustering}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Multi-Source Clustering}{section.3}% 5
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Aggregated Data Clustering \(ADC\)}{subsection.3.2}% 6
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Aggregated Data Ensemble Clustering \(ADEC\)}{subsection.3.2}% 7
+\BOOKMARK [3][-]{subsubsection.3.2.3}{Complementary Ensemble Clustering \(CEC\)}{subsection.3.2}% 8
+\BOOKMARK [3][-]{subsubsection.3.2.4}{Similarity Network Fusion \(SNF\)}{subsection.3.2}% 9
+\BOOKMARK [3][-]{subsubsection.3.2.5}{Weighted Clustering \(WeightedClust\)}{subsection.3.2}% 10
+\BOOKMARK [3][-]{subsubsection.3.2.6}{Weighted Similarity Clustering \(WeightedSim\)}{subsection.3.2}% 11
+\BOOKMARK [3][-]{subsubsection.3.2.7}{Weighting on Membership Clustering \(WonM\)}{subsection.3.2}% 12
+\BOOKMARK [2][-]{subsection.3.3}{Comparison of the results}{section.3}% 13
+\BOOKMARK [2][-]{subsection.3.4}{Selection of a Specific Cluster}{section.3}% 14
+\BOOKMARK [1][-]{section.4}{Secondary Analysis}{}% 15
+\BOOKMARK [2][-]{subsection.4.1}{Differential Gene Expression}{section.4}% 16
+\BOOKMARK [2][-]{subsection.4.2}{Pathway Analysis}{section.4}% 17
+\BOOKMARK [2][-]{subsection.4.3}{Characteristic Features}{section.4}% 18
+\BOOKMARK [1][-]{section.5}{Software used}{}% 19

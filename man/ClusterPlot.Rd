@@ -23,7 +23,8 @@ The resulting list method 2 , i.e. the resulting clustering
 on which the colors should be based.
 }
   \item{nrclusters}{
-The number of clusters to cut the dendrogram in.
+Optional. The number of clusters to cut the dendrogram in. If not specified
+the dendrogram will be drawn without colors to discern the different clusters.
 }
   \item{cols}{
 The colors for the clusters.

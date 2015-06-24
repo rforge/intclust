@@ -1,5 +1,5 @@
-\name{HeatmapCols}
-\alias{HeatmapCols}
+\name{HeatmapPlot}
+\alias{HeatmapPlot}
 \title{
 Comparing two clustering results with a heatmap
 }
@@ -11,8 +11,8 @@ s function the number of colors should be one more than the number of clusters
 to color the so called zero cells in the distance matrix.
 }
 \usage{
-HeatmapCols(Data1, Data2, names = rownames(fingerprintMat), nrclusters = NULL, 
-cols = Colors2)
+HeatmapPlot(Data1, Data2, names = NULL, nrclusters = NULL, 
+cols = NULL,plottype="new",location=NULL)
 }
 \arguments{
   \item{Data1}{
@@ -29,6 +29,15 @@ The number of clusters to cut the dendrogram in.
 }
   \item{cols}{
 The colors to be used for the clusters.
+}
+  \item{plottype}{
+Should be one of "pdf","new" or "sweave". If "pdf", a location should be provided in
+"location" and the figure is saved there. If "new" a new graphic device is opened and if "sweave",
+the figure is made compatible to appear in a sweave or knitr document, i.e. no new device is
+opened and the plot appears in the current device or document.
+}
+  \item{location}{
+If plottype is "pdf", a location should be provided in "location" and the figure is saved there. 
 }
 }
 \details{
@@ -58,15 +67,17 @@ data(fingerprintMat)
 data(targetMat)
 data(Colors2)
 
-MCF7_F = Cluster(fingerprintMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
-MCF7_T = Cluster(targetMat,distmeasure="tanimoto",clust="agnes",linkage="ward",
-gap=FALSE,maxK=55)
+MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+clust="agnes",linkage="ward",gap=FALSE,maxK=55)
+MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
+clust="agnes",linkage="ward",gap=FALSE,maxK=55)
+
 
 L=list(MCF7_F,MCF7_T)
 names=c("FP","TP")
 
-HeatmapCols(MCF7_T,MCF7_F,names=rownames(fingerprintMat),nrclusters=7,cols=Colors2)
+HeatmapPlot(MCF7_T,MCF7_F,names=rownames(fingerprintMat),nrclusters=7,cols=Colors2,plottype="new",
+location=NULL)
 
 }
 \keyword{ Heatmap }
