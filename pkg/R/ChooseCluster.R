@@ -108,6 +108,7 @@ ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ColorLab=NUL
 				}
 			}
 			Characteristics=c(resultB,resultC)
+			names(Characteristics)=Datanames
 
 			#Determine DE Genes with limma --> make difference between "regular" data matrix and "expression set"
 			#GeneExpr.2=GeneExpr[,colnames(Matrix)]
