@@ -710,10 +710,7 @@ MCF7_Feat=ChooseCluster(Interactive=FALSE,LeadCpds=Comps,ClusterResult=MCF7_F,
 BinFeaturesPlot(LeadCpds=Comps,OrderLab=MCF7_F,Features=
                 MCF7_Feat$Characteristics$FP$TopFeat$Names,Data=fingerprintMat,
                 ColorLab=MCF7_F,nrclusters=7,cols=Colors,name=c("FP"),plottype="sweave",
-                location=NULL)
-		
-BinFeaturesPlot<-function(colors1=c('gray90','blue'),colors2=c('gray90','green'),margins=c(5.5,3.5,0.5,5.5),plottype="new",location=NULL){
-			
+                location=NULL)		
 @
 <<FeaturesPlotT,eval=FALSE>>=
 BinFeaturesPlot(LeadCpds=Comps,OrderLab=MCF7_F,Features=
