@@ -11,7 +11,8 @@ characteristics are (not) expressed in a specific cluster.
 }
 \usage{
 BinFeaturesPlot(LeadCpds, OrderLab, Features, Data, ColorLab, nrclusters = NULL, 
-cols = NULL, name = c("FP"),margins=c(5.5,3.5,0.5,5.5),plottype="new",location=NULL)
+cols = NULL, name = c("FP"),colors1 = c("gray90", "blue"), colors2 = c("gray90",
+"green"),margins=c(5.5,3.5,0.5,5.5),plottype="new",location=NULL)
 }
 \arguments{
   \item{LeadCpds}{
@@ -25,21 +26,28 @@ A character vector containing the selection of features to be plotted.
 The data matrix the features are derived from.
 }
   \item{OrderLab}{
-Optional. If the compounds are to set in a specific order of a specific method.
+Optional. If the compounds are to set in a specific order of a specific clustering.
 }
   \item{ColorLab}{
-Optional. The clustering result that determines the color of the labels of the
+Optional. The clustering result that determines the clusters of the labels of the
 objects in the plot.
 }
   \item{nrclusters}{
 Optional. The number of clusters to consider if ColorLab is specified.
 }
   \item{cols}{
-The colors for the labels of the objects.
+The colors for the clusters of the labels of the objects as determined by ColorLab.
 }
   \item{name}{
 The overall name to give the features.
 }
+  \item{colors1}{
+ Colors to indicate the present and abscence of features of the compounds not in LeadComps.
+  }
+  \item{colors2}{
+ Colors to indicate the present and abscence of features of the LeadComps.
+ 
+  }
   \item{margins}{
 Optional. Margins to be used for the plot.
 }

@@ -1,4 +1,4 @@
-ADECc<-function(List,distmeasure="tanimoto",normalize=FALSE,method=NULL,t=10,r=NULL,nrclusters=seq(5,25,1),clust="agnes",linkage="ward"){
+ADECc<-function(List,distmeasure="tanimoto",normalize=FALSE,method=NULL,t=10,r=NULL,nrclusters=seq(5,25,1),clust="agnes",linkage="ward",alpha=0.625){
 	
 	if(class(List) != "list"){
 		stop("Data must be of type lists")
@@ -9,12 +9,6 @@ ADECc<-function(List,distmeasure="tanimoto",normalize=FALSE,method=NULL,t=10,r=N
 		stop("Give a number of cluters to cut the dendrogram into.")
 	}
 	
-	if(clust != "agnes" | linkage != "ward"){
-		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
-						coassociation matrix.")
-		clust="agnes"
-		linkage="ward"
-	}
 	
 	#Fuse A1 and A2 into 1 Data Matrix
 	
@@ -69,7 +63,7 @@ ADECc<-function(List,distmeasure="tanimoto",normalize=FALSE,method=NULL,t=10,r=N
 		
 		DistM=Distance(A_prime,distmeasure,normalize,method)
 		
-		HClust_A_prime=agnes(DistM,diss=TRUE,method=linkage)
+		HClust_A_prime=agnes(DistM,diss=TRUE,method=linkage,par.method=alpha)
 		
 		for(k in 1:length(nrclusters)){
 			
@@ -86,7 +80,7 @@ ADECc<-function(List,distmeasure="tanimoto",normalize=FALSE,method=NULL,t=10,r=N
 		
 	}
 	
-	Clust=agnes(Incidence,diss=TRUE,method=linkage)
+	Clust=agnes(Incidence,diss=TRUE,method=linkage,par.method=alpha)
 	
 	out=list(AllData=AllData,DistM=Incidence,Clust=Clust)
 	attr(out,'method')<-'ADEC'

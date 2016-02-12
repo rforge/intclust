@@ -14,7 +14,7 @@ on this weighted combination with the agnes function and the ward link
 WeightedClust(List,type=c("data","dist","clusters"),
 distmeasure = c("tanimoto", "tanimoto"),normalize=FALSE,method=NULL,
 weight = seq(1, 0, -0.1), WeightClust = 0.5, clust="agnes",
-linkage = "ward",StopRange=FALSE)
+linkage = "ward",alpha=0.625,StopRange=FALSE)
 }
 \arguments{
   \item{List}{
@@ -40,10 +40,10 @@ on standardization in \code{Normalization}.
 A method of normalization. Should be one of "Quantile","Fisher-Yates",
 "standardize","Range" or any of the first letters of these names.
 }
-  \item{weight}{
+ \item{weight}{
  Optional. A list of different weight combinations for the data sets in List.
- If NULL, the weight is sequence from 0 to 1  with steps of 0.1 and a result is produced 
- for each. It is further possible to fix weights for some data matrices and to
+ If NULL, the weights are determined to be rqual for each data set.
+ It is further possible to fix weights for some data matrices and to
  let it vary randomly for the remaining data sets. An example is provided in the details.
 }
   \item{WeightClust}{
@@ -55,6 +55,10 @@ Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
 Choice of inter group dissimilarity (character). Defaults to "ward".
+}
+\item{alpha}{
+The parameter alpha to be used in the "flexible" linkage of the agnes function. 
+Defaults to 0.625 and is only used if the linkage is set to "flexible"
 }
   \item{StopRange}{
 Logical. Indicates whether the distance matrices with values not between zero and one should be standardized to have so.
@@ -91,12 +95,12 @@ L=list(fingerprintMat,targetMat)
 
 MCF7_Weighted=WeightedClust(L,type="data", distmeasure=c("tanimoto","tanimoto"),
 normalize=FALSE,method=NULL,weight=seq(1,0,-0.1),WeightClust=0.5,clust="agnes",linkage="ward"
-,StopRange=FALSE)
+,alpha=0.625,StopRange=FALSE)
 
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 
-function and the ward link is implemented.
+function is implemented.
 }
 
 \keyword{ Weighted Clustering }

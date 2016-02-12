@@ -1,16 +1,10 @@
-ADC<-function(List,distmeasure="tanimoto",normalize=FALSE,method=NULL,clust="agnes",linkage="ward"){
+ADC<-function(List,distmeasure="tanimoto",normalize=FALSE,method=NULL,clust="agnes",linkage="ward",alpha=0.625){
 	
 	#Checking required data types and methods:
 	if(class(List) != "list"){
 		stop("Data must be of type list")
 	}
 	
-	if(clust != "agnes" | linkage != "ward"){
-		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
-						fused matrix.")
-		clust="agnes"
-		linkage="ward"
-	}
 	
 	#Fuse variables into 1 data Matrix
 	
@@ -35,7 +29,7 @@ ADC<-function(List,distmeasure="tanimoto",normalize=FALSE,method=NULL,clust="agn
 	
 	#Perform hierarchical clustering with ward link on distance matrix
 	
-	HClust = agnes(AllDataDist,diss=TRUE,method=linkage)		
+	HClust = agnes(AllDataDist,diss=TRUE,method=linkage,par.method=alpha)		
 	
 	
 	out=list(AllData=AllData,DistM=AllDataDist,Clust=HClust)

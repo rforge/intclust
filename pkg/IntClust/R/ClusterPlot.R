@@ -1,4 +1,4 @@
-ClusterPlot<-function(Data1,Data2=NULL,nrclusters=NULL,cols=NULL,plottype="new",location=NULL,...){
+ClusterPlot<-function(Data1,Data2=NULL,nrclusters=NULL,cols=NULL,plottype="new",location=NULL,ColorComps=NULL,...){
 	plottypein<-function(plottype,location){
 		if(plottype=="pdf" & !(is.null(location))){
 			pdf(paste(location,".pdf",sep=""))
@@ -24,7 +24,7 @@ ClusterPlot<-function(Data1,Data2=NULL,nrclusters=NULL,cols=NULL,plottype="new",
 		Data=Data2$Clust
 	}
 	
-	d_temp<- dendrapply(as.dendrogram(x,hang=0.02),ClusterCols,Data,nrclusters,cols)
+	d_temp<- dendrapply(as.dendrogram(x,hang=0.02),ClusterCols,Data,nrclusters,cols,ColorComps)
 	plottypein(plottype,location)
 	plot(d_temp,nodePar=list(pch=NA),edgePar=list(lwd=2),ylab="Height",font.axis=2,font.lab=2,font=2,...)
 	axis(side = 2, lwd = 2)	

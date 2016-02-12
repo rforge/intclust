@@ -1,9 +1,4 @@
-DetermineWeight_SimClust<-function(List,type=c("data","dist","clusters"),weight=seq(0,1,by=0.01),nrclusters=NULL,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=50,names=c("B","FP"),StopRange=FALSE,plottype="new",location=NULL){
-	if(clust != "agnes" | linkage != "ward"){
-		message("Only hierarchical clustering with WARD link is implemented for now. Method continues with these options")
-		clust="agnes"
-		linkage="ward"
-	}
+DetermineWeight_SimClust<-function(List,type=c("data","dist","clusters"),weight=seq(0,1,by=0.01),nrclusters=NULL,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,clust="agnes",linkage=c("ward","ward"),alpha=0.625,gap=FALSE,maxK=50,names=c("B","FP"),StopRange=FALSE,plottype="new",location=NULL){
 	
 	CheckDist<-function(Dist,StopRange){
 		if(StopRange==FALSE & !(0<=min(Dist) & max(Dist)<=1)){
@@ -35,7 +30,7 @@ DetermineWeight_SimClust<-function(List,type=c("data","dist","clusters"),weight=
 			List[[i]]=List[[i]][OrderNames,]
 		}
 		
-		Clusterings=lapply(seq(length(List)),function(i) Cluster(List[[i]],type,distmeasure[i],normalize,method,clust,linkage,gap,maxK,StopRange))
+		Clusterings=lapply(seq(length(List)),function(i) Cluster(List[[i]],type,distmeasure[i],normalize,method,clust,linkage[i],alpha,gap,maxK,StopRange))
 		
 		Dist=lapply(seq(length(List)),function(i) Clusterings[[i]]$DistM)
 		Dist=lapply(seq(length(Dist)),function(i) CheckDist(Dist[[i]],StopRange))
@@ -63,7 +58,7 @@ DetermineWeight_SimClust<-function(List,type=c("data","dist","clusters"),weight=
 			List[[i]]=List[[i]][OrderNames,OrderNames]
 		}
 		
-		Clusterings=lapply(seq(length(List)),function(i) Cluster(List[[i]],type,distmeasure[i],normalize,method,clust,linkage,gap,maxK,StopRange))
+		Clusterings=lapply(seq(length(List)),function(i) Cluster(List[[i]],type,distmeasure[i],normalize,method,clust,linkage[i],alpha,gap,maxK,StopRange))
 		
 		Dist=List
 		Dist=lapply(seq(length(Dist)),function(i) CheckDist(Dist[[i]],StopRange))
@@ -127,7 +122,8 @@ DetermineWeight_SimClust<-function(List,type=c("data","dist","clusters"),weight=
 	colnames(ResultsWeight)=labels
 	
 	if(is.null(weight)){
-		weight=seq(1,0,-0.1)	
+		equalweights=1/length(List)
+		weight=list(rep(equalweights,length(List)))		
 	}
 	else if(class(weight)=='list' & length(weight[[1]])!=length(List)){
 		stop("Give a weight for each data matrix or specify a sequence of weights")
@@ -187,7 +183,7 @@ DetermineWeight_SimClust<-function(List,type=c("data","dist","clusters"),weight=
 	DistM=lapply(weight,weightedcomb,Dist)
 	
 	hclustOr=lapply(seq(length(List)),function(i) cutree(Clusterings[[i]]$Clust,nrclusters))
-	hclustW=lapply(seq(length(weight)),function(i) cutree(agnes(DistM[[i]],diss=TRUE,method=linkage),nrclusters))
+	hclustW=lapply(seq(length(weight)),function(i) cutree(agnes(DistM[[i]],diss=TRUE,method="ward"),nrclusters))
 	
 	Counts=function(clusterlabs1,clusterlabs2){
 		index=c(1:length(clusterlabs1))

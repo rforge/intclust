@@ -12,7 +12,7 @@ The number of features to sample can also be specified by the user.
 \usage{
 CECa(List, distmeasure = c("tanimoto", "tanimoto"),normalize=FALSE,method=NULL,
 t = 10, r = NULL, nrclusters = NULL, weight = NULL, clust = "agnes",
-linkage = "ward", WeightClust = 0.5,StopRange=FALSE)
+linkage=c("flexible","flexible"),alpha=0.625, WeightClust = 0.5,StopRange=FALSE)
 }
 \arguments{
   \item{List}{
@@ -41,17 +41,21 @@ Optional. The number of features to take for the random sample.
   \item{nrclusters}{
 A vector of the number of clusters to cut the dendrogram of each clustering result in.
 }
-  \item{weight}{
+ \item{weight}{
  Optional. A list of different weight combinations for the data sets in List.
- If NULL, the weight is sequence from 0 to 1  with steps of 0.1 and a result is produced 
- for each. It is further possible to fix weights for some data matrices and to
+ If NULL, the weights are determined to be equal for each data set.
+ It is further possible to fix weights for some data matrices and to
  let it vary randomly for the remaining data sets. An example is provided in the details.
 }
   \item{clust}{
 Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
-Choice of inter group dissimilarity (character). Defaults to "ward".
+A vector with the choice of inter group dissimilarity (character) for each data set.
+}
+\item{alpha}{
+The parameter alpha to be used in the "flexible" linkage of the agnes function. 
+Defaults to 0.625 and is only used if the linkage is set to "flexible"
 }
   \item{WeightClust}{
 A weight for which the result will be put aside of the other results.
@@ -103,14 +107,14 @@ L=list(fingerprintMat,targetMat)
 
 MCF7_CECa=CECa(List=L,distmeasure=c("tanimoto","tanimoto"),
 normalize=FALSE,method=NULL,t=25,r=NULL,nrclusters=c(7,7),
-clust="agnes",linkage="ward",StopRange=FALSE)
+clust="agnes",linkage=c("flexible","flexible"),alpha=0.625,StopRange=FALSE)
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 
-function and the ward link is implemented.
+function is implemented.
 }
 \seealso{
-\code{\link{CECb}},\code{\link{CECc}}
+\code{\link{CEC}},\code{\link{CECb}},\code{\link{CECc}}
 }
 \keyword{ Complementary Ensemble Clustering }
 \keyword{ Integrative Clustering }

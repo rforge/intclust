@@ -17,6 +17,14 @@ ComparePlot<-function(List,nrclusters=NULL,cols=NULL,fusionsLog=FALSE,WeightClus
 		}
 	}
 	
+	for(i in 1:length(List)){
+		if(attributes(List[[i]])$method == "Weighted" & WeightClust==TRUE){
+			T=List[[i]]$Clust
+			attr(T,"method")="Single Clustering"
+			List[[i]]=T
+		}
+	}
+	
 	MatrixColors=ReorderToReference(List,nrclusters,fusionsLog,WeightClust,names)
 	
 	Names=ColorsNames(MatrixColors,cols)
@@ -30,12 +38,12 @@ ComparePlot<-function(List,nrclusters=NULL,cols=NULL,fusionsLog=FALSE,WeightClus
 		}
 	}
 	
-	similar=round(SimilarityMeasure(MatrixColors),2)
+	#similar=round(SimilarityMeasure(MatrixColors),2)
 	plottypein(plottype,location)
 	par(mar=margins)
 	color2D.matplot(MatrixColors,cellcolors=Names,show.values=FALSE,axes=FALSE,xlab="",ylab="",...)
 	axis(1,at=seq(0.5,(nobs-0.5)),labels=colnames(MatrixColors),las=2,cex.axis=0.70)
-	axis(2,at=seq(0.5,(nmethods-0.5)),labels=rev(names),cex.axis=0.65,las=2)
-	axis(4,at=seq(0.5,(nmethods-0.5)),labels=rev(similar),cex.axis=0.65,las=2)
+	axis(2,at=seq(0.5,(nmethods-0.5)),labels=rev(names),cex.axis=0.70,las=2)
+	#axis(4,at=seq(0.5,(nmethods-0.5)),labels=rev(similar),cex.axis=0.65,las=2)
 	plottypeout(plottype)
 }

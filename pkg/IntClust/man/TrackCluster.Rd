@@ -85,6 +85,8 @@ in the selection. A table can be produced as well, that separates the
 objects that are shared over all methods from those extra in the original
 selection and extra for the other methods. The \code{ReorderToReference} is applied
 to make sure that the clusters are comparable over the methods.
+
+The function is experimental and might not work in specific cases. Please let us know such that we can improve its functionality.
 }
 \value{
 The returned value is a list with an element for every method. This element

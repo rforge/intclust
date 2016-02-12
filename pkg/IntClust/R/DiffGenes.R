@@ -128,7 +128,7 @@ DiffGenes=function(List,Selection=NULL,GeneExpr=NULL,nrclusters=NULL,method="lim
 					
 				}
 				else{
-					
+
 					design = model.matrix(~label.factor)
 					fit = lmFit(GeneExpr.2,design=design)
 					fit = eBayes(fit)

@@ -13,12 +13,11 @@ indicates an optimal weight.
 \usage{
 DetermineWeight_SimClust(List, type = c("data","dist","clusters"),
 weight=seq(0, 1, by = 0.01),nrclusters = NULL, distmeasure = c("tanimoto",
-"tanimoto"),normalize=FALSE,method=NULL,clust = "agnes", linkage = "ward",
-gap = FALSE, maxK = 50, names = c("B", "FP"),StopRange=FALSE,
+"tanimoto"),normalize=FALSE,method=NULL,clust = "agnes",linkage=c("ward","ward")
+,alpha=0.625,gap = FALSE, maxK = 50, names = c("B", "FP"),StopRange=FALSE,
 plottype="new",location=NULL)
 
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
 A list of matrices of the same type. It is assumed the rows are corresponding
@@ -32,8 +31,8 @@ Type should be one of "data", "dist" or"clusters".
 }
   \item{weight}{
  Optional. A list of different weight combinations for the data sets in List.
- If NULL, the weight is sequence from 0 to 1  with steps of 0.1 and a result is produced 
- for each. It is further possible to fix weights for some data matrices and to
+ If NULL, the weights are determined to be rqual for each data set.
+ It is further possible to fix weights for some data matrices and to
  let it vary randomly for the remaining data sets. An example is provided in the details.
 }
   \item{nrclusters}{
@@ -57,7 +56,11 @@ A method of normalization. Should be one of "Quantile","Fisher-Yates",
 Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
-Choice of inter group dissimilarity (character). Defaults to "ward".
+A vector with the choice of inter group dissimilarity (character) for each data set.
+}
+  \item{alpha}{
+The parameter alpha to be used in the "flexible" linkage of the agnes function. 
+Defaults to 0.625 and is only used if the linkage is set to "flexible"
 }
   \item{gap}{
 Logical. Whether or not to calculate the gap statistic in the clustering
@@ -126,15 +129,16 @@ data(fingerprintMat)
 data(targetMat)
 
 MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
-method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+method=NULL,clust="agnes",linkage="ward",alpha=0.625,gap=FALSE,maxK=55,StopRange=FALSE)
 MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
-method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+method=NULL,clust="agnes",linkage="ward",alpha=0.625,gap=FALSE,maxK=55,StopRange=FALSE)
 
 L=list(MCF7_F,MCF7_T)
 
 MCF7_Weight=DetermineWeight_SimClust(List=L,type="clusters",weight=seq(0,1,by=0.01),nrclusters=7,
 distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,clust="agnes",
-linkage="ward",gap=FALSE,maxK=50,names=c("FP","TP"),StopRange=FALSE,plottype="new",location=NULL)
+linkage=c("flexible","flexible"),alpha=0.625,gap=FALSE,maxK=50,names=c("FP","TP"),StopRange=FALSE,
+plottype="new",location=NULL)
 
 }
 \seealso{

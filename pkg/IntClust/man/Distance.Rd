@@ -8,7 +8,7 @@ The \code{Distance} function was written calculates the distances between the da
 distance measures are euclidean for continuous data and the tanimoto coefficient or jaccard index for binary data.
 }
 \usage{
-Distance(Data,distmeasure=c("tanimoto","jaccard","euclidean","hamming"),
+Distance(Data,distmeasure=c("tanimoto","jaccard","euclidean","hamming","cont tanimoto"),
 normalize=FALSE,method=NULL)
 }
 \arguments{
@@ -17,7 +17,7 @@ A data matrix. It is assumed the  rows are corresponding with the objects.
 }
   \item{distmeasure}{
 Choice of metric for the dissimilarity matrix (character).
-Should be one of "tanimoto", "euclidean", "jaccard","hamming".
+Should be one of "tanimoto", "euclidean", "jaccard","hamming","cont tanimoto".
 }
   \item{normalize}{
 Logical. Indicates whether to normalize the distance matrices or not.
@@ -50,7 +50,7 @@ for the tanimoto coefficient. The lower the similarity values s are, the more fe
 shared between the two objects and the more alike they are. Since clustering is
 based on dissimilarity, the conversion to distances is performed.
 If normalize=TRUE and the distance meausure is euclidean, the data matrix is
-normalized beforehand.
+normalized beforehand. Further, a version of the tanimoto coefficient is also available for continuous data.
 
 }
 \value{

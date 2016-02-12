@@ -60,19 +60,19 @@ If plottype is "pdf", a location should be provided in "location" and the figure
 }
 }
 \details{
-If the object provided in List are data or distance matrices clustering aroudn medoids is performed with the
+If the object provided in List are data or distance matrices clustering around medoids is performed with the
 \code{pam} function of the \pkg{cluster} package. Of the obtained pam objects, average silhouette widths are retrieved.
 A silhouette width represents how well an object lies in its current cluster. Values around one are an indication 
 of an appropriate clustering while values around zero show that the object might as well lie in the neighbouring cluster.
 The average silhouette width is a measure of how tightly grouped the data is.  This is performed for every number of cluster
-for every object provided in List. Then the averege is taken for every number of clusters over the provided objects. This results
+for every object provided in List. Then the average is taken for every number of clusters over the provided objects. This results
 in one average value per number of clusters. The number width the maximal average silhouette width is 
 chosen as the optimal number of clusters.
 }
 \value{
 A plots are made showing the average silhouette widths of the provided objects for each number 
 of clusters. Further, a list with two elements is returned:
-\item{Silhouette_Widths}{A data frame with the silhouette widths for each object and the average silhouette witdhs per number of clusters}
+\item{Silhouette_Widths}{A data frame with the silhouette widths for each object and the average silhouette widths per number of clusters}
 \item{Optimal_Nr_of_CLusters}{The determined optimal number of cluster }
 }
 \author{

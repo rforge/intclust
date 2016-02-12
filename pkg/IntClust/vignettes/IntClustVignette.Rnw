@@ -76,11 +76,11 @@ information. No normalization is necessary for the example since both data
 matrices are binary and their distances will all fall between zero and one.
 <<SingleClust,message=FALSE>>=
 MCF7_F <- Cluster(Data=fingerprintMat,type="data",distmeasure="tanimoto", 
-                  normalize=FALSE,method=NULL,clust="agnes",linkage="ward",
+                  normalize=FALSE,method=NULL,clust="agnes",linkage="flexible",
                   gap=FALSE,maxK=55,StopRange=FALSE) 
 
 MCF7_T <- Cluster(Data=targetMat,type="data",distmeasure="tanimoto",
-                  normalize=FALSE,method=NULL,clust="agnes",linkage="ward",
+                  normalize=FALSE,method=NULL,clust="agnes",linkage="flexible",
                   gap=FALSE,maxK=55,StopRange=FALSE)
 @
 \noindent If the number of clusters to work with is unknown, the option gap in
@@ -163,7 +163,7 @@ clustering is performed on this single matrix.
 <<ADC>>=
 L=list(fingerprintMat,targetMat)
 MCF7_ADC=ADC(List=L,distmeasure="tanimoto",normalize=FALSE,method=NULL,
-             clust="agnes", linkage="ward")
+             clust="agnes", linkage="flexible")
 @
 \subsubsection{Aggregated Data Ensemble Clustering (ADEC)}
 Aggregated data ensemble clustering starts as ADC with the
@@ -202,13 +202,13 @@ dendrogram will be cut into cluster several times for a range of values for $k$.
 L=list(fingerprintMat,targetMat)
 
 MCF7_ADECa=ADECa(List=L,distmeasure="tanimoto",normalize=FALSE,method=NULL,
-                 t=20,r=NULL,nrclusters=7,clust="agnes",linkage="ward")
+                 t=20,r=NULL,nrclusters=7,clust="agnes",linkage="flexible")
 		 
 MCF7_ADECb=ADECb(List=L,distmeasure="tanimoto",normalize=FALSE,method=NULL,
-                 nrclusters=seq(5,25,1),clust="agnes",linkage="ward")
+                 nrclusters=seq(5,25,1),clust="agnes",linkage="flexible")
 		
 MCF7_ADECc=ADECc(List=L,distmeasure="tanimoto",normalize=FALSE,method=NULL,
-                 t=20,r=NULL, nrclusters=seq(5,25),clust="agnes",linkage="ward")
+                 t=20,r=NULL, nrclusters=seq(5,25),clust="agnes",linkage="flexible")
 @
 \subsubsection{Complementary Ensemble Clustering (CEC)}
 Complementary ensemble clustering (\cite{Fodeh2013})
@@ -224,15 +224,15 @@ L=list(fingerprintMat,targetMat)
 
 MCF7_CECa=CECa(List=L,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
                method=NULL,t=20,r=NULL,nrclusters=c(7,7),clust="agnes",
-               linkage="ward",StopRange=FALSE)
+			   linkage=c("flexible","flexible"),StopRange=FALSE)
 		 
 MCF7_CECb=CECb(List=L,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
                method=NULL,nrclusters=seq(5,25,1),clust="agnes",
-               linkage="ward",StopRange=FALSE) 
+			   linkage=c("flexible","flexible"),StopRange=FALSE) 
 		
 MCF7_CECc=CECc(List=L,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
                method=NULL,t=20,r=NULL,nrclusters=seq(5,25),clust="agnes",
-               linkage="ward",StopRange=FALSE)		 
+			   linkage=c("flexible","flexible"),StopRange=FALSE)		 
 @
 \subsubsection{Similarity Network Fusion (SNF)}
 Similarity network fusion (\cite{Wang2014}) consists of two stages and results
@@ -282,7 +282,7 @@ Weighted clustering is a straigtforward method. From each data matrix, a
 distance matrix ic calculated. The distance matrices are than combined via a
 weighted linear combination into one weighted distance matrix on which
 clustering is performed.
-<<SNF,message=FALSE>>=
+<<Weighted,message=FALSE>>=
 L=list(fingerprintMat,targetMat)
 
 MCF7_Weighted=WeightedClust(L,type="data",distmeasure=c("tanimoto","tanimoto"),
@@ -304,14 +304,14 @@ L=list(fingerprintMat,targetMat)
 MCF7_Weight=DetermineWeight_SimClust(List=L,type="data",weight=seq(1,0,by=-0.01),
                                      nrclusters=7,distmeasure=c("tanimoto","tanimoto"),
                                      normalize=FALSE,method=NULL,clust="agnes",
-                                     linkage="ward",gap=FALSE, maxK=50,
+									 linkage=c("flexible","flexible"),gap=FALSE,maxK=50,
                                      names=c("FP","TP"),StopRange=FALSE,
                                      plottype="sweave",location=NULL)
 					
 L=list(MCF7_F,MCF7_T)	
 
 MCF7_WeightedSim=WeightedSimClust(List=L,type="clusters",weight=MCF7_Weight$Weight,
-                                  clust="agnes",linkage="ward",distmeasure=
+                                  clust="agnes",linkage=c("flexible","flexible"),distmeasure=
                                   c("tanimoto","tanimoto"),normalize=FALSE,
                                   method=NULL,gap=FALSE,maxK=50,nrclusters=7,
                                   names=c("FP","TP"),AllClusters=FALSE,StopRange=FALSE)
@@ -346,7 +346,7 @@ L=list(fingerprintMat,targetMat)
 
 MCF7_WonM=WonM(List=L,type="data",distmeasure=c("tanimoto","tanimoto"),
                normalize=FALSE,method=NULL,nrclusters=seq(5,25),clust="agnes",
-               linkage="ward",StopRange=FALSE)
+			   linkage=c("flexible","flexible"),StopRange=FALSE)
 @
 
 \subsection{Comparison of the results}

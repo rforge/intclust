@@ -1,10 +1,5 @@
-WonM=function(List,type=c("data","dist","clusters"),distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,nrclusters=seq(5,25,1),clust="agnes",linkage="ward",StopRange=FALSE){
-	if(clust != "agnes" | linkage != "ward"){
-		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
-						fused matrix.")
-		clust="agnes"
-		linkage="ward"
-	}
+WonM=function(List,type=c("data","dist","clusters"),distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,nrclusters=seq(5,25,1),clust="agnes",linkage=c("flexible","flexible"),alpha=0.625,StopRange=FALSE){
+	
 	type<-match.arg(type)
 	
 	CheckDist<-function(Dist,StopRange){
@@ -48,7 +43,7 @@ WonM=function(List,type=c("data","dist","clusters"),distmeasure=c("tanimoto","ta
 	
 	#Step 2: perform hierarchical clustering on both distance matrices
 
-	HClustering=lapply(seq(length(List)),function(i) agnes(Dist[[i]],diss=TRUE,method=linkage))
+	HClustering=lapply(seq(length(List)),function(i) agnes(Dist[[i]],diss=TRUE,method=linkage[i],par.method=alpha))
 
 	
 	#Step 3: cut the dendrograms into a range of K values
@@ -80,7 +75,7 @@ WonM=function(List,type=c("data","dist","clusters"),distmeasure=c("tanimoto","ta
 	OverallConsensus=as.matrix(OverallConsensus)
 	rownames(OverallConsensus)=rownames(Dist[[1]])
 	colnames(OverallConsensus)=rownames(Dist[[1]])
-	OverallClustering=agnes(OverallConsensus,diss=TRUE,method=linkage)
+	OverallClustering=agnes(OverallConsensus,diss=TRUE,method="ward")
 	
 	out=list("Single Distances"=Dist,ClustSep=HClustering,DistM=OverallConsensus,Clust=OverallClustering)
 	attr(out,'method')<-'WonM'

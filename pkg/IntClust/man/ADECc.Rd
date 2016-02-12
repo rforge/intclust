@@ -13,7 +13,8 @@ different specific number of clusters.
 }
 \usage{
 ADECc(List, distmeasure = "tanimoto",normalize=FALSE,method=NULL,t = 10, 
-r = NULL,nrclusters = seq(5, 25, 1), clust = "agnes", linkage = "ward")
+r = NULL,nrclusters = seq(5, 25, 1), clust = "agnes", linkage = "ward",
+alpha=0.625)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -49,6 +50,10 @@ Choice of clustering function (character). Defaults to "agnes".
   \item{linkage}{
 Choice of inter group dissimilarity (character). Defaults to "ward".
 }
+\item{alpha}{
+The parameter alpha to be used in the "flexible" linkage of the agnes function. 
+Defaults to 0.625 and is only used if the linkage is set to "flexible"
+}
 }
 \details{
 ADECc starts with the merging of the data matrices into one larger data matrix. 
@@ -80,14 +85,14 @@ data(fingerprintMat)
 data(targetMat)
 L=list(fingerprintMat,targetMat)
 MCF7_ADECc=ADECc(L,distmeasure="tanimoto",normalize=FALSE,method=NULL,t=10,r=NULL,
-nrclusters=seq(5,25,1),clust="agnes",linkage="ward")
+nrclusters=seq(5,25,1),clust="agnes",linkage="ward",alpha=0.625)
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 
-function and the ward link is implemented.
+function is implemented.
 }
 \seealso{
-\code{\link{ADECa}},\code{\link{ADECb}}
+\code{\link{ADEC}},\code{\link{ADECa}},\code{\link{ADECb}}
 }
 \keyword{ Aggregated Data Ensemble Clustering  }
 \keyword{ Integrative Clustering }

@@ -14,12 +14,12 @@ is made as well.
 }
 \usage{
 Ultimate(List,type=c("data","dist","clusters"),distmeasure,normalize=FALSE,method=NULL,
-StopRange=FALSE,NN = 20,alpha = 0.5, T = 20, t = 10, r = NULL, nrclusters = NULL,
+StopRange=FALSE,NN = 20,mu = 0.5, T = 20, t = 10, r = NULL, nrclusters = NULL,
 nrclusterssep = c(7, 7),nrclustersseq = NULL, weight = NULL, Clustweight = 0.5, 
-clust = "agnes", linkage= "ward", gap = FALSE, maxK = 50, IntClust = c("ADC", 
-"ADECa", "ADECb","ADECc", "WonM", "CECa", "CECb", "CECc", "WeightedClust", 
-"WeightedSim", "SNFa", "SNFb", "SNFc"), fusionsLog = TRUE, WeightClust
-= TRUE, PlotCompare = FALSE, cols = NULL, ...)  
+clust = "agnes", linkage=c("ward","ward"),alpha=0.625, gap = FALSE, maxK = 50,
+ IntClust = c("ADC", "ADECa", "ADECb","ADECc", "WonM", "CECa", "CECb", "CECc",
+  "WeightedClust", "WeightedSim", "SNFa", "SNFb", "SNFc"), fusionsLog = TRUE,
+ WeightClust= TRUE, PlotCompare = FALSE, cols = NULL, ...)  
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -53,7 +53,7 @@ This is recommended if different types of data are used such that these are comp
   \item{NN}{
 The number of neighbours to be used in SNF.
 }
-  \item{alpha}{
+  \item{mu}{
 A parameter in SNF.
 }
   \item{T}{
@@ -88,11 +88,15 @@ result of the Clust element is considered.
 Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
-Choice of inter group dissimilarity (character). Defaults to "ward".
+A vector with the choice of inter group dissimilarity (character) for each data set.
+}
+\item{alpha}{
+The parameter alpha to be used in the "flexible" linkage of the agnes function. 
+Defaults to 0.625 and is only used if the linkage is set to "flexible"
 }
   \item{gap}{
-Logical indicator if gap statistics should be computed. Setting to FALSE will
-greatly reduce the computation time.
+Logical. Indicator if gap statistics should be computed. 
+Setting to $FALSE$ will greatly reduce the computation time.
 }
   \item{maxK}{
 The maximum number of clusters to be considered during the gap.
@@ -135,7 +139,7 @@ L=list(fingerprintMat,targetMat)
 MCF7_All=Ultimate(L,type="data",distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
 method=NULL,StopRange=FALSE,NN=20,alpha=0.5,T=20,t=25,r=NULL,nrclusters=7,
 nrclustersseq=c(5,25,1),weight=seq(1,0,-0.1),Clustweight=0.5,clust="agnes",
-linkage="ward",gap=FALSE,IntClust=c("ADC","ADECa","ADECb",
+linkage=c("ward","ward"),alpha=0.625,gap=FALSE,IntClust=c("ADC","ADECa","ADECb",
 "ADECc","WonM","CECa","CECb","CECc","WeightedClust","WeightedSim",
 "SNFa","SNFb","SNFc"),fusionsLog=TRUE,WeightClust=TRUE,PlotCompare=TRUE,
 cols=Colors2)

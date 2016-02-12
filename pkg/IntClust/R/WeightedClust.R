@@ -1,23 +1,5 @@
-WeightedClust <- function(List,type=c("data","dist","clusters"),distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,weight=seq(1,0,-0.1),WeightClust=0.5,clust="agnes",linkage="ward",StopRange=FALSE){ # weight = weight to data1
-	if(clust != "agnes" | linkage != "ward"){
-		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
-						fused matrix.")
-		clust="agnes"
-		linkage="ward"
-	}
-	
-	#for(a in 1:length(distmeasure)){
-		#if(distmeasure[[a]]=='euclidean' & normalize==TRUE){
-		#	stand<-function(c){
-		#		minc=min(c)
-		#		maxc=max(c)
-		#		c1=(c-minc)/(maxc-minc)
-		#		return(c1)				
-		#	}
-		#	List[[a]]=apply(List[[a]],2,stand)			
-		#}
-		#
-	#}
+WeightedClust <- function(List,type=c("data","dist","clusters"),distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,weight=seq(1,0,-0.1),WeightClust=0.5,clust="agnes",linkage="ward",alpha=0.625,StopRange=FALSE){ # weight = weight to data1
+
 	
 	#Step 1: compute distance matrices:
 	type<-match.arg(type)
@@ -60,7 +42,9 @@ WeightedClust <- function(List,type=c("data","dist","clusters"),distmeasure=c("t
 	
 	#Step 2: Weighted linear combination of the distance matrices:
 	if(is.null(weight)){
-		weight=seq(1,0,-0.1)	
+		equalweights=1/length(List)
+		weight=list(rep(equalweights,length(List)))
+	
 	}
 	else if(class(weight)=='list' & length(weight[[1]])!=length(List)){
 		stop("Give a weight for each data matrix or specify a sequence of weights")
@@ -132,22 +116,32 @@ WeightedClust <- function(List,type=c("data","dist","clusters"),distmeasure=c("t
 		temp=Reduce("+",temp)	
 		return(temp)
 	}
+	
+	DistClust=NULL
+	Clust=NULL
+	
 	DistM=lapply(seq(length(weight)),function(i) weightedcomb(weight[[i]],Dist=Dist))
 	namesweights=c()
-	WeightedClust=lapply(seq(length(weight)),function(i) agnes(DistM[[i]],diss=TRUE,method=linkage))
+	WeightedClust=lapply(seq(length(weight)),function(i) agnes(DistM[[i]],diss=TRUE,method=linkage,par.method=alpha))
 	for(i in 1:length(WeightedClust)){
 		namesweights=c(namesweights,paste("Weight",weight[i],sep=" "))
 		if(all(weight[[i]]==WeightClust)){
-			Clust=WeightedClust[i]	
-			DistClust=DistM[i]
+			Clust=WeightedClust[[i]]	
+			DistClust=DistM[[i]]
 		}
 	}	
+	
+	if(is.null(DistClust)){
+		DistClust=weightedcomb(WeightClust,Dist=Dist)
+		Temp=agnes(DistClust,diss=TRUE,method=linkage,par.method=alpha)
+		Clust=Temp
+	}
 	
 	Results=lapply(seq(1,length(WeightedClust)),function(i) return(c("DistM"=DistM[i],"Clust"=WeightedClust[i])))
 	names(Results)=namesweights
 	
 	# return list with objects
-	out=list(Dist=Dist,Results=Results,Clust=c("DistM"=DistClust,"Clust"=Clust))
+	out=list(Dist=Dist,Results=Results,Clust=list("DistM"=DistClust,"Clust"=Clust))
 	attr(out,'method')<-'Weighted'
 	return(out)
 	

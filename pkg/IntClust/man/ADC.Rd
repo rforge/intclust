@@ -10,7 +10,7 @@ and hierarchical clustering is performed.
 }
 \usage{
 ADC(List, distmeasure = "tanimoto",normalize=FALSE,method=NULL,clust = "agnes",
-linkage = "ward")
+linkage = "ward",alpha=0.625)
 }
 \arguments{
   \item{List}{
@@ -35,6 +35,10 @@ Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
 Choice of inter group dissimilarity (character). Defaults to "ward".
+}
+\item{alpha}{
+The parameter alpha to be used in the "flexible" linkage of the agnes function. 
+Defaults to 0.625 and is only used if the linkage is set to "flexible"
 }
 }
 \details{
@@ -66,11 +70,12 @@ Marijke Van Moerbeke
 data(fingerprintMat)
 data(targetMat)
 L=list(fingerprintMat,targetMat)
-MCF7_ADC=ADC(L,distmeasure="tanimoto",normalize=FALSE,method=NULL,clust="agnes",linkage="ward")
+MCF7_ADC=ADC(L,distmeasure="tanimoto",normalize=FALSE,method=NULL,clust="agnes",
+linkage="ward",alpha=0.625)
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 
-function and the ward link is implemented.
+function is implemented.
 }
 \keyword{ Aggregated Data Clustering }
 \keyword{ Integrative Clustering }

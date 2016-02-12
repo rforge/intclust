@@ -84,7 +84,8 @@ DetermineWeight_SilClust<-function(List,type=c("data","dist","clusters"),weight=
 	colnames(ResultsWeight)=labels
 	
 	if(is.null(weight)){
-		weight=seq(1,0,-0.1)	
+		equalweights=1/length(List)
+		weight=list(rep(equalweights,length(List)))		
 	}
 	else if(class(weight)=='list' & length(weight[[1]])!=length(List)){
 		stop("Give a weight for each data matrix or specify a sequence of weights")

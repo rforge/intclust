@@ -1,5 +1,5 @@
-SNFc<-function(List,type=c("data","dist","clusters"),distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,NN=20,mu=0.5,T=20,clust="agnes",linkage="ward",StopRange=FALSE){
-	type<-match.arg(type)
+SNFc<-function(List,type=c("data","dist","clusters"),distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,NN=20,mu=0.5,T=20,clust="agnes",linkage="ward",alpha=0.625,StopRange=FALSE){
+
 	#Checking required data types and methods:
 	if(class(List) != "list"){
 		stop("Data must be of type list")
@@ -7,13 +7,6 @@ SNFc<-function(List,type=c("data","dist","clusters"),distmeasure=c("tanimoto","t
 	
 	if(mu<0.3 | mu >0.8){
 		message("Warning: mu is recommended to be between 0.3 and 0.8 for the SNF method. Default is 0.5.")
-	}
-	
-	if(clust != "agnes" | linkage != "ward"){
-		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
-						fused matrix.")
-		clust="agnes"
-		linkage="ward"
 	}
 	
 	CheckDist<-function(Dist,StopRange){
@@ -146,7 +139,7 @@ SNFc<-function(List,type=c("data","dist","clusters"),distmeasure=c("tanimoto","t
 	
 	#STEP 4: Perform Hierarchical Clustering with WARD Link
 	
-	HClust = agnes(Dist,diss=TRUE,method=linkage)
+	HClust = agnes(Dist,diss=TRUE,method=linkage,par.method=alpha)
 		
 	
 	#Output= list with the fused matrix and the performed clustering

@@ -13,10 +13,9 @@ number of clusters.
 }
 \usage{
 CECc(List, distmeasure = c("tanimoto", "tanimoto"),normalize=FALSE,method=NULL,
-t = 10, r = NULL,nrclusters = NULL, weight = NULL, clust = "agnes", linkage = "ward", 
-WeightClust = 0.5,StopRange=FALSE)
+t = 10, r = NULL,nrclusters = NULL, weight = NULL, clust = "agnes",
+linkage=c("flexible","flexible"),alpha=0.625,WeightClust = 0.5,StopRange=FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
 A list of data matrices. It is assumed the  rows are corresponding
@@ -44,17 +43,21 @@ Optional. The number of features to take for the random sample.
   \item{nrclusters}{
 A sequence of numbers of clusters to cut the dendrogram in.
 }
-  \item{weight}{
+ \item{weight}{
  Optional. A list of different weight combinations for the data sets in List.
- If NULL, the weight is sequence from 0 to 1  with steps of 0.1 and a result is produced 
- for each. It is further possible to fix weights for some data matrices and to
+ If NULL, the weights are determined to be rqual for each data set.
+ It is further possible to fix weights for some data matrices and to
  let it vary randomly for the remaining data sets. An example is provided in the details.
 }
   \item{clust}{
 Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
-Choice of inter group dissimilarity (character). Defaults to "ward".
+A vector with the choice of inter group dissimilarity (character) for each data set.
+}
+\item{alpha}{
+The parameter alpha to be used in the "flexible" linkage of the agnes function. 
+Defaults to 0.625 and is only used if the linkage is set to "flexible"
 }
   \item{WeightClust}{
 A weight for which the result will be put aside of the other results.
@@ -106,14 +109,15 @@ data(fingerprintMat)
 data(targetMat)
 L=list(fingerprintMat,targetMat)
 MCF7_CECc=CECc(L,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,
-t=10,r=NULL,nrclusters=seq(5,25,1),clust="agnes",linkage="ward",StopRange=FALSE)
+t=10,r=NULL,nrclusters=seq(5,25,1),clust="agnes",linkage=c("flexible","flexible")
+,alpha=0.625,StopRange=FALSE)
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 
-function and the ward link is implemented.
+function link is implemented.
 }
 \seealso{
-\code{\link{CECa}},\code{\link{CECc}}
+\code{\link{CEC}},\code{\link{CECa}},\code{\link{CECc}}
 }
 \keyword{ Complementary Ensemble Clustering }
 \keyword{ Integrative Clustering }

@@ -19,6 +19,7 @@ ContFeaturesPlot<-function(LeadCpds,Data,nrclusters=NULL,OrderLab=NULL,ColorLab=
 	
 	temp=orderlabs[which(!(orderlabs%in%LeadCpds))]
 	AllCpds=c(LeadCpds,temp)
+	Data=Data[,AllCpds]
 	
 	plottypein<-function(plottype,location){
 		if(plottype=="pdf" & !(is.null(location))){

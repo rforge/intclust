@@ -6,6 +6,7 @@ ReorderToReference<-function(List,nrclusters=NULL,fusionsLog=FALSE,WeightClust=F
 	ListNew=list()
 	element=0
 	for(i in 1:length(List)){
+	
 		if(attributes(List[[i]])$method != "CEC" & attributes(List[[i]])$method != "Weighted" & attributes(List[[i]])$method!= "WeightedSim"){
 			ResultsClust=list()
 			ResultsClust[[1]]=list()

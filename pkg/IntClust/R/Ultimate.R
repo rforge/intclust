@@ -1,4 +1,4 @@
-Ultimate<-function(List,type=c("data","dist","clusters"),distmeasure,normalize=FALSE,method=NULL,StopRange=FALSE,NN=20,alpha=0.5,T=20,t=10,r=NULL,nrclusters=NULL,nrclusterssep=c(7,7),nrclustersseq=NULL,weight=NULL,Clustweight=0.5,clust="agnes",linkage="ward",gap=FALSE,maxK=50,IntClust=c("ADC","ADECa","ADECb","ADECc","WonM","CECa","CECb","CECc","WeightedClust","WeightedSim","SNFa","SNFb","SNFc"),fusionsLog=TRUE,WeightClust=TRUE,PlotCompare=FALSE,cols=NULL,...){
+Ultimate<-function(List,type=c("data","dist","clusters"),distmeasure,normalize=FALSE,method=NULL,StopRange=FALSE,NN=20,mu=0.5,T=20,t=10,r=NULL,nrclusters=NULL,nrclusterssep=c(7,7),nrclustersseq=NULL,weight=NULL,Clustweight=0.5,clust="agnes",linkage=c("ward","ward"),alpha=0.625,gap=FALSE,maxK=50,IntClust=c("ADC","ADECa","ADECb","ADECc","WonM","CECa","CECb","CECc","WeightedClust","WeightedSim","SNFa","SNFb","SNFc"),fusionsLog=TRUE,WeightClust=TRUE,PlotCompare=FALSE,cols=NULL,...){
 	#Checking of conditions:
 	type=match.arg(type)
 	
@@ -6,20 +6,14 @@ Ultimate<-function(List,type=c("data","dist","clusters"),distmeasure,normalize=F
 		stop("Data must be of type list")
 	}
 	
-	if(clust != "agnes" | linkage != "ward"){
-		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
-						fused matrix.")
-		clust="agnes"
-		linkage="ward"
-	}
-	
+
 	
 	#Separate hierarchical clustering on each data matrix
 	
 	SeparateClustering=list()
 	
 	for (i in 1:length(List)){
-		SeparateClustering[[i]]=Cluster(List[[i]],type,distmeasure[i],normalize,method,clust,linkage,gap,maxK,StopRange)
+		SeparateClustering[[i]]=Cluster(List[[i]],type,distmeasure[i],normalize,method,clust,linkage,alpha,gap,maxK,StopRange)
 		names(SeparateClustering)[i]=paste("Data",i,sep=" ")
 	}
 	
@@ -57,19 +51,19 @@ Ultimate<-function(List,type=c("data","dist","clusters"),distmeasure,normalize=F
 	FollowedSelect=list()
 	for (i in 1:length(IntClust)){
 		if(IntClust[i]=="SNFa"){
-			IntClustering[[i]]=SNFa(List,type,distmeasure,normalize,method,NN,alpha,T,clust,linkage,StopRange)				
+			IntClustering[[i]]=SNFa(List,type,distmeasure,normalize,method,NN,mu,T,clust,linkage,alpha,StopRange)				
 			names(IntClustering)[i]="SNFa"
 			message("SNFa")
 		}
 		
 		if(IntClust[i]=="SNFb"){
-			IntClustering[[i]]=SNFb(List,type,distmeasure,normalize,method,NN,alpha,T,clust,linkage,StopRange)				
+			IntClustering[[i]]=SNFb(List,type,distmeasure,normalize,method,NN,mu,T,clust,linkage,alpha,StopRange)				
 			names(IntClustering)[i]="SNFb"
 			message("SNFb")
 		}
 		
 		if(IntClust[i]=="SNFc"){
-			IntClustering[[i]]=SNFc(List,type,distmeasure,normalize,method,NN,alpha,T,clust,linkage,StopRange)				
+			IntClustering[[i]]=SNFc(List,type,distmeasure,normalize,method,NN,mu,T,clust,linkage,alpha,StopRange)				
 			names(IntClustering)[i]="SNFc"
 			message("SNFc")
 		}
@@ -79,7 +73,7 @@ Ultimate<-function(List,type=c("data","dist","clusters"),distmeasure,normalize=F
 			if(length(unique(distmeasure)) != 1){
 				stop("When using ADClust, distance measures must be the same for all data matrices ")				
 			}
-			IntClustering[[i]]=ADC(List,unique(distmeasure),normalize,method,clust,linkage)
+			IntClustering[[i]]=ADC(List,unique(distmeasure),normalize,method,clust,linkage,alpha)
 			names(IntClustering)[i]="ADC"
 			message("ADC")
 		}
@@ -87,7 +81,7 @@ Ultimate<-function(List,type=c("data","dist","clusters"),distmeasure,normalize=F
 			if(length(unique(distmeasure)) != 1){
 				stop("When using ADECa, distance measures must be the same for all data matrices ")				
 			}
-			IntClustering[[i]]=ADECa(List,unique(distmeasure),normalize,method,t,r,nrclusters,clust,linkage)
+			IntClustering[[i]]=ADECa(List,unique(distmeasure),normalize,method,t,r,nrclusters,clust,linkage,alpha)
 			names(IntClustering)[i]="ADECa"
 			message("ADECa")
 		}
@@ -96,7 +90,7 @@ Ultimate<-function(List,type=c("data","dist","clusters"),distmeasure,normalize=F
 			if(length(unique(distmeasure)) != 1){
 				stop("When using ADECb, distance measures must be the same for all data matrices ")				
 			}
-			IntClustering[[i]]=ADECb(List,unique(distmeasure),normalize,method,nrclusters=nrclustersseq,clust,linkage)
+			IntClustering[[i]]=ADECb(List,unique(distmeasure),normalize,method,nrclusters=nrclustersseq,clust,linkage,alpha)
 			names(IntClustering)[i]="ADECb"
 			message("ADECb")
 		}
@@ -105,19 +99,19 @@ Ultimate<-function(List,type=c("data","dist","clusters"),distmeasure,normalize=F
 			if(length(unique(distmeasure)) != 1){
 				stop("When using ADECc, distance measures must be the same for all data matrices ")				
 			}
-			IntClustering[[i]]=ADECc(List,unique(distmeasure),normalize,method,t,r,nrclusters=nrclustersseq,clust,linkage)
+			IntClustering[[i]]=ADECc(List,unique(distmeasure),normalize,method,t,r,nrclusters=nrclustersseq,clust,linkage,alpha)
 			names(IntClustering)[i]="ADECc"
 			message("ADECc")
 		}
 		if(IntClust[i]=="CECa"){
-			IntClustering[[i]]=CECa(List,distmeasure,normalize,method,t,r,nrclusters=nrclusterssep,weight,clust,linkage,Clustweight,StopRange)
+			IntClustering[[i]]=CECa(List,distmeasure,normalize,method,t,r,nrclusters=nrclusterssep,weight,clust,linkage,alpha,Clustweight,StopRange)
 			names(IntClustering)[i]="CECa"
 			message("CECa")
 		}
 		
 		if(IntClust[i]=="CECb"){
 			
-			IntClustering[[i]]=CECb(List,distmeasure,normalize,method,nrclusters=nrclustersseq,weight,clust,linkage,Clustweight,StopRange)
+			IntClustering[[i]]=CECb(List,distmeasure,normalize,method,nrclusters=nrclustersseq,weight,clust,linkage,alpha,Clustweight,StopRange)
 			names(IntClustering)[i]="CECb"
 			message("CECb")
 		}
@@ -125,26 +119,26 @@ Ultimate<-function(List,type=c("data","dist","clusters"),distmeasure,normalize=F
 		
 		if(IntClust[i]=="CECc"){
 			
-			IntClustering[[i]]=CECc(List,distmeasure,normalize,method,t,r,nrclusters=nrclustersseq,weight,clust,linkage,Clustweight,StopRange)
+			IntClustering[[i]]=CECc(List,distmeasure,normalize,method,t,r,nrclusters=nrclustersseq,weight,clust,linkage,alpha,Clustweight,StopRange)
 			names(IntClustering)[i]="CECc"
 			message("CECb")
 		}
 		}
 		if(IntClust[i]=="WonM"){
-			IntClustering[[i]]=WonM(List,type,distmeasure,normalize,method,nrclusters=nrclustersseq,clust,linkage,StopRange)				
+			IntClustering[[i]]=WonM(List,type,distmeasure,normalize,method,nrclusters=nrclustersseq,clust,linkage,alpha,StopRange)				
 			names(IntClustering)[i]="WonM"
 			message("WonM")
 		}
 		
 		if(IntClust[i]=="WeightedClust"){
 			
-			IntClustering[[i]]=WeightedClust(List,type,distmeasure,normalize,method,weight,Clustweight,clust,linkage,StopRange)
+			IntClustering[[i]]=WeightedClust(List,type,distmeasure,normalize,method,weight,Clustweight,clust,linkage,alpha,StopRange)
 			names(IntClustering)[i]="WeightedClust"
 			message("Weighted Clustering")
 		}	
 		
 		if(IntClust[i]=="WeightedSim"){
-			IntClustering[[i]]=WeightedSimClust(List,type,weight,clust=clust,linkage=linkage,distmeasure=distmeasure,normalize,method,gap=FALSE,maxK=50,nrclusters=nrclusters,names=c("Data1","Data2"),AllClusters=TRUE,StopRange)
+			IntClustering[[i]]=WeightedSimClust(List,type,weight,clust=clust,linkage=linkage,alpha,distmeasure=distmeasure,normalize,method,gap=FALSE,maxK=50,nrclusters=nrclusters,names=c("Data1","Data2"),AllClusters=TRUE,StopRange)
 			
 			names(IntClustering)[i]="WeightedSim"
 			message("WeightedSim")

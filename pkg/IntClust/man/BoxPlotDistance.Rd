@@ -1,7 +1,7 @@
 \name{BoxPlotDistance}
 \alias{BoxPlotDistance}
 \title{
-Box Plots of one distance matrix categorized against another distance matrix.
+Box plots of one distance matrix categorized against another distance matrix.
 }
 \description{
 Given two distance matrices, the function categorizes one distance matrix and
@@ -34,7 +34,7 @@ Should be one of "tanimoto", "euclidean", "jaccard","hamming".
   \item{normalize}{
 Logical. Indicates whether to normalize the distance matrices or not.
 This is recommended if different distance types are used. More details
-on standardization in \code{Normalization}.
+on normalization in \code{Normalization}.
 }
   \item{method}{
 A method of normalization. Should be one of "Quantile","Fisher-Yates",

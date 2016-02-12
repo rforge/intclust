@@ -1,5 +1,9 @@
-ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ColorLab=NULL,BinData=NULL,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=NULL,cols=NULL,N=1){
-	
+ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ColorLab=NULL,BinData=NULL,ContData=NULL,Datanames=c("FP"),GeneExpr,topChar = 20, topG = 20,sign=0.05,nrclusters=NULL,cols=NULL,N=1){
+	if(is.null(Datanames)){
+		for(j in 1:(length(BinData)+length(ContData))){
+			Datanames[j]=paste("Data",j,sep=" ")	
+		}
+	}
 	OrInteractive=Interactive
 	
 	if(Interactive==TRUE){
@@ -7,7 +11,7 @@ ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ColorLab=NUL
 		ClusterPlot(ClusterResult,ColorLab,nrclusters,cols)
 		hc1<-as.hclust(ClusterResult$Clust)
 		ClusterSpecs<-list()
-		ClusterSpecs=identify(hc1, N=N, MAXCLUSTER = nrow(BinData[[1]]), function(j) ChooseCluster(Interactive=FALSE,LeadCpds=rownames(BinData[[1]][j,]),ClusterResult,ColorLab=NULL,BinData,Datanames,GeneExpr,topChar,topG,sign,nrclusters,cols))		
+		ClusterSpecs=identify(hc1, N=N, MAXCLUSTER = nrow(BinData[[1]]), function(j) ChooseCluster(Interactive=FALSE,LeadCpds=rownames(BinData[[1]][j,]),ClusterResult,ColorLab=NULL,BinData,ContData,Datanames,GeneExpr,topChar,topG,sign,nrclusters,cols))		
 		
 		names(ClusterSpecs)<-sapply(seq(1,N),FUN=function(x) paste("Choice",x,sep=" "))
 		
@@ -48,23 +52,61 @@ ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ColorLab=NUL
 
 			#Determine characteristic features for the compounds: fishers exact test
 			Characteristics=list()
-			for(j in 1: length(BinData)){
-				cpdSetB <-rownames(BinData[[j]])
-				groupB <- factor(ifelse(cpdSetB %in% LeadCpds[[i]], 1, 0))
-				binMat=BinData[[j]]
-				
-				pFish <- apply(binMat, 2, function(x) fisher.test(table(x, groupB))$p.value)
-				
-				pFish <- sort(pFish)
-				
-				if(is.null(topChar)){
-					topChar=length(which(pFish<0.05))
-				}
-				Characteristics[[j]]<- names(pFish[0:topChar])
-				names(Characteristics)[j]=Datanames[j]
-				
-			}
 			
+			resultB=list()
+			if(!is.null(BinData)){
+				for(j in 1: length(BinData)){
+					binMat=BinData[[j]]
+					
+					pFish <- apply(binMat, 2, function(x) fisher.test(table(x, group))$p.value)
+					pFish <- sort(pFish)
+					adjpFish<-p.adjust(pFish, method = "fdr")
+					
+					AllFeat=data.frame(Names=names(pFish),P.Value=pFish,adj.P.Val=adjpFish)
+					AllFeat$Names=as.character(AllFeat$Names)
+					
+					if(is.null(topC)){
+						topC=length(which(pFish<sign))
+					}
+					
+					TopFeat=AllFeat[0:topC,]
+					TopFeat$Names=as.character(TopFeat$Names)
+					temp1=list(TopFeat=TopFeat,AllFeat=AllFeat)
+					result[[j]]<-temp1
+					names(resultC)[j]=Datanames[length(BinData)+j]
+					
+				}
+			}
+			resultC=list()
+			if(!is.null(ContData)){
+				for(j in 1:length(ContData)){
+					contMat=ContData[[j]]
+					
+					group1=which(group==1)
+					group2=which(group==0)
+					
+					
+					pTTest <- apply(contMat, 2, function(x) t.test(x[group1],x[group2])$p.value)
+					
+					pTTest <- sort(pTTest)
+					adjpTTest<-p.adjust(pTTest, method = "fdr")
+					
+					AllFeat=data.frame(Names=as.character(names(pTTest)),P.Value=pTTest,adj.P.Val=adjpTTest)
+					AllFeat$Names=as.character(AllFeat$Names)
+					if(is.null(topC)){
+						topC=length(which(pTTest<sign))
+					}
+					
+					TopFeat=data.frame(Names=as.character(names(pTTest[0:topC])),P.Value=pTTest[0:topC],adj.P.Val=adjpTTest[0:topC])
+					TopFeat$Names=as.character(TopFeat$Names)
+					temp1=list(TopFeat=TopFeat,AllFeat=AllFeat)
+					resultC[[j]]<-temp1
+					names(resultC)[j]=Datanames[j]
+					
+				}
+			}
+			Characteristics=c(resultB,resultC)
+
 			#Determine DE Genes with limma --> make difference between "regular" data matrix and "expression set"
 			#GeneExpr.2=GeneExpr[,colnames(Matrix)]
 			groupG <- factor(ifelse(cpdSetG %in% LeadCpds[[i]], 1, 0)) #identify the group of interest

@@ -11,7 +11,7 @@ described in the paper by Wang et al (2014).
 \usage{
 SNFa(List,type=c("data","dist","clusters"),distmeasure = c("tanimoto",
 "tanimoto"),normalize=FALSE,method=NULL, NN = 20, mu = 0.5,T = 20,
-clust = "agnes", linkage = "ward",StopRange=FALSE)
+clust = "agnes", linkage = "ward",alpha=0.625,StopRange=FALSE)
 }
 \arguments{
   \item{List}{
@@ -52,6 +52,10 @@ Choice of clustering function (character). Defaults to "agnes".
   \item{linkage}{
 Choice of inter group dissimilarity (character). Defaults to "ward".
 }
+  \item{alpha}{
+The parameter alpha to be used in the "flexible" linkage of the agnes function. 
+Defaults to 0.625 and is only used if the linkage is set to "flexible"
+}
   \item{StopRange}{
 Logical. Indicates whether the distance matrices with values not between zero and one should be standardized to have so.
 If FALSE the range normalization is performed. See \code{Normalization}. If TRUE, the distance matrices are not changed.
@@ -81,15 +85,15 @@ L=list(fingerprintMat,targetMat)
 
 MCF7_SNFa=SNFa(list(fingerprintMat,targetMat),type="data",distmeasure=c("tanimoto",
 "tanimoto"),normalize=FALSE,method=NULL,NN=10,mu=0.5,T=20,clust="agnes",linkage="ward"
-,StopRange=FALSE)
+,alpha=0.625,StopRange=FALSE)
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 
-function and the ward link is implemented.
+function is implemented.
 }
 
 \seealso{
-\code{\link{SNFb}},\code{\link{SNFc}}
+\code{\link{SNF}},\code{\link{SNFb}},\code{\link{SNFc}}
 }
 \keyword{ Similarity Network Fusion}
 \keyword{ Integrative Clustering }

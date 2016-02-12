@@ -142,7 +142,9 @@ ProfilePlot<-function(Genes,Comps,GeneExpr=NULL,Raw=FALSE,OrderLab=NULL,ColorLab
 		#mtext(substr(Indices,1,15), side = 1,  at=seq(0.5,(ncol(GeneExpr)-0.5)), line=0.2, las=2, cex=0.70,col=c(rep("blue",7),rep("black",(56-7))))
 	}
 	else{
-		axis(1,at=seq(0.5,(ncol(GeneExpr)-0.5)),labels=Indices,las=2,cex.axis=0.70,xlab=" ")
+		#axis(1,at=seq(0.5,(ncol(GeneExpr)-0.5)),labels=Indices,las=2,cex.axis=0.70,xlab=" ",col=colors[Indices])
+		#axis(1,at=seq(0.5,(ncol(GeneExpr)-0.5)), labels=FALSE)
+		mtext(Indices, side = 1,  at=seq(0.5,(ncol(GeneExpr)-0.5)),line=0.2, las=2, cex=0.70,col=colors[Indices])
 	}
 	axis(2,ylab=expression(log[2] ~ paste("fold ", "change")))
 	

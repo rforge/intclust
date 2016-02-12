@@ -8,13 +8,19 @@ Normalization<-function(Data,method=c("Quantile","Fisher-Yates","Standardize","R
 		}
 		
 		else if(method=="R"|method=="r"){
-			rangenorm<-function(x){
-				minc=min(x)
-				maxc=max(x)
-				rx=(x-minc)/(maxc-minc)
-			}
-			
-			DataN=apply(Data,2,rangenorm)
+#			rangenorm<-function(x){
+#				minc=min(x)
+#				maxc=max(x)
+#				rx=(x-minc)/(maxc-minc)
+#			}
+#			
+#			DataN=apply(Data,2,rangenorm)
+#			Data=DataN
+#			return(Data)
+		
+			minc=min(as.vector(Data))
+			maxc=max(as.vector(Data))
+			DataN=(Data-minc)/(maxc-minc)
 			Data=DataN
 			return(Data)
 

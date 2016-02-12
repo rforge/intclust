@@ -15,7 +15,7 @@ Hierarchical clustering is performed on the consensus matrix to obtain the final
 \usage{
 WonM(List,type=c("data","dist","clusters"), distmeasure = c("tanimoto",
 "tanimoto"),normalize=FALSE,method=NULL,nrclusters = seq(5, 25, 1), clust =
-"agnes", linkage = "ward",StopRange=FALSE)
+"agnes", linkage=c("flexible","flexible"),alpha=0.625,StopRange=FALSE)
 }
 \arguments{
   \item{List}{
@@ -48,7 +48,11 @@ A sequence of the number of clusters to cut the dendrogram in.
 Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
-Choice of inter group dissimilarity (character). Defaults to "ward".
+A vector with the choice of inter group dissimilarity (character) for each data set.
+}
+\item{alpha}{
+The parameter alpha to be used in the "flexible" linkage of the agnes function. 
+Defaults to 0.625 and is only used if the linkage is set to "flexible"
 }
   \item{StopRange}{
 Logical. Indicates whether the distance matrices with values not between zero and one should be standardized to have so.
@@ -75,11 +79,12 @@ data(targetMat)
 L=list(fingerprintMat,targetMat)
 
 MCF7_WonM=WonM(L,type="data",distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,
-method=NULL,nrclusters=seq(5,25),clust="agnes",linkage="ward",StopRange=FALSE)
+method=NULL,nrclusters=seq(5,25),clust="agnes",linkage=c("flexible","flexible"),
+alpha=0.625,StopRange=FALSE)
 }
 \note{
 For now, only hierarchical clustering with the \code{agnes} 
-function and the ward link is implemented.
+function is implemented.
 }
 \keyword{ Weighting on Membership }
 \keyword{ Integrative Clustering }

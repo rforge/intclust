@@ -5,13 +5,13 @@ Determining the characteristic features of a cluster
 }
 \description{
 The function \code{CharacteristicFeatures} requires as input a list of one or multiple clustering results.
-It is capable of selecting the binary features which identify a cluster with the help of the fisher's exact test.
+It is capable of selecting the binary features which determine a cluster with the help of the fisher's exact test.
 }
 \usage{
-CharacteristicFeatures(List,Selection=NULL,BinData,Datanames=NULL,nrclusters=NULL,
-sign=0.05,topC=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL)
+CharacteristicFeatures(List,Selection=NULL,BinData,ContData = NULL,
+Datanames=NULL,nrclusters=NULL,sign=0.05,topC=NULL,fusionsLog=TRUE,
+WeightClust=TRUE,names=NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
 A list of the clustering outputs to be compared. The first element
@@ -22,7 +22,10 @@ If differential gene expression should be investigated for a specific selection 
 Selection can be of the type "character" (names of the compounds) or "numeric" (the number of specific cluster).
  }
   \item{BinData}{
-A list of the binary feature data matrices 
+A list of the binary feature data matrices. These will be evaluated with the fisher's extact test.
+}
+  \item{ContData}{
+A list of continuous data sets of the compounds. These will be evaluated with the t-test.
 }
   \item{Datanames}{
 A vector with the names of the binary data matrices.
@@ -61,7 +64,7 @@ The returned value is a list with an element per method. Each element
 contains a list per cluster with the following elements:
 \item{Compounds}{A list with the elements LeadCpds (the compounds of interest) and 
 OrderedCpds (all compounds in the order of the clustering result)}
-\item{Characteristics}{A list with an element per defined binary data matrix in BinData. Each element is again a list with the elements TopFeat (a table with information on the top
+\item{Characteristics}{A list with an element per defined binary data matrix in BinData and continuous data in ContData. Each element is again a list with the elements TopFeat (a table with information on the top
 features) and AllFeat (a table with information on all features)}
 }
 \author{

@@ -1,10 +1,5 @@
-Cluster<-function(Data,type=c("data","dist"),distmeasure="tanimoto",normalize=FALSE,method=NULL,clust="agnes",linkage="ward",gap=TRUE,maxK=50,StopRange=FALSE){	
-	if(clust != "agnes" | linkage != "ward"){
-		message("Only hierarchical clustering with WARD link is implemented for now. Method continues with these options")
-		clust="agnes"
-		linkage="ward"
-	}
-		
+Cluster<-function(Data,type=c("data","dist"),distmeasure="tanimoto",normalize=FALSE,method=NULL,clust="agnes",linkage="ward",alpha=0.625,gap=TRUE,maxK=50,StopRange=FALSE){	
+
 	#STEP 1: Distance Matrices
 	type<-match.arg(type)
 	if(type=="data"){
@@ -24,7 +19,7 @@ Cluster<-function(Data,type=c("data","dist"),distmeasure="tanimoto",normalize=FA
 	
 	#STEP 2: Hierarchical Clustering with Ward Link
 	
-	Clust=agnes(DistM,diss=TRUE,method=linkage)
+	Clust=agnes(DistM,diss=TRUE,method=linkage,par.method=alpha)
 	
 	func = function(x,k){
 		return(list(cluster=cutree(Clust,k=k)  )  )

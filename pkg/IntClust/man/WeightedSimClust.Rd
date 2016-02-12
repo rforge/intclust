@@ -6,15 +6,15 @@ Weighted similarity clustering
 \description{
 The \code{WeightedSimClust} function performs weighted 
 similarity clustering. The input can be data matrices of which
-the distance mattices are computed or clustering results where from
+the distance matrices are computed or clustering results where from
 the distance matrices are extracted. An optimal weight is chosen with the \code{
-ChooseWeight} function or can be specified by the user. With the found 
+DetermineWeight_SimClust} function or can be specified by the user. With the found 
 weight the distance matrices are linearly combined and hierarchical clustering
 is performed. 
 }
 \usage{
 WeightedSimClust(List, type = c("data", "dist","clusters"), weight = seq(0, 1, 0.01),
- clust = "agnes", linkage = "ward", distmeasure = c("euclidean",
+ clust = "agnes",linkage=c("ward","flexible"),alpha=0.625, distmeasure = c("euclidean",
 "tanimoto"),normalize=FALSE,method=NULL, gap = FALSE, maxK = 50, nrclusters = NULL, 
 names = c("B", "FP"), AllClusters = FALSE,StopRange=FALSE,plottype="new",
 location=NULL)
@@ -40,7 +40,11 @@ combinations. If different weight combinations are provided, the function
 Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
-Choice of inter group dissimilarity (character). Defaults to "ward".
+A vector with the choice of inter group dissimilarity (character) for each data set.
+}
+\item{alpha}{
+The parameter alpha to be used in the "flexible" linkage of the agnes function. 
+Defaults to 0.625 and is only used if the linkage is set to "flexible"
 }
   \item{distmeasure}{
 A character vector with the distance measure for each data matrix.
@@ -127,9 +131,9 @@ data(targetMat)
 L=list(fingerprintMat,targetMat)
 
 MCF7_WeightSim=WeightedSimClust(L,type="data", weight=seq(0,1,0.01),clust="agnes",
-linkage="ward",distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,
-gap=FALSE,maxK=50,nrclusters=7,names=c("FP","B"),AllClusters=FALSE,StopRange=FALSE,
-plottype="new",location=FALSE)
+linkage=c("flexible","flexible"),alpha=0.625,distmeasure=c("tanimoto","tanimoto"),
+normalize=FALSE,method=NULL,gap=FALSE,maxK=50,nrclusters=7,names=c("FP","B"),
+AllClusters=FALSE,StopRange=FALSE,plottype="new",location=FALSE)
 }
 }
 \seealso{

@@ -1,4 +1,4 @@
-CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,nrclusters=seq(5,25,1),weight=NULL,clust="agnes",linkage="ward",WeightClust=0.5,StopRange=FALSE){
+CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,nrclusters=seq(5,25,1),weight=NULL,clust="agnes",linkage=c("flexible","flexible"),alpha=0.625,WeightClust=0.5,StopRange=FALSE){
 	
 	if(class(List) != "list"){
 		stop("Data must be of type list")
@@ -9,13 +9,7 @@ CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=
 		stop("Give a number of clusters to cut the dendrogram into for each data modality.")
 	}
 	
-	if(clust != "agnes" | linkage != "ward"){
-		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
-						coassociation matrix.")
-		clust="agnes"
-		linkage="ward"
-	}
-	
+
 	#Step 1: Take all features from A1 and A2
 	#Notation facility:
 
@@ -51,7 +45,7 @@ CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=
 	
 	DistM=lapply(seq(length(DistM)),function(i) CheckDist(DistM[[i]],StopRange))
 	
-	HClust_A=lapply(seq(length(DistM)),function(i) agnes(DistM[[i]],diss=TRUE,method=linkage))
+	HClust_A=lapply(seq(length(DistM)),function(i) agnes(DistM[[i]],diss=TRUE,method=linkage[i],par.method=alpha))
 	
 	for(k in 1:length(nrclusters)){
 		message(k)
@@ -71,7 +65,8 @@ CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=
 	
 	
 	if(is.null(weight)){
-		weight=seq(1,0,-0.1)	
+		equalweights=1/length(List)
+		weight=list(rep(equalweights,length(List)))	
 	}
 	else if(class(weight)=='list' & length(weight[[1]])!=length(List)){
 		stop("Give a weight for each data matrix or specify a sequence of weights")
@@ -147,7 +142,7 @@ CECb<-function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=
 	namesweights=c()	
 	CEC=list()
 	for (i in 1:length(IncidenceComb)){
-		CEC[[i]]=agnes(IncidenceComb[[i]],diss=TRUE,method=linkage)
+		CEC[[i]]=agnes(IncidenceComb[[i]],diss=TRUE,method="ward")
 		namesweights=c(namesweights,paste("Weight",weight[i],sep=" "))
 		if(all(weight[[i]]==WeightClust)){
 			Clust=CEC[i]

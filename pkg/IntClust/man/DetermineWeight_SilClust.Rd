@@ -13,7 +13,6 @@ DetermineWeight_SilClust(List,type=c("data","dist","clusters"),weight=seq(0,1,by
 distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,nrclusters=NULL,
 names=NULL,nboot=1000,StopRange=FALSE,plottype="new",location=NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{List}{
 A list of matrices of the same type. It is assumed the rows are corresponding

@@ -1,4 +1,4 @@
-CECa=function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,t=10,r=NULL,nrclusters=NULL,weight=NULL,clust="agnes",linkage="ward",WeightClust=0.5,StopRange=FALSE){
+CECa<-function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=NULL,t=10,r=NULL,nrclusters=NULL,weight=NULL,clust="agnes",linkage=c("flexible","flexible"),alpha=0.625,WeightClust=0.5,StopRange=FALSE){
 	
 	if(class(List) != "list"){
 		stop("Data must be of type list")
@@ -8,12 +8,7 @@ CECa=function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=N
 		stop("Give a number of clusters to cut the dendrogram into for each data modality.")
 	}
 	
-	if(clust != "agnes" | linkage != "ward"){
-		message("Only hierarchical clustering with WARD link is implemented. Perform your choice of clustering on the resulting
-						coassociation matrix.")
-		clust="agnes"
-		linkage="ward"
-	}
+	
 	#Put all data in the same order
 	OrderNames=rownames(List[[1]])
 	for(i in 1:length(List)){
@@ -50,7 +45,20 @@ CECa=function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=N
 			temp=sample(ncol(A),r[i],replace=FALSE)
 			A_prime[[i]]=A[,temp]
 			
+			Ok=FALSE
+			while(Ok==FALSE){
+				if(any(rowSums(A_prime[[i]])==0)){
+					temp=sample(ncol(A),r[i],replace=FALSE)
+					A_prime[[i]]=A[,temp]
+				}
+				else{
+					Ok=TRUE
+				}				
+			}			
 		}
+		
+		#protect against zero rows:
+		
 		
 		#Step 2: apply hierarchical clustering on each + cut tree into nrclusters
 		
@@ -69,7 +77,7 @@ CECa=function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=N
 		DistM=lapply(seq(length(DistM)),function(i) CheckDist(DistM[[i]],StopRange))
 		
 
-		HClust_A_prime=lapply(seq(length(DistM)),function(i) agnes(DistM[[i]],diss=TRUE,method=linkage))
+		HClust_A_prime=lapply(seq(length(DistM)),function(i) agnes(DistM[[i]],diss=TRUE,method=linkage[i],par.method=alpha))
 		
 		Cuttree<-function(Hclust,nrclusters){
 			Temp=cutree(Hclust,nrclusters)	
@@ -92,7 +100,8 @@ CECa=function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=N
 	}
 	
 	if(is.null(weight)){
-		weight=seq(1,0,-0.1)	
+		equalweights=1/length(List)
+		weight=list(rep(equalweights,length(List)))	
 	}
 	else if(class(weight)=='list' & length(weight[[1]])!=length(List)){
 		stop("Give a weight for each data matrix or specify a sequence of weights")
@@ -169,7 +178,7 @@ CECa=function(List,distmeasure=c("tanimoto","tanimoto"),normalize=FALSE,method=N
 	namesweights=c()	
 	CEC=list()
 	for (i in 1:length(IncidenceComb)){
-		CEC[[i]]=agnes(IncidenceComb[[i]],diss=TRUE,method=linkage)
+		CEC[[i]]=agnes(IncidenceComb[[i]],diss=TRUE,method="ward")
 		namesweights=c(namesweights,paste("Weight",weight[i],sep=" "))
 		if(all(weight[[i]]==WeightClust)){
 			Clust=CEC[i]

@@ -19,7 +19,7 @@ PlotPathways<-function(Pathways,nRow=5,main=NULL,plottype="new",location=NULL){
 	colnames(Pathways)[3:ncol(Pathways)]=sub("mean_","",colnames(Pathways)[3:ncol(Pathways)])	
 	#plot GOgraph
 	plottypein(plottype,location)
-	PlotGOGraph(Pathways,nRow=nRow,main=main)
+	plotGOgraph(Pathways,nRow=nRow,main=main)
 	plottypeout(plottype)
 	
 }

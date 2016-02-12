@@ -1,12 +1,12 @@
-CharacteristicFeatures<-function(List,Selection=NULL,BinData,Datanames=NULL,nrclusters=NULL,sign=0.05,topC=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
+CharacteristicFeatures<-function(List,Selection=NULL,BinData,ContData=NULL,Datanames=NULL,nrclusters=NULL,sign=0.05,topC=NULL,fusionsLog=TRUE,WeightClust=TRUE,names=NULL){
 	if(is.null(Datanames)){
-		for(j in 1:length(BinData)){
-			names[j]=paste("Data",j,sep=" ")	
+		for(j in 1:(length(BinData)+length(ContData))){
+			Datanames[j]=paste("Data",j,sep=" ")	
 		}
 	}
 	
 	if(!(is.null(Selection))){
-		ResultFeat=FeatSelection(List,Selection,BinData,Datanames,nrclusters,topC,sign,fusionsLog,WeightClust,names)
+		ResultFeat=FeatSelection(List,Selection,BinData,ContData,Datanames,nrclusters,topC,sign,fusionsLog,WeightClust)
 	}
 	else{
 		ListNew=list()
@@ -94,7 +94,7 @@ CharacteristicFeatures<-function(List,Selection=NULL,BinData,Datanames=NULL,nrcl
 				result=list()
 				for(j in 1: length(BinData)){
 					binMat=BinData[[j]]
-					
+									
 					pFish <- apply(binMat, 2, function(x) fisher.test(table(x, group))$p.value)
 					pFish <- sort(pFish)
 					adjpFish<-p.adjust(pFish, method = "fdr")
@@ -110,12 +110,41 @@ CharacteristicFeatures<-function(List,Selection=NULL,BinData,Datanames=NULL,nrcl
 					TopFeat$Names=as.character(TopFeat$Names)
 					temp1=list(TopFeat=TopFeat,AllFeat=AllFeat)
 					result[[j]]<-temp1
-					names(result)[j]=Datanames[j]
+					names(resultC)[j]=Datanames[length(BinData)+j]
 					
 				}
 				
 				
-				temp[[2]]=result
+				resultC=list()
+				if(!is.null(ContData)){
+					for(j in 1:length(ContData)){
+						contMat=ContData[[j]]
+						
+						group1=which(group==1)
+						group2=which(group==0)
+						
+						
+						pTTest <- apply(contMat, 2, function(x) t.test(x[group1],x[group2])$p.value)
+						
+						pTTest <- sort(pTTest)
+						adjpTTest<-p.adjust(pTTest, method = "fdr")
+						
+						AllFeat=data.frame(Names=as.character(names(pTTest)),P.Value=pTTest,adj.P.Val=adjpTTest)
+						AllFeat$Names=as.character(AllFeat$Names)
+						if(is.null(topC)){
+							topC=length(which(pTTest<sign))
+						}
+						
+						TopFeat=data.frame(Names=as.character(names(pTTest[0:topC])),P.Value=pTTest[0:topC],adj.P.Val=adjpTTest[0:topC])
+						TopFeat$Names=as.character(TopFeat$Names)
+						temp1=list(TopFeat=TopFeat,AllFeat=AllFeat)
+						resultC[[j]]<-temp1
+						names(resultC)[j]=Datanames[j]
+						
+					}
+				}
+				
+				temp[[2]]=c(result,resultC)
 				
 				names(temp)=c("Compounds","Characteristics")
 				

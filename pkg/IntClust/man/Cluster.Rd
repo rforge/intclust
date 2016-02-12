@@ -11,8 +11,8 @@ number of clusters.
 }
 \usage{
 Cluster(Data,type=c("data","dist"), distmeasure = "tanimoto",
-normalize=FALSE,method=NULL, clust = "agnes", linkage ="ward", gap = TRUE,
-maxK = 50,StopRange=FALSE)
+normalize=FALSE,method=NULL, clust = "agnes", linkage ="ward",alpha=0.625
+,gap = TRUE,maxK = 50,StopRange=FALSE)
 }
 \arguments{
   \item{Data}{
@@ -42,6 +42,10 @@ Choice of clustering function (character). Defaults to "agnes".
 }
   \item{linkage}{
 Choice of inter group dissimilarity (character). Defaults to "ward".
+}
+\item{alpha}{
+The parameter alpha to be used in the "flexible" linkage of the agnes function. 
+Defaults to 0.625 and is only used if the linkage is set to "flexible"
 }
   \item{gap}{
 Logical. Indicator if gap statistics should be computed. 
@@ -83,14 +87,16 @@ data(fingerprintMat)
 data(targetMat)
 
 MCF7_F = Cluster(fingerprintMat,type="data",distmeasure="tanimoto",normalize=FALSE,
-method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+method=NULL,clust="agnes",linkage="ward",alpha=0.625,gap=FALSE,maxK=55
+,StopRange=FALSE)
 MCF7_T = Cluster(targetMat,type="data",distmeasure="tanimoto",normalize=FALSE,
-method=NULL,clust="agnes",linkage="ward",gap=FALSE,maxK=55,StopRange=FALSE)
+method=NULL,clust="agnes",linkage="ward",alpha=0.625,gap=FALSE,maxK=55
+,StopRange=FALSE)
 
 }
 \note{
 For now, the only option is to carry out agglomerative
-hierarchical clustering with the ward link as it was implemented
+hierarchical clustering as it was implemented
 in the \code{agnes} function in the cluster package.
 }
 \keyword{ Clustering }
