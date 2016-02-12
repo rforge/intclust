@@ -699,8 +699,11 @@ manually as we will do now.
 <<ChooseFeatures>>=
 MCF7_Feat=ChooseCluster(Interactive=FALSE,LeadCpds=Comps,ClusterResult=MCF7_F,
                         ColorLab=MCF7_F,BinData=list(fingerprintMat,
-                        targetMat),Datanames=c("FP","TP"),geneMat,topChar = 20,
-                        topG = 20,nrclusters=7,N=1)
+                        targetMat),ContData=NULL,Datanames=c("FP","TP"),geneMat,topChar = 20,
+                        topG = 20,sign=0.05,nrclusters=7,N=1)
+				
+
+					
 @
 \noindent We plot the top identified features with the {\it FeaturesPlot}.
 <<FeaturesPlotFP,eval=FALSE>>=

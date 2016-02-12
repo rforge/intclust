@@ -48,34 +48,37 @@ ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ColorLab=NUL
 		for(i in 1:length(LeadCpds)){
 			Compounds=list(LeadCpds[[i]],OrderedCpds)
 			names(Compounds)=c("LeadCpds","OrderedCpds")
-			
+			cpdSet <- rownames(BinData[[1]])
+			group <- factor(ifelse(cpdSet %in% LeadCpds[[i]], 1, 0)) #identify the group of interest
 
 			#Determine characteristic features for the compounds: fishers exact test
 			Characteristics=list()
 			
 			resultB=list()
 			if(!is.null(BinData)){
-				for(j in 1: length(BinData)){
-					binMat=BinData[[j]]
-					
-					pFish <- apply(binMat, 2, function(x) fisher.test(table(x, group))$p.value)
-					pFish <- sort(pFish)
-					adjpFish<-p.adjust(pFish, method = "fdr")
-					
-					AllFeat=data.frame(Names=names(pFish),P.Value=pFish,adj.P.Val=adjpFish)
-					AllFeat$Names=as.character(AllFeat$Names)
-					
-					if(is.null(topC)){
-						topC=length(which(pFish<sign))
-					}
-					
-					TopFeat=AllFeat[0:topC,]
-					TopFeat$Names=as.character(TopFeat$Names)
-					temp1=list(TopFeat=TopFeat,AllFeat=AllFeat)
-					result[[j]]<-temp1
-					names(resultC)[j]=Datanames[length(BinData)+j]
-					
+			for(j in 1: length(BinData)){
+
+				binMat=BinData[[j]]
+				
+				pFish <- apply(binMat, 2, function(x) fisher.test(table(x, group))$p.value)
+				
+				pFish <- sort(pFish)
+				adjpFish<-p.adjust(pFish, method = "fdr")
+				
+				AllFeat=data.frame(Names=names(pFish),P.Value=pFish,adj.P.Val=adjpFish)
+				AllFeat$Names=as.character(AllFeat$Names)
+				
+				if(is.null(topChar)){
+					topChar=length(which(pFish<sign))
 				}
+				
+				TopFeat=AllFeat[0:topChar,]
+				TopFeat$Names=as.character(TopFeat$Names)
+				temp1=list(TopFeat=TopFeat,AllFeat=AllFeat)
+				resultB[[j]]<-temp1
+				names(resultB)[j]=Datanames[length(BinData)+j]
+				
+			}
 			}
 			resultC=list()
 			if(!is.null(ContData)){
@@ -84,20 +87,19 @@ ChooseCluster=function(Interactive=TRUE,LeadCpds=NULL,ClusterResult,ColorLab=NUL
 					
 					group1=which(group==1)
 					group2=which(group==0)
-					
-					
+			
 					pTTest <- apply(contMat, 2, function(x) t.test(x[group1],x[group2])$p.value)
 					
 					pTTest <- sort(pTTest)
 					adjpTTest<-p.adjust(pTTest, method = "fdr")
-					
+	
 					AllFeat=data.frame(Names=as.character(names(pTTest)),P.Value=pTTest,adj.P.Val=adjpTTest)
 					AllFeat$Names=as.character(AllFeat$Names)
-					if(is.null(topC)){
+					if(is.null(topChar)){
 						topC=length(which(pTTest<sign))
 					}
 					
-					TopFeat=data.frame(Names=as.character(names(pTTest[0:topC])),P.Value=pTTest[0:topC],adj.P.Val=adjpTTest[0:topC])
+					TopFeat=data.frame(Names=as.character(names(pTTest[0:topChar])),P.Value=pTTest[0:topChar],adj.P.Val=adjpTTest[0:topChar])
 					TopFeat$Names=as.character(TopFeat$Names)
 					temp1=list(TopFeat=TopFeat,AllFeat=AllFeat)
 					resultC[[j]]<-temp1

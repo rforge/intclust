@@ -102,15 +102,15 @@ CharacteristicFeatures<-function(List,Selection=NULL,BinData,ContData=NULL,Datan
 					AllFeat=data.frame(Names=names(pFish),P.Value=pFish,adj.P.Val=adjpFish)
 					AllFeat$Names=as.character(AllFeat$Names)
 					
-					if(is.null(topC)){
-						topC=length(which(pFish<sign))
+					if(is.null(topChar)){
+						topChar=length(which(pFish<sign))
 					}
 					
-					TopFeat=AllFeat[0:topC,]
+					TopFeat=AllFeat[0:topChar,]
 					TopFeat$Names=as.character(TopFeat$Names)
 					temp1=list(TopFeat=TopFeat,AllFeat=AllFeat)
 					result[[j]]<-temp1
-					names(resultC)[j]=Datanames[length(BinData)+j]
+					names(result)[j]=Datanames[length(BinData)+j]
 					
 				}
 				
@@ -131,11 +131,11 @@ CharacteristicFeatures<-function(List,Selection=NULL,BinData,ContData=NULL,Datan
 						
 						AllFeat=data.frame(Names=as.character(names(pTTest)),P.Value=pTTest,adj.P.Val=adjpTTest)
 						AllFeat$Names=as.character(AllFeat$Names)
-						if(is.null(topC)){
-							topC=length(which(pTTest<sign))
+						if(is.null(topChar)){
+							topChar=length(which(pTTest<sign))
 						}
 						
-						TopFeat=data.frame(Names=as.character(names(pTTest[0:topC])),P.Value=pTTest[0:topC],adj.P.Val=adjpTTest[0:topC])
+						TopFeat=data.frame(Names=as.character(names(pTTest[0:topChar])),P.Value=pTTest[0:topChar],adj.P.Val=adjpTTest[0:topChar])
 						TopFeat$Names=as.character(TopFeat$Names)
 						temp1=list(TopFeat=TopFeat,AllFeat=AllFeat)
 						resultC[[j]]<-temp1
