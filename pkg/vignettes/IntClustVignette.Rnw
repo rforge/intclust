@@ -714,16 +714,16 @@ BinFeaturesPlot(LeadCpds=Comps,OrderLab=MCF7_F,Features=
 @
 <<FeaturesPlotT,eval=FALSE>>=
 BinFeaturesPlot(LeadCpds=Comps,OrderLab=MCF7_F,Features=
-                MCF7_Feat$Characteristics$TP,Data=targetMat,ColorLab=MCF7_F,
+                MCF7_Feat$Characteristics$TP$TopFeat$Names,Data=targetMat,ColorLab=MCF7_F,
                 nrclusters=7,cols=Colors,name=c("TP"),plottype="sweave",
                 location=NULL)
 @
 \begin{figure}[H]
   \begin{minipage}[b]{.5\linewidth}
      \centering
-<<FeaturesPlotFP,fig=TRUE,echo=FALSE,width=14,height=14>>=
+<<FeaturesPlotFP1,fig=TRUE,echo=FALSE,width=14,height=14>>=
 BinFeaturesPlot(LeadCpds=Comps,OrderLab=MCF7_F,Features=
-                MCF7_Feat$Characteristics$FP,Data=fingerprintMat,
+                MCF7_Feat$Characteristics$FP$TopFeat$Names,Data=fingerprintMat,
                 ColorLab=MCF7_F,nrclusters=7,cols=Colors,name=c("FP"),
                 plottype="sweave",location=NULL)
 @
@@ -731,9 +731,9 @@ BinFeaturesPlot(LeadCpds=Comps,OrderLab=MCF7_F,Features=
 \end{minipage}%
   \begin{minipage}[b]{.5\linewidth}
      \centering
-<<FeaturesPlotT,fig=TRUE,echo=FALSE,width=14,height=14>>=
+<<FeaturesPlotT1,fig=TRUE,echo=FALSE,width=14,height=14>>=
 BinFeaturesPlot(LeadCpds=Comps,OrderLab=MCF7_F,Features=
-                MCF7_Feat$Characteristics$TP,Data=targetMat,
+                MCF7_Feat$Characteristics$TP$TopFeat$Names,Data=targetMat,
                 ColorLab=MCF7_F,nrclusters=7,cols=Colors,name=c("TP"),
                 plottype="sweave",location=NULL)
 @
