@@ -13,6 +13,17 @@ importFrom(prodlim,row.match)
 importFrom(gtools,permutations)
 importFrom(e1071,hamming.distance)
 importFrom(pls,stdize)
+importFrom(graphics,hist,boxplot,image,barplot)
+importFrom(stats,na.exclude,smoothEnds,density,mad,na.omit,complete.cases,runmed,start,window,aggregate,weights,cor,cov,quantile,end,residuals,median,update,sd,var,xtabs,IQR)
+importFrom(utils,tail,stack,relist,head)
+ importFrom("graphics", "abline", "axis", "identify", "layout",
+             "legend", "lines", "locator", "mtext", "par", "plot",
+             "points", "segments", "text")
+ importFrom("stats", "approx", "as.dendrogram", "as.hclust", "cutree",
+             "dendrapply", "dnorm", "fisher.test", "is.leaf", "lm",
+             "model.matrix", "order.dendrogram", "p.adjust", "qnorm",
+             "t.test")
+importFrom("utils", "combn")
 import(SNFtool)
 import(grDevices)
 import(biomaRt)
